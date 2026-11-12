@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { codex } from "../src/adapters/codex.ts";
 import { copilot } from "../src/adapters/copilot.ts";
-import { composeProvider } from "../src/compose.ts";
+import { composeProvider, composeSubscription } from "../src/compose.ts";
 import { stable } from "../src/stable.ts";
 import { initial, upstream } from "./helpers.ts";
 
@@ -68,6 +68,7 @@ test("plan vectors preserve product, client, status, and historical conditions",
     for (const { plan, evidence, ...conditions } of claims) {
       const group = access.find((offer) => {
         const {
+          subscription: _subscription,
           plans: _plans,
           evidence: _evidence,
           state: _state,
@@ -162,4 +163,89 @@ test("grouping keeps unspecified plans and different access conditions separate"
   expect(
     access.find((entry) => entry.plans.includes("free") && entry.surface === "cli")?.status,
   ).toBe("unknown");
+});
+
+test("subscription routes isolate ChatGPT and Copilot while preserving canonical metadata", async () => {
+  const u = await upstream();
+  const original = stable(u);
+  const { registry } = await initial([copilot, codex]);
+  const chatgpt = composeSubscription(u, registry, "chatgpt", digest);
+  const github = composeSubscription(u, registry, "github-copilot", digest);
+  expect(chatgpt.products).toEqual(["openai-codex"]);
+  expect(
+    chatgpt.models["openai/gpt-6-sol"]?.subscription_access.some(
+      (entry) =>
+        entry.subscription === "chatgpt" &&
+        entry.product === "openai-codex" &&
+        entry.plans.includes("plus"),
+    ),
+  ).toBe(true);
+  expect(github.models["openai/gpt-6-sol"]).toBeDefined();
+  expect(github.models["anthropic/claude-fable-5-2"]).toBeDefined();
+  for (const subscription of [chatgpt, github]) {
+    const sources = new Set(subscription.subscription_catalog.sources.map((source) => source.id));
+    expect(subscription.subscription_catalog.upstream.sha256).toBe(digest);
+    for (const [id, { subscription_access, ...metadata }] of Object.entries(subscription.models)) {
+      const originalModel = u.models[id];
+      if (!originalModel) throw new Error("Missing canonical fixture");
+      expect(metadata).toEqual(originalModel);
+      expect(subscription_access.length).toBeGreaterThan(0);
+      expect(
+        subscription_access.every(
+          (entry) =>
+            entry.subscription === subscription.id &&
+            subscription.products.includes(entry.product) &&
+            entry.evidence.every((evidence) => sources.has(evidence.source)),
+        ),
+      ).toBe(true);
+    }
+  }
+  const codexOwner = registry.providers.find((owner) => owner.id === "openai-codex");
+  if (!codexOwner) throw new Error("Missing Codex source owner");
+  expect(chatgpt.subscription_catalog.sources).toEqual(codexOwner.sources);
+  expect(stable(u)).toBe(original);
+});
+
+test("subscription views retain historical and unknown evidence without guessing missing identities", async () => {
+  const u = await upstream();
+  const { registry } = await initial([copilot, codex]);
+  const owner = registry.providers.find((item) => item.id === "github-copilot");
+  if (!owner) throw new Error("Missing Copilot fixture");
+  owner.state = "stale";
+  owner.error = "source-http";
+  const result = composeSubscription(u, registry, "github-copilot", digest);
+  const entries = Object.values(result.models).flatMap((model) => model.subscription_access);
+  expect(entries.some((entry) => entry.status === "unknown")).toBe(true);
+  expect(entries.some((entry) => entry.status === "unavailable")).toBe(true);
+  expect(entries.every((entry) => entry.state === "stale" && entry.error === "source-http")).toBe(
+    true,
+  );
+  delete u.models["openai/gpt-6-sol"];
+  expect(
+    composeSubscription(u, registry, "github-copilot", digest).models["openai/gpt-6-sol"],
+  ).toBeUndefined();
+  u.models["openai/gpt-6-sol"] = {
+    id: "openai/gpt-6-sol",
+    name: "Collision",
+    subscription_access: [],
+  };
+  expect(() => composeSubscription(u, registry, "chatgpt", digest)).toThrow("collision");
+});
+
+test("subscription composition is deterministic and refuses unknown namespaces", async () => {
+  const u = await upstream();
+  const { registry } = await initial([copilot, codex]);
+  const expected = composeSubscription(u, registry, "chatgpt", digest);
+  registry.providers.reverse();
+  for (const owner of registry.providers) owner.claims.reverse();
+  expect(stable(composeSubscription(u, registry, "chatgpt", digest))).toBe(stable(expected));
+  expect(() => composeSubscription(u, registry, "openai", digest)).toThrow("Unknown subscription");
+  const owner = registry.providers.find((item) => item.id === "openai-codex");
+  const seed = owner?.claims.find((claim) => claim.model_id !== null);
+  if (!owner || !seed) throw new Error("Missing Codex fixture");
+  owner.id = "unsupported-product";
+  owner.claims = [{ ...seed, product: owner.id, channel: "subscription" }];
+  expect(() => composeSubscription(u, registry, "chatgpt", digest)).toThrow(
+    "Unknown subscription product",
+  );
 });

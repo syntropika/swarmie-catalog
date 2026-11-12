@@ -62,7 +62,8 @@ The complete response schema is [`provider.schema.json`](../schemas/provider.sch
 Each subscription entry contains `plans` instead of the declaration field `plan`.
 The vector contains source plan tokens. A `null` element means that the plan is unspecified.
 It does not grant access to every plan. All other declaration fields remain in the entry.
-The entry also contains `state`, `error`, and `source_updated_at` from its source owner.
+The entry also contains `subscription`, which identifies the subscription namespace, plus
+`state`, `error`, and `source_updated_at` from its source owner.
 
 Plans share an entry only when every access condition is equal. These conditions include
 product, service provider, source model, canonical identity, channel, client, variant,
@@ -86,6 +87,37 @@ missing source coverage or a missing or broken canonical identity. The original 
 remains intact. No guessed identity or subscription claim is attached. Inspect `catalog.json`
 and `coverage.json` for unresolved source identities and coverage gaps.
 
+## Subscription routes
+
+Use `subscriptions/<subscription>.json` to inspect one subscription across model vendors.
+The response contains `id`, `name`, `products`, `models`, and `subscription_catalog`.
+Its schema is [`subscription.schema.json`](../schemas/subscription.schema.json).
+
+| Subscription ID | Qualified products | Scope |
+| --- | --- | --- |
+| `chatgpt` | `openai-codex` | ChatGPT plan declarations from the Codex CLI catalog |
+| `github-copilot` | `github-copilot` | GitHub Copilot plan and client declarations |
+
+Codex is included in ChatGPT plans. See the official
+[ChatGPT and Codex pricing guide](https://learn.chatgpt.com/docs/pricing).
+The `chatgpt` route groups Codex access under that subscription. It retains
+`product: "openai-codex"` and the source `surface`. It does not claim complete coverage
+of models in ChatGPT Chat. The source plan tokens are not renamed or expanded.
+`src/subscriptions.ts` owns the qualified subscription-to-product mapping. An unknown product in a resolved
+subscription declaration fails composition instead of selecting a guessed subscription.
+
+Subscription model keys and IDs are canonical models.dev IDs, such as `openai/gpt-6-sol`.
+The model fields come from the upstream canonical `models` map. The response attaches
+only entries for the selected subscription. Copilot can therefore contain OpenAI,
+Anthropic, and other vendors without including ChatGPT access declarations.
+The response does not copy another provider's endpoint or credentials into that service.
+
+The response retains `unknown`, `unavailable`, and stale entries for inspection.
+A missing or unresolved canonical model is omitted. Its source declaration remains in
+`catalog.json`. Only entries with `state: "current"` and `status: "available"` establish
+current declared support for their scope. Account access is not verified.
+Source definitions contain only the evidence used in that subscription response.
+
 ## Static output
 
 `bun run build` fetches the upstream catalog once and creates these files. It does not
@@ -93,8 +125,10 @@ store the full upstream model database in version control.
 
 | File | Content |
 | --- | --- |
-| `index.json` | Provider routes and upstream content digest |
+| `index.json` | Provider and subscription routes, with upstream content digest |
 | `providers/<provider>.json` | Original provider models with subscription metadata |
+| `subscriptions/<subscription>.json` | Canonical models and entries for one subscription |
+| `subscription.schema.json` | Subscription response schema |
 | `provider.schema.json` | Composed provider response schema |
 | `catalog.json` | Complete declaration layer, including stale and unresolved records |
 | `catalog.schema.json` | Declaration schema |
@@ -103,17 +137,17 @@ store the full upstream model database in version control.
 
 For example, `providers/openai.json` returns OpenAI's upstream models with embedded
 subscription entries. There are no separate files for products or plans. Use `index.json`
-to discover provider paths. Path segments are URL-encoded. The host only serves files.
+to discover provider and subscription paths. Path segments are URL-encoded. The host only serves files.
 Query parameters do not compute filter combinations. Filter the arrays in the client.
 
 A static response contains both upstream metadata and subscription provenance. A frontend
 needs no synchronization library or additional models.dev request to consume it.
 
 ```ts
-const response = await fetch(`${baseUrl}/providers/openai.json`);
+const response = await fetch(`${baseUrl}/subscriptions/chatgpt.json`);
 if (!response.ok) throw new Error("Provider catalog is unavailable");
-const provider = await response.json();
-const models = Object.values(provider.models).filter((model) =>
+const subscription = await response.json();
+const models = Object.values(subscription.models).filter((model) =>
   model.subscription_access.some((access) =>
     access.product === "openai-codex" &&
     access.plans.includes("plus") &&
@@ -129,9 +163,10 @@ The helpers run in a compatible Bun or Node toolchain. The caller supplies an up
 snapshot and its content digest when composing data directly.
 
 ```ts
-import { composeProvider } from "./src/index.ts";
+import { composeProvider, composeSubscription } from "./src/index.ts";
 
 const provider = composeProvider(upstream, registry, "openai", upstreamSha256);
+const chatgpt = composeSubscription(upstream, registry, "chatgpt", upstreamSha256);
 ```
 
 `query` remains available for direct inspection of declaration records. It supports

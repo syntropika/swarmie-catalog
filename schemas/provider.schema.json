@@ -139,6 +139,10 @@
                   ],
                   "type": "string"
                 },
+                "subscription": {
+                  "minLength": 1,
+                  "type": "string"
+                },
                 "surface": {
                   "anyOf": [
                     {
@@ -174,6 +178,7 @@
                 "status",
                 "reason",
                 "evidence",
+                "subscription",
                 "plans",
                 "state",
                 "source_updated_at",

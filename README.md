@@ -3,7 +3,8 @@
 A deterministic subscription enrichment layer for [models.dev](https://models.dev).
 It publishes the models.dev provider catalogs with subscription metadata for each model.
 Each model contains an array of subscription entries with product-specific plan vectors.
-Consumers select a provider and filter the model entries locally.
+Consumers select a subscription, such as ChatGPT or GitHub Copilot, or a models.dev provider.
+The ChatGPT view currently covers access through Codex. Consumers filter plan vectors locally.
 It records public declarations about models, products, plans, access channels, and clients.
 Each declaration has source evidence. The catalog does not grant account access.
 

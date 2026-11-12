@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { composedProviderSchema } from "../src/schema.ts";
+import { composedProviderSchema, composedSubscriptionSchema } from "../src/schema.ts";
 import { hash } from "../src/stable.ts";
 
 const root = process.env.CATALOG_TEST_ARTIFACT_DIR ?? ".artifacts/reports/cli-tests";
@@ -50,7 +50,7 @@ test("offline CLI replay is idempotent and a failed upstream retains stale recor
 test("provider routes embed plan vectors without product or plan files and rebuild deterministically", async () => {
   const directory = path.resolve(root, crypto.randomUUID());
   await mkdir(path.join(directory, "schemas"), { recursive: true });
-  for (const name of ["catalog", "provider"]) {
+  for (const name of ["catalog", "provider", "subscription"]) {
     await Bun.write(
       path.join(directory, "schemas", `${name}.schema.json`),
       await Bun.file(`schemas/${name}.schema.json`).text(),
@@ -86,6 +86,23 @@ test("provider routes embed plan vectors without product or plan files and rebui
   expect(files.every((file) => file.isFile() && file.name.endsWith(".json"))).toBe(true);
   const index = await Bun.file(path.join(directory, "dist/index.json")).json();
   expect(index.providers).toContainEqual({ id: "openai", path: "providers/openai.json" });
+  for (const id of ["chatgpt", "github-copilot"]) {
+    const file = path.join(directory, `dist/subscriptions/${id}.json`);
+    const subscription = composedSubscriptionSchema.parse(await Bun.file(file).json());
+    expect(subscription.id).toBe(id);
+    expect(Object.values(subscription.models).length).toBeGreaterThan(0);
+    expect(
+      Object.values(subscription.models).every((model) =>
+        model.subscription_access.every((entry) => entry.subscription === id),
+      ),
+    ).toBe(true);
+    expect(index.subscriptions).toContainEqual({
+      id,
+      name: subscription.name,
+      products: subscription.products,
+      path: `subscriptions/${id}.json`,
+    });
+  }
   const first = hash(await Bun.file(providerFile).text());
   expect((await cli(args, directory)).code).toBe(0);
   expect(hash(await Bun.file(providerFile).text())).toBe(first);

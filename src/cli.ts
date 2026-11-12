@@ -3,19 +3,21 @@ import path from "node:path";
 import { z } from "zod";
 import { codex } from "./adapters/codex.ts";
 import { copilot } from "./adapters/copilot.ts";
-import { composeProvider } from "./compose.ts";
+import { composeProvider, composeSubscription } from "./compose.ts";
 import { coverage } from "./coverage.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
 import { fetchText, githubLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
 import {
   aliasesSchema,
   composedProviderSchema,
+  composedSubscriptionSchema,
   type Registry,
   registrySchema,
   type Upstream,
   upstreamSchema,
 } from "./schema.ts";
 import { compare, hash, stable } from "./stable.ts";
+import { subscriptions } from "./subscriptions.ts";
 
 const adapters = [copilot, codex];
 const args = process.argv.slice(2);
@@ -120,11 +122,13 @@ async function validate(): Promise<Registry> {
   const expected = stable(z.toJSONSchema(registrySchema));
   if ((await Bun.file("schemas/catalog.schema.json").text()) !== expected)
     throw new Error("JSON schema is outdated; run bun src/cli.ts schema");
-  if (
-    (await Bun.file("schemas/provider.schema.json").text()) !==
-    stable(z.toJSONSchema(composedProviderSchema))
-  )
-    throw new Error("Provider JSON schema is outdated; run bun src/cli.ts schema");
+  for (const [name, schema] of [
+    ["provider", composedProviderSchema],
+    ["subscription", composedSubscriptionSchema],
+  ] as const) {
+    if ((await Bun.file(`schemas/${name}.schema.json`).text()) !== stable(z.toJSONSchema(schema)))
+      throw new Error(`${name} JSON schema is outdated; run bun src/cli.ts schema`);
+  }
   if ((await Bun.file(catalogPath).text()) !== stable(registry))
     throw new Error("Catalog is not canonically formatted");
   console.log(
@@ -177,12 +181,28 @@ async function build(): Promise<void> {
   );
   await write("dist/catalog.schema.json", await Bun.file("schemas/catalog.schema.json").text());
   await write("dist/provider.schema.json", await Bun.file("schemas/provider.schema.json").text());
+  await write(
+    "dist/subscription.schema.json",
+    await Bun.file("schemas/subscription.schema.json").text(),
+  );
   const providers: { id: string; path: string }[] = [];
   for (const providerId of Object.keys(upstream.providers).sort(compare)) {
     const provider = composeProvider(upstream, registry, providerId, upstreamDigest);
     const providerPath = `providers/${segment(providerId)}.json`;
     await write(`dist/${providerPath}`, stable(provider));
     providers.push({ id: providerId, path: providerPath });
+  }
+  const subscriptionRoutes = [];
+  for (const id of subscriptions.map((definition) => definition.id).sort(compare)) {
+    const subscription = composeSubscription(upstream, registry, id, upstreamDigest);
+    const subscriptionPath = `subscriptions/${segment(id)}.json`;
+    await write(`dist/${subscriptionPath}`, stable(subscription));
+    subscriptionRoutes.push({
+      id,
+      name: subscription.name,
+      products: subscription.products,
+      path: subscriptionPath,
+    });
   }
   await write(
     "dist/index.json",
@@ -191,6 +211,8 @@ async function build(): Promise<void> {
       upstream: { url: upstreamUrl, sha256: upstreamDigest },
       catalog: "catalog.json",
       provider_schema: "provider.schema.json",
+      subscription_schema: "subscription.schema.json",
+      subscriptions: subscriptionRoutes,
       notices: "THIRD_PARTY_NOTICES.md",
       providers,
     }),
@@ -221,6 +243,10 @@ try {
   else if (command === "schema") {
     await write("schemas/catalog.schema.json", stable(z.toJSONSchema(registrySchema)));
     await write("schemas/provider.schema.json", stable(z.toJSONSchema(composedProviderSchema)));
+    await write(
+      "schemas/subscription.schema.json",
+      stable(z.toJSONSchema(composedSubscriptionSchema)),
+    );
   } else
     throw new Error(
       "Usage: bun src/cli.ts sync|validate|build|schema [--fixtures DIR] [--upstream FILE] [--output FILE] [--report-dir DIR]",
