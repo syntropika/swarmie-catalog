@@ -1,5 +1,7 @@
 name: publish static catalog
 on:
+  schedule:
+    - cron: '41 */6 * * *'
   push:
     branches: [main]
     paths: ['data/**', 'schemas/**', 'src/**', 'package.json', 'bun.lock', '.bun-version', '.github/workflows/pages.yml']

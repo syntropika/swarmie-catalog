@@ -11,8 +11,11 @@ bun run build
 ```
 
 `check` runs TypeScript, Biome, offline tests, and catalog validation.
+Set `CATALOG_TEST_ARTIFACT_DIR` to select an external directory for CLI test artifacts.
 `sync` fetches public sources. It writes `data/catalog.json` and operational evidence
 under `.artifacts/`. `build` writes static distribution files to `dist/`.
+The build fetches models.dev once and joins its provider models with the enrichment layer.
+Use `bun run build --upstream tests/fixtures/upstream.json` for an offline build.
 The build owns and replaces a marked `dist/` directory. It refuses an unmarked directory.
 No command runs an AI service.
 
@@ -44,7 +47,9 @@ bun run check
 | `src/fetch.ts` | Public retrieval, limits, and immutable GitHub snapshots |
 | `src/reconcile.ts` | Exact model identity and explicit aliases |
 | `src/engine.ts` | Validation, conflict handling, retention, and reports |
-| `src/index.ts` | Consumer queries and metadata enrichment |
+| `src/query.ts` | Scoped declaration queries |
+| `src/compose.ts` | Provider metadata composition and static selection |
+| `src/index.ts` | Public consumer exports |
 | `src/cli.ts` | Files and static distribution |
 | `src/publish.ts` | Automation branch and PR updates |
 | `data/` | Availability output and explicit identity aliases |
@@ -82,7 +87,8 @@ Do not assume that a bot PR has completed its independent checks until they appe
 For Pages, select GitHub Actions as the Pages build source. Set the repository variable
 `ENABLE_PAGES` to `true` to enable deployment. Without that opt-in, the workflow builds
 and uploads the static artifact but does not deploy a site. The Pages workflow builds
-reviewed data from `main`. Only its deployment job has `pages: write` and `id-token: write`.
+reviewed subscription data from `main` with the latest upstream metadata. It also rebuilds
+every six hours. Only its deployment job has `pages: write` and `id-token: write`.
 All external actions are pinned to full commit IDs. Pages availability and access depend
 on repository and account settings. The static `dist/` output also works with other static hosting.
 

@@ -53,18 +53,17 @@ export const registrySchema = z
 export type Registry = z.infer<typeof registrySchema>;
 
 const metadata = z.object({ id: text, name: text }).passthrough();
+export const upstreamModelSchema = metadata.extend({ canonical_model_id: text.optional() });
+export const upstreamProviderSchema = z
+  .object({
+    id: text,
+    models: z.record(text, upstreamModelSchema),
+  })
+  .passthrough();
 export const upstreamSchema = z
   .object({
     models: z.record(text, metadata),
-    providers: z.record(
-      text,
-      z
-        .object({
-          id: text,
-          models: z.record(text, metadata.extend({ canonical_model_id: text.optional() })),
-        })
-        .passthrough(),
-    ),
+    providers: z.record(text, upstreamProviderSchema),
   })
   .passthrough()
   .superRefine((catalog, ctx) => {
@@ -97,3 +96,46 @@ export const aliasesSchema = z.record(
     .strict(),
 );
 export type Aliases = z.infer<typeof aliasesSchema>;
+
+export const subscriptionOfferSchema = claimSchema.extend({
+  state: z.enum(["current", "stale"]),
+  source_updated_at: z.iso.datetime(),
+  error: text.nullable(),
+});
+export const composedProviderSchema = upstreamProviderSchema.extend({
+  models: z.record(
+    text,
+    upstreamModelSchema.extend({
+      subscription_access: z
+        .object({
+          status: z.enum(["available", "unknown"]),
+          model_id: text.nullable(),
+          reason: z.enum([
+            "unresolved-canonical-identity",
+            "explicit-source-declaration",
+            "no-current-positive-declaration",
+            "no-source-evidence",
+          ]),
+          offers: z.array(subscriptionOfferSchema),
+        })
+        .strict(),
+    }),
+  ),
+  subscription_catalog: z
+    .object({
+      schema_version: z.literal(1),
+      upstream: z
+        .object({
+          url: z.literal("https://models.dev/catalog.json?type=all"),
+          sha256: z.string().regex(/^[a-f0-9]{64}$/),
+        })
+        .strict(),
+      sources: z.array(sourceSchema),
+      selection: z
+        .object({ status: z.literal("available"), product: text.optional(), plan: text.optional() })
+        .strict()
+        .optional(),
+    })
+    .strict(),
+});
+export type ComposedProvider = z.infer<typeof composedProviderSchema>;

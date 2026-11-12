@@ -9,7 +9,9 @@ The engine consumes `https://models.dev/catalog.json?type=all`. Its `models` map
 contains canonical model metadata. Its `providers` map contains provider offerings.
 An offering can identify its canonical model with `canonical_model_id`.
 The engine validates these identity fields and preserves other metadata at the boundary.
-It does not copy the full catalog into version control.
+It does not copy the full catalog into version control. The static build retrieves
+one upstream snapshot and joins declarations onto each provider offering. See
+[provider routes](catalog.md#provider-routes) for the response contract.
 
 Upstream publishes the provider map separately at `/api.json` and the canonical map
 at `/models.json`. The combined endpoint avoids mixing separately retrieved versions.

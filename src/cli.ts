@@ -3,12 +3,13 @@ import path from "node:path";
 import { z } from "zod";
 import { codex } from "./adapters/codex.ts";
 import { copilot } from "./adapters/copilot.ts";
+import { composeProvider, selectSubscriptionModels } from "./compose.ts";
 import { coverage } from "./coverage.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
 import { fetchText, githubLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
-import { query } from "./index.ts";
 import {
   aliasesSchema,
+  composedProviderSchema,
   type Registry,
   registrySchema,
   type Upstream,
@@ -119,6 +120,11 @@ async function validate(): Promise<Registry> {
   const expected = stable(z.toJSONSchema(registrySchema));
   if ((await Bun.file("schemas/catalog.schema.json").text()) !== expected)
     throw new Error("JSON schema is outdated; run bun src/cli.ts schema");
+  if (
+    (await Bun.file("schemas/provider.schema.json").text()) !==
+    stable(z.toJSONSchema(composedProviderSchema))
+  )
+    throw new Error("Provider JSON schema is outdated; run bun src/cli.ts schema");
   if ((await Bun.file(catalogPath).text()) !== stable(registry))
     throw new Error("Catalog is not canonically formatted");
   console.log(
@@ -126,8 +132,19 @@ async function validate(): Promise<Registry> {
   );
   return registry;
 }
+function segment(value: string): string {
+  if (value === "." || value === "..") throw new Error("Invalid static path segment");
+  return encodeURIComponent(value);
+}
 async function build(): Promise<void> {
   const registry = await validate();
+  const upstreamFile = options.get("--upstream");
+  const upstreamBody = upstreamFile
+    ? await Bun.file(upstreamFile).text()
+    : await fetchText(upstreamUrl);
+  const upstream = upstreamSchema.parse(JSON.parse(upstreamBody));
+  const upstreamDigest = hash(upstreamBody);
+  await write(path.join(reportDir, "inputs", "build-upstream.json"), upstreamBody);
   const marker = "swarmie-catalog generated output\n";
   const output = await lstat("dist").catch((error: NodeJS.ErrnoException) => {
     if (error.code !== "ENOENT") throw error;
@@ -159,70 +176,80 @@ async function build(): Promise<void> {
     }),
   );
   await write("dist/catalog.schema.json", await Bun.file("schemas/catalog.schema.json").text());
-  await write(
-    "dist/subscriptions.json",
-    stable({
-      ...registry,
-      providers: registry.providers
-        .map((provider) => ({
-          ...provider,
-          claims: query(registry, {
-            product: provider.id,
-            channel: "subscription",
-            status: "available",
-          }),
-        }))
-        .filter((provider) => provider.claims.length > 0),
-    }),
-  );
-  const products = [
-    ...new Set(
-      registry.providers.flatMap((provider) => provider.claims.map((claim) => claim.product)),
-    ),
-  ].sort(compare);
-  const index: { product: string; catalog: string; plans: { plan: string; path: string }[] }[] = [];
-  for (const product of products) {
-    const productClaims = query(registry, { product, includeStale: true, includeUnresolved: true });
-    const productProvider = registry.providers.find((provider) => provider.id === product);
-    if (!productProvider) throw new Error(`Missing product provider: ${product}`);
-    const providerMetadata = {
-      id: productProvider.id,
-      state: productProvider.state,
-      error: productProvider.error,
-      source_updated_at: productProvider.source_updated_at,
-      sources: productProvider.sources,
-    };
-    const productPath = `products/${encodeURIComponent(product)}.json`;
-    await write(
-      `dist/${productPath}`,
-      stable({
-        provider: providerMetadata,
-        claims: productClaims,
-      }),
+  await write("dist/provider.schema.json", await Bun.file("schemas/provider.schema.json").text());
+  const providers: {
+    id: string;
+    path: string;
+    subscriptions: string;
+    products: { id: string; path: string; plans: { id: string; path: string }[] }[];
+  }[] = [];
+  for (const providerId of Object.keys(upstream.providers).sort(compare)) {
+    const provider = composeProvider(upstream, registry, providerId, upstreamDigest);
+    const prefix = `providers/${segment(providerId)}`;
+    const providerPath = `${prefix}.json`;
+    const subscriptionsPath = `${prefix}/subscriptions.json`;
+    await write(`dist/${providerPath}`, stable(provider));
+    await write(`dist/${subscriptionsPath}`, stable(selectSubscriptionModels(provider)));
+    const offers = Object.values(provider.models).flatMap(
+      (model) => model.subscription_access.offers,
     );
-    const plans = [
-      ...new Set(productClaims.flatMap((claim) => (claim.plan === null ? [] : [claim.plan]))),
-    ].sort(compare);
-    const entries = [];
-    for (const plan of plans) {
-      const planPath = `plans/${encodeURIComponent(product)}/${encodeURIComponent(plan)}.json`;
-      await write(
-        `dist/${planPath}`,
-        stable({
-          product,
-          plan,
-          provider: providerMetadata,
-          claims: query(registry, { product, plan, includeStale: true, includeUnresolved: true }),
-        }),
-      );
-      entries.push({ plan, path: planPath });
+    const productIds = [...new Set(offers.map((offer) => offer.product))].sort(compare);
+    const products = [];
+    for (const product of productIds) {
+      const productPath = `${prefix}/products/${segment(product)}.json`;
+      await write(`dist/${productPath}`, stable(selectSubscriptionModels(provider, { product })));
+      const plans = [
+        ...new Set(
+          offers.flatMap((offer) =>
+            offer.product === product && offer.plan !== null ? [offer.plan] : [],
+          ),
+        ),
+      ].sort(compare);
+      const entries = [];
+      for (const plan of plans) {
+        const planPath = `${prefix}/products/${segment(product)}/plans/${segment(plan)}.json`;
+        await write(
+          `dist/${planPath}`,
+          stable(selectSubscriptionModels(provider, { product, plan })),
+        );
+        entries.push({ id: plan, path: planPath });
+      }
+      products.push({ id: product, path: productPath, plans: entries });
     }
-    index.push({ product, catalog: productPath, plans: entries });
+    providers.push({
+      id: providerId,
+      path: providerPath,
+      subscriptions: subscriptionsPath,
+      products,
+    });
   }
   await write(
     "dist/index.json",
-    stable({ schema_version: 1, catalog: "catalog.json", products: index }),
+    stable({
+      schema_version: 1,
+      upstream: { url: upstreamUrl, sha256: upstreamDigest },
+      catalog: "catalog.json",
+      provider_schema: "provider.schema.json",
+      notices: "THIRD_PARTY_NOTICES.md",
+      providers,
+    }),
   );
+  const notices = await Bun.file(new URL("../THIRD_PARTY_NOTICES.md", import.meta.url)).text();
+  await write(
+    "dist/THIRD_PARTY_NOTICES.md",
+    notices.replaceAll("tests/fixtures/licenses/", "licenses/"),
+  );
+  for (const name of [
+    "codex-license.txt",
+    "codex-notice.txt",
+    "github-docs-license.txt",
+    "models-dev-license.txt",
+  ]) {
+    await write(
+      `dist/licenses/${name}`,
+      await Bun.file(new URL(`../tests/fixtures/licenses/${name}`, import.meta.url)).text(),
+    );
+  }
   await write("dist/.nojekyll", "");
   console.log("Static catalog written to dist/.");
 }
@@ -230,9 +257,10 @@ try {
   if (command === "sync") await sync();
   else if (command === "validate") await validate();
   else if (command === "build") await build();
-  else if (command === "schema")
+  else if (command === "schema") {
     await write("schemas/catalog.schema.json", stable(z.toJSONSchema(registrySchema)));
-  else
+    await write("schemas/provider.schema.json", stable(z.toJSONSchema(composedProviderSchema)));
+  } else
     throw new Error(
       "Usage: bun src/cli.ts sync|validate|build|schema [--fixtures DIR] [--upstream FILE] [--output FILE] [--report-dir DIR]",
     );

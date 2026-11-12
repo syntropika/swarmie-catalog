@@ -1,6 +1,8 @@
 # Swarmie Catalog
 
 A deterministic subscription enrichment layer for [models.dev](https://models.dev).
+It publishes the models.dev provider catalogs with subscription metadata for each model.
+Static routes select a provider, subscription product, or plan.
 It records public declarations about models, products, plans, access channels, and clients.
 Each declaration has source evidence. The catalog does not grant account access.
 
