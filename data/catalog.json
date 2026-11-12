@@ -32235,7 +32235,7 @@
           "variant": null
         }
       ],
-      "error": null,
+      "error": "source-http",
       "id": "github-copilot",
       "source_updated_at": "2026-11-10T19:38:37Z",
       "sources": [
@@ -32254,7 +32254,7 @@
           "url": "https://raw.githubusercontent.com/github/docs/d8541d452854274e2d37ddaba9613dc8c4fa524d/data/tables/copilot/model-supported-plans.yml"
         }
       ],
-      "state": "current"
+      "state": "stale"
     },
     {
       "claims": [
@@ -38035,7 +38035,7 @@
           "variant": null
         }
       ],
-      "error": null,
+      "error": "source-http",
       "id": "openai-codex",
       "source_updated_at": "2026-10-26T22:13:14Z",
       "sources": [
@@ -38047,7 +38047,7 @@
           "url": "https://raw.githubusercontent.com/openai/codex/126a0ee92ed2c5e73cd8a8f7e37563e8527552d7/codex-rs/models-manager/models.json"
         }
       ],
-      "state": "current"
+      "state": "stale"
     }
   ],
   "schema_version": 1,
