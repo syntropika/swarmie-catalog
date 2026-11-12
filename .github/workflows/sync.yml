@@ -1,0 +1,59 @@
+name: synchronize
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: catalog-synchronize
+  cancel-in-progress: false
+jobs:
+  sync:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile
+      - name: Validate source and baseline
+        run: bun run check
+      - name: Synchronize independent providers
+        id: sync
+        continue-on-error: true
+        run: bun run sync
+      - name: Validate proposed data
+        id: validate
+        run: bun run check && bun run build
+      - name: Write run summary
+        if: always()
+        run: |
+          if [ -f .artifacts/reports/sync/report.md ]; then
+            cat .artifacts/reports/sync/report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Open or update the catalog pull request
+        if: steps.validate.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CATALOG_BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: bun src/publish.ts
+      - name: Save run evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: synchronization-evidence
+          path: |
+            .artifacts/reports/sync/
+          include-hidden-files: true
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Report provider failures
+        if: steps.sync.outcome == 'failure'
+        run: exit 1

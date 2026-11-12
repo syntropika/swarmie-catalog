@@ -1,0 +1,29 @@
+{
+  "name": "swarmie-catalog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.10",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "sync": "bun src/cli.ts sync",
+    "validate": "bun src/cli.ts validate",
+    "build": "bun src/cli.ts build",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "check": "bun run typecheck && bun run lint && bun test && bun run validate"
+  },
+  "dependencies": {
+    "zod": "4.3.6",
+    "yaml": "2.8.2"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/bun": "1.3.10",
+    "@biomejs/biome": "2.4.4"
+  }
+}
