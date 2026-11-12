@@ -48,7 +48,7 @@ async function sync(): Promise<void> {
     ? async (_repo, _path, id) =>
         (await Bun.file(path.join(fixtureDir, `${id}.json`)).json()) as Snapshot
     : async (repo, sourcePath, id) => {
-        const snapshot = await githubLoader()(repo, sourcePath, id);
+        const snapshot = await githubLoader(fetch, process.env.GITHUB_TOKEN)(repo, sourcePath, id);
         await write(path.join(reportDir, "inputs", `${id}.json`), stable(snapshot));
         return snapshot;
       };

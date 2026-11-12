@@ -73,13 +73,20 @@ const commitSchema = z
     }),
   )
   .min(1);
-export function githubLoader(request: Fetcher = fetch): SourceLoader {
+export function githubLoader(request: Fetcher = fetch, githubToken?: string): SourceLoader {
+  const metadataRequest: Fetcher = githubToken
+    ? (url, init) => {
+        const headers = new Headers(init?.headers);
+        headers.set("Authorization", `Bearer ${githubToken}`);
+        return request(url, { ...init, headers });
+      }
+    : request;
   return async (repo, path, id) => {
     const commits = commitSchema.parse(
       JSON.parse(
         await fetchText(
           `https://api.github.com/repos/${repo}/commits?path=${encodeURIComponent(path)}&per_page=1`,
-          request,
+          metadataRequest,
         ),
       ),
     );

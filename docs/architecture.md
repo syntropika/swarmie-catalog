@@ -42,8 +42,10 @@ No extracted program or instruction is executed.
 
 Requests have a 30-second timeout and a 32 MB body limit. HTTP errors, redirects,
 empty bodies, invalid schemas, and digest mismatches fail visibly.
-GitHub discovery uses the public commits API without provider authentication.
-Public rate limits can cause a run to fail. The next scheduled run can retry.
+GitHub discovery uses the public commits API. Actions supplies its built-in repository
+token for revision metadata requests to avoid shared anonymous rate limits. Raw source
+requests do not receive that token. Local runs can omit it. No subscription credentials
+are used. Rate limits can still cause a run to fail. The next scheduled run can retry.
 
 ## Failure handling
 
