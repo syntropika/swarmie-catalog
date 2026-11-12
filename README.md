@@ -2,7 +2,8 @@
 
 A deterministic subscription enrichment layer for [models.dev](https://models.dev).
 It publishes the models.dev provider catalogs with subscription metadata for each model.
-Static routes select a provider, subscription product, or plan.
+Each model contains an array of subscription entries with product-specific plan vectors.
+Consumers select a provider and filter the model entries locally.
 It records public declarations about models, products, plans, access channels, and clients.
 Each declaration has source evidence. The catalog does not grant account access.
 

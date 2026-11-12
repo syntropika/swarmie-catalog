@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { codex } from "../src/adapters/codex.ts";
 import { copilot } from "../src/adapters/copilot.ts";
-import { composeProvider, selectSubscriptionModels } from "../src/compose.ts";
+import { composeProvider } from "../src/compose.ts";
 import { stable } from "../src/stable.ts";
 import { initial, upstream } from "./helpers.ts";
 
@@ -20,15 +20,15 @@ test("OpenAI retains upstream metadata and receives Codex and Copilot declaratio
   const originalModel = u.providers.openai?.models["gpt-6-sol"];
   if (!originalModel) throw new Error("Missing original fixture model");
   expect(metadata).toEqual(originalModel);
-  expect(subscription_access.status).toBe("available");
-  expect(new Set(subscription_access.offers.map((offer) => offer.product))).toEqual(
+  expect(subscription_access.some((offer) => offer.status === "available")).toBe(true);
+  expect(new Set(subscription_access.map((offer) => offer.product))).toEqual(
     new Set(["openai-codex", "github-copilot"]),
   );
-  expect(subscription_access.offers.every((offer) => offer.channel === "subscription")).toBe(true);
+  expect(subscription_access.every((offer) => offer.channel === "subscription")).toBe(true);
   expect(result.subscription_catalog.upstream.sha256).toBe(digest);
   const sources = new Set(result.subscription_catalog.sources.map((source) => source.id));
   expect(
-    subscription_access.offers.every((offer) =>
+    subscription_access.every((offer) =>
       offer.evidence.every((evidence) => sources.has(evidence.source)),
     ),
   ).toBe(true);
@@ -43,45 +43,68 @@ test("absent evidence stays unknown and API membership creates no subscription g
   u.models["openai/new-model"] = { id: "openai/new-model", name: "New model" };
   const { registry } = await initial([codex]);
   const result = composeProvider(u, registry, "openai", digest);
-  expect(result.models["new-model"]?.subscription_access).toEqual({
-    status: "unknown",
-    model_id: "openai/new-model",
-    reason: "no-source-evidence",
-    offers: [],
-  });
-  expect(selectSubscriptionModels(result).models["new-model"]).toBeUndefined();
+  expect(result.models["new-model"]?.subscription_access).toEqual([]);
 });
 
-test("plan selection is scoped to its product and excludes stale declarations", async () => {
+test("plan vectors preserve product, client, status, and historical conditions", async () => {
   const u = await upstream();
   const { registry } = await initial([copilot, codex]);
   const result = composeProvider(u, registry, "openai", digest);
-  const plus = selectSubscriptionModels(result, { product: "openai-codex", plan: "plus" });
-  expect(Object.keys(plus.models).length).toBeGreaterThan(0);
+  const access = result.models["gpt-6-sol"]?.subscription_access ?? [];
   expect(
-    Object.values(plus.models).every((model) =>
-      model.subscription_access.offers.some(
-        (offer) =>
-          offer.product === "openai-codex" &&
-          offer.plan === "plus" &&
-          offer.status === "available" &&
-          offer.state === "current",
-      ),
+    access.some(
+      (offer) =>
+        offer.product === "openai-codex" &&
+        offer.plans.includes("plus") &&
+        offer.plans.includes("pro") &&
+        offer.status === "available" &&
+        offer.state === "current",
     ),
   ).toBe(true);
-  expect(() => selectSubscriptionModels(result, { plan: "plus" })).toThrow();
+  for (const owner of registry.providers) {
+    const claims = owner.claims.filter(
+      (claim) => claim.model_id === "openai/gpt-6-sol" && claim.channel === "subscription",
+    );
+    for (const { plan, evidence, ...conditions } of claims) {
+      const group = access.find((offer) => {
+        const {
+          plans: _plans,
+          evidence: _evidence,
+          state: _state,
+          error: _error,
+          source_updated_at: _date,
+          ...actual
+        } = offer;
+        return stable(actual) === stable(conditions);
+      });
+      expect(group?.plans).toContain(plan);
+      expect(group?.evidence).toEqual(expect.arrayContaining(evidence));
+    }
+  }
+  const reversed = {
+    ...registry,
+    providers: [...registry.providers].reverse().map((owner) => ({
+      ...owner,
+      claims: [...owner.claims]
+        .reverse()
+        .map((claim) => ({ ...claim, evidence: [...claim.evidence].reverse() })),
+    })),
+  };
+  expect(stable(composeProvider(u, reversed, "openai", digest))).toBe(stable(result));
   const stale = {
     ...registry,
-    providers: registry.providers.map((provider) => ({
-      ...provider,
+    providers: registry.providers.map((owner) => ({
+      ...owner,
       state: "stale" as const,
       error: "source-http",
     })),
   };
   const historical = composeProvider(u, stale, "openai", digest);
-  expect(historical.models["gpt-6-sol"]?.subscription_access.status).toBe("unknown");
-  expect(Object.keys(selectSubscriptionModels(historical).models)).toHaveLength(0);
-  expect(historical.models["gpt-6-sol"]?.subscription_access.offers.length).toBeGreaterThan(0);
+  const history = historical.models["gpt-6-sol"]?.subscription_access ?? [];
+  expect(history.length).toBeGreaterThan(0);
+  expect(history.every((offer) => offer.state === "stale" && offer.error === "source-http")).toBe(
+    true,
+  );
 });
 
 test("composition refuses collisions and reports broken links without guessing", async () => {
@@ -99,7 +122,44 @@ test("composition refuses collisions and reports broken links without guessing",
     canonical_model_id: "missing/model",
   };
   const broken = composeProvider(u, registry, "openai", digest);
-  expect(broken.models.invalid?.subscription_access.model_id).toBeNull();
-  expect(broken.models.invalid?.subscription_access.status).toBe("unknown");
-  expect(broken.models["gpt-6-sol"]?.subscription_access.offers).toEqual([]);
+  expect(broken.models.invalid?.subscription_access).toEqual([]);
+  expect(broken.models["gpt-6-sol"]?.subscription_access).toEqual([]);
+});
+
+test("grouping keeps unspecified plans and different access conditions separate", async () => {
+  const u = await upstream();
+  const { registry } = await initial([codex]);
+  const owner = registry.providers[0];
+  const seed = owner?.claims.find(
+    (claim) => claim.model_id === "openai/gpt-6-sol" && claim.channel === "subscription",
+  );
+  if (!owner || !seed) throw new Error("Missing source fixture");
+  const common = {
+    ...seed,
+    surface: "cli",
+    minimum_client_version: null,
+    status: "available" as const,
+  };
+  owner.claims = [
+    { ...common, plan: "plus" },
+    { ...common, plan: "pro" },
+    { ...common, plan: "free", status: "unknown" },
+    { ...common, plan: "free", surface: "web", status: "unavailable" },
+    { ...common, plan: "plus", minimum_client_version: "2.0" },
+    { ...common, plan: null, reason: "unspecified-plan", status: "unknown" },
+  ];
+  const access =
+    composeProvider(u, registry, "openai", digest).models["gpt-6-sol"]?.subscription_access ?? [];
+  expect(access).toHaveLength(5);
+  const positive = access.filter(
+    (entry) => entry.status === "available" && entry.minimum_client_version === null,
+  );
+  expect(positive).toHaveLength(1);
+  expect(positive[0]?.plans).toEqual(["plus", "pro"]);
+  expect(access.find((entry) => entry.minimum_client_version === "2.0")?.plans).toEqual(["plus"]);
+  expect(access.find((entry) => entry.reason === "unspecified-plan")?.plans).toEqual([null]);
+  expect(access.find((entry) => entry.surface === "web")?.status).toBe("unavailable");
+  expect(
+    access.find((entry) => entry.plans.includes("free") && entry.surface === "cli")?.status,
+  ).toBe("unknown");
 });

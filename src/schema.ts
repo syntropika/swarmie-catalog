@@ -97,33 +97,23 @@ export const aliasesSchema = z.record(
 );
 export type Aliases = z.infer<typeof aliasesSchema>;
 
-export const subscriptionOfferSchema = claimSchema.extend({
+export const subscriptionOfferSchema = claimSchema.omit({ plan: true }).extend({
+  plans: z.array(text.nullable()).min(1),
   state: z.enum(["current", "stale"]),
   source_updated_at: z.iso.datetime(),
   error: text.nullable(),
 });
+export type SubscriptionOffer = z.infer<typeof subscriptionOfferSchema>;
 export const composedProviderSchema = upstreamProviderSchema.extend({
   models: z.record(
     text,
     upstreamModelSchema.extend({
-      subscription_access: z
-        .object({
-          status: z.enum(["available", "unknown"]),
-          model_id: text.nullable(),
-          reason: z.enum([
-            "unresolved-canonical-identity",
-            "explicit-source-declaration",
-            "no-current-positive-declaration",
-            "no-source-evidence",
-          ]),
-          offers: z.array(subscriptionOfferSchema),
-        })
-        .strict(),
+      subscription_access: z.array(subscriptionOfferSchema),
     }),
   ),
   subscription_catalog: z
     .object({
-      schema_version: z.literal(1),
+      schema_version: z.literal(2),
       upstream: z
         .object({
           url: z.literal("https://models.dev/catalog.json?type=all"),
@@ -131,10 +121,6 @@ export const composedProviderSchema = upstreamProviderSchema.extend({
         })
         .strict(),
       sources: z.array(sourceSchema),
-      selection: z
-        .object({ status: z.literal("available"), product: text.optional(), plan: text.optional() })
-        .strict()
-        .optional(),
     })
     .strict(),
 });

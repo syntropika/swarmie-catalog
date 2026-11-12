@@ -3,9 +3,10 @@ import {
   type ComposedProvider,
   composedProviderSchema,
   type Registry,
+  type SubscriptionOffer,
   type Upstream,
 } from "./schema.ts";
-import { compare } from "./stable.ts";
+import { compare, stable } from "./stable.ts";
 
 /** Preserve upstream offerings and join source declarations through exact canonical identities. */
 export function composeProvider(
@@ -49,28 +50,34 @@ export function composeProvider(
                     source_updated_at: owner.source_updated_at,
                   };
                 });
-        const supported = offers.some(
-          (offer) => offer.state === "current" && offer.status === "available",
-        );
-        return [
-          id,
-          {
-            ...model,
-            subscription_access: {
-              status: supported ? "available" : "unknown",
-              model_id: canonical,
-              reason:
-                canonical === null
-                  ? "unresolved-canonical-identity"
-                  : supported
-                    ? "explicit-source-declaration"
-                    : offers.length
-                      ? "no-current-positive-declaration"
-                      : "no-source-evidence",
-              offers,
-            },
-          },
-        ];
+        const groups = new Map<string, SubscriptionOffer>();
+        for (const { plan, evidence, ...conditions } of offers) {
+          const key = stable(conditions);
+          let group = groups.get(key);
+          if (!group) {
+            group = { ...conditions, plans: [], evidence: [] };
+            groups.set(key, group);
+          }
+          if (!group.plans.includes(plan)) group.plans.push(plan);
+          for (const item of evidence) {
+            if (
+              !group.evidence.some(
+                (entry) => entry.source === item.source && entry.locator === item.locator,
+              )
+            )
+              group.evidence.push(item);
+          }
+        }
+        const access = [...groups.entries()]
+          .sort(([a], [b]) => compare(a, b))
+          .map(([, group]) => ({
+            ...group,
+            plans: group.plans.sort((a, b) =>
+              a === b ? 0 : a === null ? -1 : b === null ? 1 : compare(a, b),
+            ),
+            evidence: group.evidence.sort((a, b) => compare(stable(a), stable(b))),
+          }));
+        return [id, { ...model, subscription_access: access }];
       }),
   );
   const sources = registry.providers
@@ -81,52 +88,9 @@ export function composeProvider(
     ...provider,
     models,
     subscription_catalog: {
-      schema_version: 1,
+      schema_version: 2,
       upstream: { url: registry.upstream, sha256: upstreamSha256 },
       sources,
     },
   });
-}
-
-/** Select models with explicit current support in the requested product and plan. */
-export function selectSubscriptionModels(
-  provider: ComposedProvider,
-  scope: { product?: string; plan?: string } = {},
-): ComposedProvider {
-  if (scope.plan !== undefined && scope.product === undefined)
-    throw new Error("A plan requires its product namespace");
-  const matches = (
-    offer: ComposedProvider["models"][string]["subscription_access"]["offers"][number],
-  ) =>
-    (scope.product === undefined || offer.product === scope.product) &&
-    (scope.plan === undefined || offer.plan === scope.plan);
-  const models = Object.fromEntries(
-    Object.entries(provider.models).flatMap(([id, model]) => {
-      const offers = model.subscription_access.offers.filter(matches);
-      if (!offers.some((offer) => offer.state === "current" && offer.status === "available"))
-        return [];
-      return [
-        [
-          id,
-          {
-            ...model,
-            subscription_access: {
-              ...model.subscription_access,
-              status: "available" as const,
-              reason: "explicit-source-declaration" as const,
-              offers,
-            },
-          },
-        ],
-      ];
-    }),
-  );
-  return {
-    ...provider,
-    models,
-    subscription_catalog: {
-      ...provider.subscription_catalog,
-      selection: { status: "available", ...scope },
-    },
-  };
 }

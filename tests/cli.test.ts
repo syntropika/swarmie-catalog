@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { composedProviderSchema } from "../src/schema.ts";
@@ -47,7 +47,7 @@ test("offline CLI replay is idempotent and a failed upstream retains stale recor
   expect(hash(await Bun.file(output).text())).toBe(first);
 });
 
-test("provider routes preserve upstream metadata, filter plans, and rebuild deterministically", async () => {
+test("provider routes embed plan vectors without product or plan files and rebuild deterministically", async () => {
   const directory = path.resolve(root, crypto.randomUUID());
   await mkdir(path.join(directory, "schemas"), { recursive: true });
   for (const name of ["catalog", "provider"]) {
@@ -74,30 +74,18 @@ test("provider routes preserve upstream metadata, filter plans, and rebuild dete
   const provider = composedProviderSchema.parse(await Bun.file(providerFile).json());
   expect(provider.id).toBe("openai");
   expect(Object.keys(provider.models).length).toBeGreaterThan(0);
-  const product = composedProviderSchema.parse(
-    await Bun.file(path.join(directory, "dist/providers/openai/products/openai-codex.json")).json(),
-  );
-  expect(product.subscription_catalog.selection).toEqual({
-    status: "available",
-    product: "openai-codex",
-  });
-  const plan = composedProviderSchema.parse(
-    await Bun.file(
-      path.join(directory, "dist/providers/openai/products/openai-codex/plans/plus.json"),
-    ).json(),
-  );
-  expect(plan.subscription_catalog.selection).toEqual({
-    status: "available",
-    product: "openai-codex",
-    plan: "plus",
-  });
+  expect(provider.subscription_catalog.schema_version).toBe(2);
   expect(
-    Object.values(plan.models).every((model) =>
-      model.subscription_access.offers.every(
-        (offer) => offer.product === "openai-codex" && offer.plan === "plus",
+    Object.values(provider.models).some((model) =>
+      model.subscription_access.some(
+        (offer) => offer.product === "openai-codex" && offer.plans.includes("plus"),
       ),
     ),
   ).toBe(true);
+  const files = await readdir(path.join(directory, "dist/providers"), { withFileTypes: true });
+  expect(files.every((file) => file.isFile() && file.name.endsWith(".json"))).toBe(true);
+  const index = await Bun.file(path.join(directory, "dist/index.json")).json();
+  expect(index.providers).toContainEqual({ id: "openai", path: "providers/openai.json" });
   const first = hash(await Bun.file(providerFile).text());
   expect((await cli(args, directory)).code).toBe(0);
   expect(hash(await Bun.file(providerFile).text())).toBe(first);

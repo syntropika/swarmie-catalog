@@ -3,7 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import { codex } from "./adapters/codex.ts";
 import { copilot } from "./adapters/copilot.ts";
-import { composeProvider, selectSubscriptionModels } from "./compose.ts";
+import { composeProvider } from "./compose.ts";
 import { coverage } from "./coverage.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
 import { fetchText, githubLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
@@ -177,56 +177,17 @@ async function build(): Promise<void> {
   );
   await write("dist/catalog.schema.json", await Bun.file("schemas/catalog.schema.json").text());
   await write("dist/provider.schema.json", await Bun.file("schemas/provider.schema.json").text());
-  const providers: {
-    id: string;
-    path: string;
-    subscriptions: string;
-    products: { id: string; path: string; plans: { id: string; path: string }[] }[];
-  }[] = [];
+  const providers: { id: string; path: string }[] = [];
   for (const providerId of Object.keys(upstream.providers).sort(compare)) {
     const provider = composeProvider(upstream, registry, providerId, upstreamDigest);
-    const prefix = `providers/${segment(providerId)}`;
-    const providerPath = `${prefix}.json`;
-    const subscriptionsPath = `${prefix}/subscriptions.json`;
+    const providerPath = `providers/${segment(providerId)}.json`;
     await write(`dist/${providerPath}`, stable(provider));
-    await write(`dist/${subscriptionsPath}`, stable(selectSubscriptionModels(provider)));
-    const offers = Object.values(provider.models).flatMap(
-      (model) => model.subscription_access.offers,
-    );
-    const productIds = [...new Set(offers.map((offer) => offer.product))].sort(compare);
-    const products = [];
-    for (const product of productIds) {
-      const productPath = `${prefix}/products/${segment(product)}.json`;
-      await write(`dist/${productPath}`, stable(selectSubscriptionModels(provider, { product })));
-      const plans = [
-        ...new Set(
-          offers.flatMap((offer) =>
-            offer.product === product && offer.plan !== null ? [offer.plan] : [],
-          ),
-        ),
-      ].sort(compare);
-      const entries = [];
-      for (const plan of plans) {
-        const planPath = `${prefix}/products/${segment(product)}/plans/${segment(plan)}.json`;
-        await write(
-          `dist/${planPath}`,
-          stable(selectSubscriptionModels(provider, { product, plan })),
-        );
-        entries.push({ id: plan, path: planPath });
-      }
-      products.push({ id: product, path: productPath, plans: entries });
-    }
-    providers.push({
-      id: providerId,
-      path: providerPath,
-      subscriptions: subscriptionsPath,
-      products,
-    });
+    providers.push({ id: providerId, path: providerPath });
   }
   await write(
     "dist/index.json",
     stable({
-      schema_version: 1,
+      schema_version: 2,
       upstream: { url: upstreamUrl, sha256: upstreamDigest },
       catalog: "catalog.json",
       provider_schema: "provider.schema.json",

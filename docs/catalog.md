@@ -53,24 +53,38 @@ Aliases establish identity only. They do not grant availability.
 
 The public API consists of static JSON files. It uses the provider IDs and offering IDs
 from models.dev. A provider response preserves its original fields, including the
-`models` map. Each model receives a `subscription_access` object. The provider receives
+`models` map. Each model receives a `subscription_access` array. The provider receives
 `subscription_catalog` metadata with source definitions and the upstream content digest.
+The provider response uses `subscription_catalog.schema_version: 2`. The declaration
+registry keeps its independent `schema_version: 1` contract.
 The complete response schema is [`provider.schema.json`](../schemas/provider.schema.json).
 
-`subscription_access` contains the resolved `model_id`, an aggregate `status`, a reason,
-and scoped `offers`. The aggregate status is `available` if at least one current source
-declares subscription support. It is `unknown` otherwise. A set of negative declarations
-for known plans cannot establish a global subscription exclusion.
+Each subscription entry contains `plans` instead of the declaration field `plan`.
+The vector contains source plan tokens. A `null` element means that the plan is unspecified.
+It does not grant access to every plan. All other declaration fields remain in the entry.
+The entry also contains `state`, `error`, and `source_updated_at` from its source owner.
 
-Each offer identifies the subscription service provider, product, plan, client, source
-status, source health, and evidence. An OpenAI model can have offers from OpenAI Codex
-and GitHub Copilot. Those declarations do not change the original provider endpoint,
+Plans share an entry only when every access condition is equal. These conditions include
+product, service provider, source model, canonical identity, channel, client, variant,
+minimum client version, status, reason, source state, error, and source date. Evidence is
+the deduplicated union of the original source references for those plans. Source locators
+retain the original plan rows or model objects. Entries, plans, and evidence have stable order.
+
+An OpenAI model can have entries from OpenAI Codex and GitHub Copilot. Their plan tokens
+remain in separate product namespaces. A model can also have separate entries for different
+clients or statuses. These declarations do not change the original provider endpoint,
 credentials, pricing, or account authority.
 
+Use only entries with `state: "current"` and `status: "available"` to select declared
+subscription support. `unknown`, `unavailable`, and stale entries remain available for
+inspection. No matching entry means that support is unknown for the requested scope.
+It does not establish a global exclusion.
+
 The composer uses explicit canonical links or an exact canonical provider/model ID.
-A missing or broken canonical identity produces `unknown` with the reason
-`unresolved-canonical-identity`. The original metadata remains intact. No guessed
-identity or subscription claim is attached.
+An empty array means that no subscription evidence is attached. This can result from
+missing source coverage or a missing or broken canonical identity. The original metadata
+remains intact. No guessed identity or subscription claim is attached. Inspect `catalog.json`
+and `coverage.json` for unresolved source identities and coverage gaps.
 
 ## Static output
 
@@ -79,30 +93,18 @@ store the full upstream model database in version control.
 
 | File | Content |
 | --- | --- |
-| `index.json` | Provider routes and known product-plan selections |
+| `index.json` | Provider routes and upstream content digest |
 | `providers/<provider>.json` | Original provider models with subscription metadata |
-| `providers/<provider>/subscriptions.json` | Models with current, explicit subscription support |
-| `providers/<provider>/products/<product>.json` | Models with current, explicit support for that product |
-| `providers/<provider>/products/<product>/plans/<plan>.json` | Models with current, explicit support for that product and plan |
 | `provider.schema.json` | Composed provider response schema |
 | `catalog.json` | Complete declaration layer, including stale and unresolved records |
 | `catalog.schema.json` | Declaration schema |
 | `coverage.json` | Supported plans, status counts, unresolved identities, and coverage gaps |
 | `health.json` | Reviewed declaration state, source dates, and content digest |
 
-For example, `providers/openai.json` returns OpenAI's upstream models. The path
-`providers/openai/products/openai-codex/plans/plus.json` selects the models with explicit
-Codex Plus declarations. The same provider can also be selected by a Copilot plan.
-Product and plan tokens retain their source namespaces.
-
-Filtered responses contain `subscription_catalog.selection` with `status: "available"`.
-Their offer lists are scoped to the requested product and plan. Unknown, unavailable,
-and stale-only models are not selected. Their omission is not a denial of account access.
-Use the complete provider response to inspect those states.
-
-Use `index.json` to discover exact paths. Path segments are URL-encoded. The host only
-serves files. Query parameters do not compute new filter combinations. Additional
-capability filters can run in the client.
+For example, `providers/openai.json` returns OpenAI's upstream models with embedded
+subscription entries. There are no separate files for products or plans. Use `index.json`
+to discover provider paths. Path segments are URL-encoded. The host only serves files.
+Query parameters do not compute filter combinations. Filter the arrays in the client.
 
 A static response contains both upstream metadata and subscription provenance. A frontend
 needs no synchronization library or additional models.dev request to consume it.
@@ -111,7 +113,14 @@ needs no synchronization library or additional models.dev request to consume it.
 const response = await fetch(`${baseUrl}/providers/openai.json`);
 if (!response.ok) throw new Error("Provider catalog is unavailable");
 const provider = await response.json();
-const models = Object.values(provider.models);
+const models = Object.values(provider.models).filter((model) =>
+  model.subscription_access.some((access) =>
+    access.product === "openai-codex" &&
+    access.plans.includes("plus") &&
+    access.state === "current" &&
+    access.status === "available"
+  )
+);
 ```
 
 ## TypeScript composition
@@ -120,13 +129,9 @@ The helpers run in a compatible Bun or Node toolchain. The caller supplies an up
 snapshot and its content digest when composing data directly.
 
 ```ts
-import { composeProvider, selectSubscriptionModels } from "./src/index.ts";
+import { composeProvider } from "./src/index.ts";
 
 const provider = composeProvider(upstream, registry, "openai", upstreamSha256);
-const plus = selectSubscriptionModels(provider, {
-  product: "openai-codex",
-  plan: "plus",
-});
 ```
 
 `query` remains available for direct inspection of declaration records. It supports

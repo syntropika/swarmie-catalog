@@ -48,7 +48,7 @@ bun run check
 | `src/reconcile.ts` | Exact model identity and explicit aliases |
 | `src/engine.ts` | Validation, conflict handling, retention, and reports |
 | `src/query.ts` | Scoped declaration queries |
-| `src/compose.ts` | Provider metadata composition and static selection |
+| `src/compose.ts` | Provider metadata composition and plan grouping |
 | `src/index.ts` | Public consumer exports |
 | `src/cli.ts` | Files and static distribution |
 | `src/publish.ts` | Automation branch and PR updates |
