@@ -53,18 +53,17 @@ export const registrySchema = z
 export type Registry = z.infer<typeof registrySchema>;
 
 const metadata = z.object({ id: text, name: text }).passthrough();
+export const upstreamModelSchema = metadata.extend({ canonical_model_id: text.optional() });
+export const upstreamProviderSchema = z
+  .object({
+    id: text,
+    models: z.record(text, upstreamModelSchema),
+  })
+  .passthrough();
 export const upstreamSchema = z
   .object({
     models: z.record(text, metadata),
-    providers: z.record(
-      text,
-      z
-        .object({
-          id: text,
-          models: z.record(text, metadata.extend({ canonical_model_id: text.optional() })),
-        })
-        .passthrough(),
-    ),
+    providers: z.record(text, upstreamProviderSchema),
   })
   .passthrough()
   .superRefine((catalog, ctx) => {
@@ -97,3 +96,42 @@ export const aliasesSchema = z.record(
     .strict(),
 );
 export type Aliases = z.infer<typeof aliasesSchema>;
+
+export const subscriptionOfferSchema = claimSchema.omit({ plan: true }).extend({
+  subscription: text,
+  plans: z.array(text.nullable()).min(1),
+  state: z.enum(["current", "stale"]),
+  source_updated_at: z.iso.datetime(),
+  error: text.nullable(),
+});
+export type SubscriptionOffer = z.infer<typeof subscriptionOfferSchema>;
+const enrichedModelSchema = upstreamModelSchema.extend({
+  subscription_access: z.array(subscriptionOfferSchema),
+});
+const subscriptionCatalogSchema = z
+  .object({
+    schema_version: z.literal(2),
+    upstream: z
+      .object({
+        url: z.literal("https://models.dev/catalog.json?type=all"),
+        sha256: z.string().regex(/^[a-f0-9]{64}$/),
+      })
+      .strict(),
+    sources: z.array(sourceSchema),
+  })
+  .strict();
+export const composedProviderSchema = upstreamProviderSchema.extend({
+  models: z.record(text, enrichedModelSchema),
+  subscription_catalog: subscriptionCatalogSchema,
+});
+export type ComposedProvider = z.infer<typeof composedProviderSchema>;
+export const composedSubscriptionSchema = z
+  .object({
+    id: text,
+    name: text,
+    products: z.array(text).min(1),
+    models: z.record(text, enrichedModelSchema),
+    subscription_catalog: subscriptionCatalogSchema,
+  })
+  .strict();
+export type ComposedSubscription = z.infer<typeof composedSubscriptionSchema>;

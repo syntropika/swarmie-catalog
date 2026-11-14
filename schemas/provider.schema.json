@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": {},
+  "properties": {
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "models": {
+      "additionalProperties": {
+        "additionalProperties": {},
+        "properties": {
+          "canonical_model_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "subscription_access": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "channel": {
+                  "enum": [
+                    "subscription",
+                    "api"
+                  ],
+                  "type": "string"
+                },
+                "error": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "evidence": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "locator": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "source": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "source",
+                      "locator"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "minimum_client_version": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "model_id": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "plans": {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "product": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "provider": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "reason": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "source_model": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "source_updated_at": {
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+                  "type": "string"
+                },
+                "state": {
+                  "enum": [
+                    "current",
+                    "stale"
+                  ],
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "available",
+                    "unavailable",
+                    "unknown"
+                  ],
+                  "type": "string"
+                },
+                "subscription": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "surface": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "variant": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "product",
+                "provider",
+                "source_model",
+                "model_id",
+                "channel",
+                "surface",
+                "variant",
+                "minimum_client_version",
+                "status",
+                "reason",
+                "evidence",
+                "subscription",
+                "plans",
+                "state",
+                "source_updated_at",
+                "error"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "subscription_access"
+        ],
+        "type": "object"
+      },
+      "propertyNames": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "subscription_catalog": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 2,
+          "type": "number"
+        },
+        "sources": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "modified_at": {
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+                "type": "string"
+              },
+              "revision": {
+                "pattern": "^[a-f0-9]{40}$",
+                "type": "string"
+              },
+              "sha256": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "url": {
+                "format": "uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "revision",
+              "sha256",
+              "modified_at"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "upstream": {
+          "additionalProperties": false,
+          "properties": {
+            "sha256": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            "url": {
+              "const": "https://models.dev/catalog.json?type=all",
+              "type": "string"
+            }
+          },
+          "required": [
+            "url",
+            "sha256"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "schema_version",
+        "upstream",
+        "sources"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "models",
+    "subscription_catalog"
+  ],
+  "type": "object"
+}

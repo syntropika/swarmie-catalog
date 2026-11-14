@@ -61,3 +61,29 @@ test("GitHub retrieval pins the path commit and records the exact bytes", async 
   expect(result.source.sha256).toBe(hash("source bytes\n"));
   expect(result.source.revision).toBe(revision);
 });
+
+test("GitHub metadata uses the supplied token without authenticating raw sources", async () => {
+  const revision = "a".repeat(40);
+  let metadataRequests = 0;
+  let rawRequests = 0;
+  const loader = githubLoader(async (url, init) => {
+    const headers = new Headers(init?.headers);
+    if (url.startsWith("https://api.github.com/")) {
+      metadataRequests++;
+      if (headers.get("Authorization") !== "Bearer test-github-token") {
+        return new Response("Anonymous source metadata access rejected", { status: 403 });
+      }
+      expect(init?.redirect).toBe("error");
+      return Response.json([
+        { sha: revision, commit: { committer: { date: "2026-11-12T00:00:00Z" } } },
+      ]);
+    }
+    rawRequests++;
+    expect(headers.has("Authorization")).toBe(false);
+    return new Response("public source bytes");
+  }, "test-github-token");
+  const result = await loader("official/repo", "data/models.json", "source");
+  expect(result.body).toBe("public source bytes");
+  expect(metadataRequests).toBe(1);
+  expect(rawRequests).toBe(1);
+});

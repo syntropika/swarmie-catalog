@@ -28,6 +28,8 @@ jobs:
       - name: Synchronize independent providers
         id: sync
         continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: bun run sync
       - name: Validate proposed data
         id: validate
