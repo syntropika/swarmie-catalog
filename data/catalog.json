@@ -26847,7 +26847,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -26870,7 +26870,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -26893,7 +26893,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -26916,7 +26916,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -26939,7 +26939,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -26962,7 +26962,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -26985,7 +26985,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -27004,7 +27004,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "business",
           "product": "github-copilot",
           "provider": "github",
@@ -27027,7 +27027,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27050,7 +27050,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27073,7 +27073,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27096,7 +27096,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27119,7 +27119,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27142,7 +27142,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27165,7 +27165,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27184,7 +27184,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "enterprise",
           "product": "github-copilot",
           "provider": "github",
@@ -27207,7 +27207,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27230,7 +27230,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27253,7 +27253,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27276,7 +27276,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27299,7 +27299,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27322,7 +27322,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27345,7 +27345,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27364,7 +27364,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "free",
           "product": "github-copilot",
           "provider": "github",
@@ -27387,7 +27387,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27410,7 +27410,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27433,7 +27433,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27456,7 +27456,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27479,7 +27479,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27502,7 +27502,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27525,7 +27525,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27544,7 +27544,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "max",
           "product": "github-copilot",
           "provider": "github",
@@ -27567,7 +27567,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27590,7 +27590,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27613,7 +27613,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27636,7 +27636,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27659,7 +27659,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27682,7 +27682,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27705,7 +27705,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27724,7 +27724,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro",
           "product": "github-copilot",
           "provider": "github",
@@ -27747,7 +27747,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27770,7 +27770,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27793,7 +27793,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27816,7 +27816,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27839,7 +27839,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27862,7 +27862,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27885,7 +27885,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
@@ -27904,7 +27904,7 @@
             }
           ],
           "minimum_client_version": null,
-          "model_id": null,
+          "model_id": "google/gemini-4-hydrogen",
           "plan": "pro_plus",
           "product": "github-copilot",
           "provider": "github",
