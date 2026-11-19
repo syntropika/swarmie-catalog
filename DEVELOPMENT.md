@@ -28,6 +28,7 @@ bun run sync --fixtures tests/fixtures \
 ```
 
 The fixtures contain exact source captures and a small upstream identity projection.
+`tests/fixtures/adapters.json` selects the adapters included in an offline replay.
 They are test inputs. They must not replace a live update without source review.
 Use `--upstream FILE` to supply an archived upstream catalog explicitly.
 A failed network request never selects a fixture automatically.
@@ -51,6 +52,8 @@ bun run check
 | `src/compose.ts` | Provider and subscription composition, with plan grouping |
 | `src/subscriptions.ts` | Validated subscription definitions and model coverage |
 | `src/integration-schema.ts` | Integration profile and manifest validation |
+| `src/model-research.ts` | Native model discovery evidence and parser research |
+| `src/model-sources.ts` | Public source definitions and ownership validation |
 | `src/provider-research.ts` | Reviewed provider inventory and explicit coverage gaps |
 | `src/connections.ts` | Connection discovery by execution and billing |
 | `src/index.ts` | Public consumer exports |

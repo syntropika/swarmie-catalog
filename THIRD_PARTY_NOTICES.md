@@ -16,3 +16,9 @@ No source author endorses this project.
 The canonical-ID punctuation rule follows the published models.dev Copilot adapter.
 The implementation records availability separately and does not reproduce the upstream
 model database. Dependencies retain their own licenses in their distributions.
+
+Additional generated records describe factual model identifiers, subscription plan scope,
+limits and official API references. Their source URLs and digests are included with the
+records. The reviewed public source registry is `model-sources.json` in the distribution
+and `data/model-sources.json` in the repository. Full service documentation bodies remain
+in operational captures. New parser tests use synthetic source fragments.

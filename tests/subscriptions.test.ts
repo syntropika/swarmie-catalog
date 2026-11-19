@@ -1,10 +1,10 @@
 import { expect, test } from "bun:test";
 import { codex } from "../src/adapters/codex.ts";
 import { copilot } from "../src/adapters/copilot.ts";
-import { composeSubscription } from "../src/compose.ts";
+import { composeSubscription, ModelCatalogUnavailableError } from "../src/compose.ts";
 import { subscriptionManifestSchema } from "../src/integration-schema.ts";
 import { composedSubscriptionSchema } from "../src/schema.ts";
-import { subscriptionManifest } from "../src/subscriptions.ts";
+import { subscriptionCoverage, subscriptionManifest } from "../src/subscriptions.ts";
 import { initial, upstream } from "./helpers.ts";
 
 const digest = "a".repeat(64);
@@ -13,11 +13,15 @@ test("documented subscription integrations do not create model-plan grants", asy
   const { registry } = await initial([copilot, codex]);
   const u = await upstream();
   for (const id of ["claude", "google-ai", "kimi", "zai-coding-plan", "minimax-m-plan"]) {
-    const view = composeSubscription(u, registry, id, digest);
-    expect(view.models).toEqual({});
-    expect(view.model_catalog.status).toBe("unknown");
-    expect(view.subscription_catalog.sources).toEqual([]);
-    expect(view.integration.routes.some((route) => route.support === "documented")).toBe(true);
+    expect(() => composeSubscription(u, registry, id, digest)).toThrow(
+      ModelCatalogUnavailableError,
+    );
+    const definition =
+      subscriptionManifest.subscriptions.find((item) => item.id === id) ?? missing();
+    expect(subscriptionCoverage(registry, definition.products).status).toBe("unavailable");
+    expect(definition.integration.routes.some((route) => route.support === "documented")).toBe(
+      true,
+    );
   }
   const chatgpt = composeSubscription(u, registry, "chatgpt", digest);
   expect(
@@ -26,7 +30,7 @@ test("documented subscription integrations do not create model-plan grants", asy
   expect(
     chatgpt.model_catalog.products.find((product) => product.id === "openai-chatgpt-plan-api")
       ?.status,
-  ).toBe("unknown");
+  ).toBe("unavailable");
   registry.providers.forEach((owner) => {
     owner.state = "stale";
     owner.error = "source-http";
@@ -37,13 +41,15 @@ test("documented subscription integrations do not create model-plan grants", asy
   ).toBe("stale");
   for (const owner of registry.providers)
     owner.claims = owner.claims.filter((claim) => claim.channel === "api");
-  expect(composeSubscription(u, registry, "chatgpt", digest).model_catalog.status).toBe("unknown");
+  expect(() => composeSubscription(u, registry, "chatgpt", digest)).toThrow(
+    ModelCatalogUnavailableError,
+  );
 });
 
-test("integration metadata distinguishes native clients, token reuse, and subscription API keys", async () => {
-  const { registry } = await initial([copilot, codex]);
-  const u = await upstream();
-  const claude = composeSubscription(u, registry, "claude", digest);
+test("integration metadata distinguishes native clients, token reuse, and subscription API keys", () => {
+  const definition = (id: string) =>
+    subscriptionManifest.subscriptions.find((item) => item.id === id) ?? missing();
+  const claude = definition("claude");
   expect(
     claude.integration.routes.find((route) => route.kind === "cli")?.required_clients,
   ).toContain("claude-code");
@@ -60,7 +66,7 @@ test("integration metadata distinguishes native clients, token reuse, and subscr
       (route) => route.kind === "sdk" && route.billing === "usage-based",
     )?.support,
   ).toBe("documented");
-  const google = composeSubscription(u, registry, "google-ai", digest);
+  const google = definition("google-ai");
   expect(
     google.integration.routes.find((route) => route.id === "gemini-cli-subscription")?.protocols,
   ).toContain("acp-json-rpc-stdio");
@@ -74,12 +80,12 @@ test("integration metadata distinguishes native clients, token reuse, and subscr
   expect(google.integration.routes.find((route) => route.kind === "direct-api")?.support).toBe(
     "not-supported",
   );
-  const kimi = composeSubscription(u, registry, "kimi", digest);
+  const kimi = definition("kimi");
   expect(
     kimi.integration.routes.find((route) => route.kind === "direct-api")?.auth_methods,
   ).toEqual(["api-key"]);
   expect(kimi.integration.routes.every((route) => route.automation === "restricted")).toBe(true);
-  const minimax = composeSubscription(u, registry, "minimax-m-plan", digest);
+  const minimax = definition("minimax-m-plan");
   expect(
     minimax.integration.routes.some(
       (route) =>
@@ -88,7 +94,7 @@ test("integration metadata distinguishes native clients, token reuse, and subscr
         route.third_party_use === "supported",
     ),
   ).toBe(true);
-  const zai = composeSubscription(u, registry, "zai-coding-plan", digest);
+  const zai = definition("zai-coding-plan");
   expect(zai.integration.routes.every((route) => route.third_party_use === "restricted")).toBe(
     true,
   );

@@ -179,6 +179,40 @@
             ],
             "type": "string"
           },
+          "model_catalog": {
+            "additionalProperties": false,
+            "properties": {
+              "available_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "native_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "reason": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "ready",
+                  "unavailable",
+                  "not-applicable"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "native_models",
+              "available_models",
+              "reason"
+            ],
+            "type": "object"
+          },
           "name": {
             "minLength": 1,
             "type": "string"
@@ -210,8 +244,15 @@
             "type": "string"
           },
           "subscription_path": {
-            "minLength": 1,
-            "type": "string"
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "support": {
             "enum": [
@@ -248,14 +289,15 @@
           "constraints",
           "evidence",
           "subscription_id",
-          "subscription_path"
+          "subscription_path",
+          "model_catalog"
         ],
         "type": "object"
       },
       "type": "array"
     },
     "schema_version": {
-      "const": 1,
+      "const": 2,
       "type": "number"
     }
   },

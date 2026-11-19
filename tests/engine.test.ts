@@ -56,8 +56,9 @@ describe("identity and contracts", () => {
         .model_id,
     ).toBe(alias.model_id);
     expect(
-      reconcile({ ...claim, source_model: "test alias" }, u, { "openai-codex:test-alias": alias })
-        .model_id,
+      reconcile({ ...claim, source_model: "test alias", request_model_id: "test alias" }, u, {
+        "openai-codex:test-alias": alias,
+      }).model_id,
     ).toBeNull();
     expect(() =>
       reconcile(claim, u, {
@@ -184,7 +185,7 @@ describe("failure isolation and deletion protection", () => {
       adapters: [codex],
       aliases: {},
       now,
-      loader: async (repo, path, id) => ({ ...(await fixtureLoader(repo, path, id)), body: "{}" }),
+      loader: async (source) => ({ ...(await fixtureLoader(source)), body: "{}" }),
     });
     expect(result.failures).toHaveLength(1);
     expect(result.registry.providers).toHaveLength(0);
@@ -211,8 +212,8 @@ describe("determinism and consumption", () => {
       adapters,
       aliases: {},
       now: "2026-12-01T00:00:00.000Z",
-      loader: async (repo, path, id) => {
-        const snapshot = await fixtureLoader(repo, path, id);
+      loader: async (source) => {
+        const snapshot = await fixtureLoader(source);
         const body = `${snapshot.body}\n`;
         return { ...snapshot, body, source: { ...snapshot.source, sha256: hash(body) } };
       },

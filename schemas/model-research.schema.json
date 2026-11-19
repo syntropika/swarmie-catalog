@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "providers": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "limitations": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "profiles": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "discovery": {
+                  "enum": [
+                    "public-structured",
+                    "public-documentation",
+                    "authenticated-only",
+                    "insufficient-public-evidence"
+                  ],
+                  "type": "string"
+                },
+                "limitations": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "parser": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "format": {
+                      "enum": [
+                        "json",
+                        "markdown",
+                        "html-table",
+                        "github-source",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "id_field": {
+                      "anyOf": [
+                        {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "limitations": {
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "model_path": {
+                      "anyOf": [
+                        {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "plan_path": {
+                      "anyOf": [
+                        {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "plan_rule": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "source_url": {
+                      "anyOf": [
+                        {
+                          "format": "uri",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "strategy": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "source_url",
+                    "model_path",
+                    "id_field",
+                    "plan_path",
+                    "strategy",
+                    "plan_rule",
+                    "limitations"
+                  ],
+                  "type": "object"
+                },
+                "plan_names": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "source_urls": {
+                  "items": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "subscription_id": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "subscription_id",
+                "discovery",
+                "plan_names",
+                "source_urls",
+                "parser",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "provider_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "purpose": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sha256": {
+                  "anyOf": [
+                    {
+                      "pattern": "^[a-f0-9]{64}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url",
+                "purpose",
+                "sha256"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "subscription_status": {
+            "enum": [
+              "documented",
+              "not-found",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider_id",
+          "subscription_status",
+          "summary",
+          "sources",
+          "profiles",
+          "limitations"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "reviewed_on": {
+      "format": "date",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "number"
+    },
+    "upstream_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "reviewed_on",
+    "upstream_sha256",
+    "providers"
+  ],
+  "type": "object"
+}

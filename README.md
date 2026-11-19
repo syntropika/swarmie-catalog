@@ -14,8 +14,10 @@ Each declaration has source evidence. The catalog does not grant account access.
 The project uses public sources, TypeScript, Bun, and static JSON. Synchronization uses
 no AI extraction, accounts, subscription credentials, database, or server.
 
-Model-plan adapters cover GitHub Copilot and the bundled OpenAI Codex catalog.
-Other model-plan coverage remains unknown where no qualified adapter exists.
+Model sources include product catalogs, shared-credit APIs, plan matrices and coding-agent
+metadata. Research records the discovery evidence for the captured models.dev inventory.
+Only nonempty model catalogs receive subscription paths. Missing or ambiguous coverage
+remains explicit. Native request IDs remain available when canonical metadata is unresolved.
 See [coverage and sources](docs/sources.md) for the exact scope.
 
 Use [DEVELOPMENT.md](DEVELOPMENT.md) to install, test, synchronize, and configure GitHub.

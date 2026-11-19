@@ -15,7 +15,14 @@ const modelSchema = z
 export const codex: Adapter = {
   id: "openai-codex",
   async load(loader) {
-    return [await loader("openai/codex", "codex-rs/models-manager/models.json", "codex-models")];
+    return [
+      await loader({
+        kind: "github",
+        repo: "openai/codex",
+        path: "codex-rs/models-manager/models.json",
+        id: "codex-models",
+      }),
+    ];
   },
   parse(sources) {
     const { models } = z
@@ -32,6 +39,11 @@ export const codex: Adapter = {
         product: "openai-codex",
         provider: "openai",
         source_model: model.slug,
+        request_model_id: model.slug,
+        offering_provider: "openai",
+        route_ids: ["codex-cli-chatgpt"],
+        request_api: {},
+        conditions: {},
         surface: "cli",
         variant: null,
         minimum_client_version: model.minimal_client_version,
@@ -55,6 +67,7 @@ export const codex: Adapter = {
         {
           ...base,
           channel: "api",
+          route_ids: ["codex-cli-api-key"],
           plan: null,
           status: model.supported_in_api ? "unknown" : "unavailable",
           reason: model.supported_in_api

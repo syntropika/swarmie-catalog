@@ -65,7 +65,10 @@ An SDK can run a complete agent or provide direct model transport. A local encry
 proxy does not become a coding agent. A plan restricted to approved agent tools does
 not become a direct subscription because its transport is HTTP.
 
-`support: "documented"` is required for connection discovery. `third_party_use`,
+Connection discovery requires `support: "documented"`. Its `model_catalog` also reports
+`ready`, `unavailable`, or `not-applicable`. Only `ready` has current, available native
+model records with a named plan for that exact route. `subscription_path` is null when
+no model-response file exists. `third_party_use`,
 `automation`, `required_clients`, and `constraints` still apply to each result.
 Unknown or unsupported routes remain in the full subscription profiles for inspection.
 
@@ -95,16 +98,17 @@ tokens retain their exact scopes. A general API integration must not inherit a C
 model list. Unknown coverage is reported by `model_catalog`; see the
 [data contract](catalog.md#subscription-routes).
 
-Use `index.json` to discover subscription paths. For example, download
-`subscriptions/claude.json` to inspect native client requirements, or
-`subscriptions/kimi.json` to inspect the dedicated API and its usage limits.
+Use `index.json` to discover nonempty subscription model paths. Use `subscriptions.json`
+to inspect every integration definition, including services without a model source.
+Use `subscription-coverage.json` to inspect unavailable model catalogs.
 
 ```ts
 const response = await fetch(`${baseUrl}/connections.json`);
 if (!response.ok) throw new Error("Subscription definitions are unavailable");
 const connections = await response.json();
 const candidates = connections.routes.filter((route) =>
-  route.connection_kind === "subscription"
+  route.connection_kind === "subscription" &&
+  route.model_catalog.status === "ready"
 );
 ```
 

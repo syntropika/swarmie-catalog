@@ -15,7 +15,7 @@ import { compare, hash, stable } from "./stable.ts";
 
 export const upstreamUrl = "https://models.dev/catalog.json?type=all" as const;
 export function emptyRegistry(): Registry {
-  return { schema_version: 1, upstream: upstreamUrl, providers: [] };
+  return { schema_version: 2, upstream: upstreamUrl, providers: [] };
 }
 export function claimKey(claim: Claim): string {
   return JSON.stringify([
@@ -77,12 +77,7 @@ function deduplicate(claims: Claim[]): Claim[] {
   for (const claim of claims) {
     const key = claimKey(claim);
     const prior = result.get(key);
-    if (
-      prior &&
-      (prior.status !== claim.status ||
-        prior.model_id !== claim.model_id ||
-        prior.reason !== claim.reason)
-    ) {
+    if (prior && stable({ ...prior, evidence: [] }) !== stable({ ...claim, evidence: [] })) {
       throw new SyncError("conflicting-evidence", `Conflicting claims: ${key}`);
     }
     result.set(key, prior ? { ...claim, evidence: [...prior.evidence, ...claim.evidence] } : claim);
@@ -207,10 +202,12 @@ export async function synchronize(options: {
         id: adapter.id,
         state: "current",
         error: null,
-        source_updated_at: sources.reduce(
-          (latest, source) => (source.modified_at > latest ? source.modified_at : latest),
-          "",
-        ),
+        source_updated_at:
+          sources
+            .map((source) => source.modified_at)
+            .filter((date): date is string => date !== null)
+            .sort(compare)
+            .at(-1) ?? null,
         sources: allSources,
         claims,
       };

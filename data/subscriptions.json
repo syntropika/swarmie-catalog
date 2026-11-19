@@ -1299,70 +1299,6 @@
       ]
     },
     {
-      "id": "chutes",
-      "integration": {
-        "reviewed_on": "2026-11-19",
-        "routes": [
-          {
-            "auth_methods": [
-              "api-key"
-            ],
-            "automation": "restricted",
-            "billing": "subscription",
-            "connection_kind": "subscription",
-            "constraints": [
-              "Subscriptions are for casual direct interactive and low-volume API use.",
-              "Automated or high-volume workloads must use pay-as-you-go.",
-              "Daily request, monthly spend-equivalent and four-hour burst limits apply; overage uses discounted PAYG."
-            ],
-            "endpoints": [
-              {
-                "protocols": [
-                  "openai-chat-completions"
-                ],
-                "url": "https://llm.chutes.ai/v1"
-              }
-            ],
-            "evidence": [
-              "official-81e062a6c563af8e",
-              "official-a89a73efc116c449"
-            ],
-            "execution": "direct-model",
-            "id": "api",
-            "kind": "direct-api",
-            "name": "Low-volume subscription model API",
-            "products": [
-              "chutes"
-            ],
-            "protocols": [
-              "openai-chat-completions"
-            ],
-            "required_clients": [],
-            "support": "documented",
-            "third_party_use": "restricted"
-          }
-        ],
-        "sources": [
-          {
-            "capture_kind": "http-body",
-            "id": "official-81e062a6c563af8e",
-            "sha256": "f5bfee325a601294ae2229287821fa0cf1a1fc21c8b52a5ffeedc9f7d2ffe717",
-            "url": "https://www.chutes.ai/pricing"
-          },
-          {
-            "capture_kind": "http-body",
-            "id": "official-a89a73efc116c449",
-            "sha256": "cf8e8ab1cff7006dff11f791b8020750d5685634673e295ed17457c6039d3d55",
-            "url": "https://www.chutes.ai/terms"
-          }
-        ]
-      },
-      "name": "Chutes",
-      "products": [
-        "chutes"
-      ]
-    },
-    {
       "id": "claude",
       "integration": {
         "reviewed_on": "2026-11-19",
@@ -4934,82 +4870,6 @@
       ]
     },
     {
-      "id": "opencode",
-      "integration": {
-        "reviewed_on": "2026-11-19",
-        "routes": [
-          {
-            "auth_methods": [
-              "api-key"
-            ],
-            "automation": "restricted",
-            "billing": "subscription",
-            "connection_kind": "subscription",
-            "constraints": [
-              "Direct model API without an official coding-agent runtime requirement.",
-              "Allowed client traffic must resemble coding-agent requests, carry its own user agent and a stable session ID.",
-              "Generic app/SDK traffic is not automatically eligible.",
-              "Usage windows and workspace membership rules apply; Go Teams excludes service accounts."
-            ],
-            "endpoints": [
-              {
-                "protocols": [
-                  "OpenAI Chat Completions",
-                  "OpenAI Responses",
-                  "Anthropic Messages"
-                ],
-                "url": "https://opencode.ai/inference/go"
-              }
-            ],
-            "evidence": [
-              "official-31049fd0e230d80e",
-              "official-6b0db23c6a9105fd",
-              "official-721893c4a3e10a99"
-            ],
-            "execution": "direct-model",
-            "id": "go-subscription-api",
-            "kind": "direct-api",
-            "name": "Go direct coding-traffic model API",
-            "products": [
-              "opencode"
-            ],
-            "protocols": [
-              "Anthropic Messages",
-              "OpenAI Chat Completions",
-              "OpenAI Responses"
-            ],
-            "required_clients": [],
-            "support": "documented",
-            "third_party_use": "supported"
-          }
-        ],
-        "sources": [
-          {
-            "capture_kind": "http-body",
-            "id": "official-31049fd0e230d80e",
-            "sha256": "e1da61312d81fefce7e76b803741ed679160de4364b224489538394584ff700c",
-            "url": "https://opencode.ai/docs/console/api/inference/"
-          },
-          {
-            "capture_kind": "http-body",
-            "id": "official-6b0db23c6a9105fd",
-            "sha256": "f2d038048f243780f1260bd1e08a001f8767dd39882491bf03930f8560f0ef58",
-            "url": "https://opencode.ai/v2/docs/console/go"
-          },
-          {
-            "capture_kind": "http-body",
-            "id": "official-721893c4a3e10a99",
-            "sha256": "834a237380119af7f65c9a86a659020cbfcbd7ac4d2bde9ce16dd5fad6280ed8",
-            "url": "https://opencode.ai/black"
-          }
-        ]
-      },
-      "name": "OpenCode",
-      "products": [
-        "opencode"
-      ]
-    },
-    {
       "id": "opencode-go",
       "integration": {
         "reviewed_on": "2026-11-19",
@@ -5648,6 +5508,170 @@
       "name": "SambaNova",
       "products": [
         "sambanova"
+      ]
+    },
+    {
+      "id": "sarvam-credit-plans",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "billing": "subscription",
+            "connection_kind": "subscription",
+            "constraints": [
+              "Pro, Growth and Business monthly fees become universal credits; tokens consume that shared balance.",
+              "Credits do not expire; monthly renewal preserves plan rates and limits.",
+              "Only standard serverless models are included without separate organization enablement. Provisioned Throughput models require approval.",
+              "Model-list visibility does not establish organization authorization."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "openai-chat-completions",
+                  "openai-responses"
+                ],
+                "url": "https://api.sarvam.ai/v2"
+              }
+            ],
+            "evidence": [
+              "official-48bf248d0adb329f",
+              "official-850ff1652297a9fa"
+            ],
+            "execution": "direct-model",
+            "id": "token-factory-credit-api",
+            "kind": "direct-api",
+            "name": "Sarvam Token Factory API with recurring plan credits",
+            "products": [
+              "sarvam-credit-plans"
+            ],
+            "protocols": [
+              "openai-chat-completions",
+              "openai-responses"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "billing": "subscription",
+            "connection_kind": "subscription",
+            "constraints": [
+              "Pro, Growth and Business monthly fees become universal credits; tokens consume that shared balance.",
+              "Credits do not expire; monthly renewal preserves plan rates and limits.",
+              "Only standard serverless models are included without separate organization enablement. Provisioned Throughput models require approval.",
+              "Model-list visibility does not establish organization authorization."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "sarvam-decisions"
+                ],
+                "url": "https://api.sarvam.ai/v2"
+              }
+            ],
+            "evidence": [
+              "official-48bf248d0adb329f",
+              "official-1c8ea3f10146f1f3"
+            ],
+            "execution": "direct-model",
+            "id": "token-factory-decisions",
+            "kind": "direct-api",
+            "name": "Sarvam Prism Decisions API with recurring plan credits",
+            "products": [
+              "sarvam-credit-plans"
+            ],
+            "protocols": [
+              "sarvam-decisions"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "billing": "subscription",
+            "connection_kind": "subscription",
+            "constraints": [
+              "Pro, Growth and Business monthly fees become universal credits; tokens consume that shared balance.",
+              "Credits do not expire; monthly renewal preserves plan rates and limits.",
+              "Only standard serverless models are included without separate organization enablement. Provisioned Throughput models require approval.",
+              "Model-list visibility does not establish organization authorization."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "sarvam-model-api"
+                ],
+                "url": "https://api.sarvam.ai"
+              }
+            ],
+            "evidence": [
+              "official-48bf248d0adb329f",
+              "official-79877dd86cb38021",
+              "official-99fec2f3fd4ea0e4"
+            ],
+            "execution": "direct-model",
+            "id": "sarvam-native-api",
+            "kind": "direct-api",
+            "name": "Sarvam native model APIs with recurring plan credits",
+            "products": [
+              "sarvam-credit-plans"
+            ],
+            "protocols": [
+              "sarvam-model-api"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          }
+        ],
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "official-48bf248d0adb329f",
+            "sha256": "448a603cecf7d18be4b0b726875b6ee24407aa640610c2c9df611012145dd37a",
+            "url": "https://www.sarvam.ai/api-pricing"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-850ff1652297a9fa",
+            "sha256": "7a74f206d431adcc0952135982dc78850c3f820a2ef02ffebd14e488f1e1666e",
+            "url": "https://docs.sarvam.ai/api/token-factory/models.md"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-1c8ea3f10146f1f3",
+            "sha256": "63812b78be3aa9cd806f2d6c4a2b6e80e4a39f2533fad32acf305f93f2638f6b",
+            "url": "https://docs.sarvam.ai/api/token-factory/models/sarvam-prism.md"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-79877dd86cb38021",
+            "sha256": "5bfb5008787fe6bd1bb268b29f3d1614b4b4217d6927f2abfda561ea6fa7f9fa",
+            "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/saaras.md"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-99fec2f3fd4ea0e4",
+            "sha256": "0bb2f495066923e393edfc2d4191f9f5d16e6c797d0b206104c2e6945e4004ff",
+            "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/bulbul.md"
+          }
+        ]
+      },
+      "name": "Sarvam recurring API credit plans",
+      "products": [
+        "sarvam-credit-plans"
       ]
     },
     {

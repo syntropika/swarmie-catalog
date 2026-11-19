@@ -1,124 +1,119 @@
-# Sources, coverage, and provider extension
+# Sources, coverage, and extension
 
-The current adapters use public official sources. All extraction is deterministic.
-The generated `dist/coverage.json` reports actual plan tokens and unresolved identities
-for the current catalog. The sync report lists failed providers and unresolved names.
+All production extraction is deterministic. It uses public official APIs, versioned
+configuration and strict documentation tables. It uses no AI service, account login,
+subscription credentials or private endpoint discovery.
 
-## Integration evidence
+## Research and executable coverage
 
-Reviewed integration profiles cover services with evidenced subscription routes.
-Each JSON profile lists its official
-documentation sources, review date, authentication, client requirements, and limits.
-Read the [integration guide](integrations.md) for field meanings and freshness.
-This evidence is independent of the model-plan adapters listed below.
+`data/provider-research.json` owns commercial evidence and API-key findings.
+`data/model-research.json` owns the separate review of subscription model discovery.
+Each review preserves official URLs, known body digests, plan names, parser strategy
+and limitations. A null digest means that this record has no verified retained body.
+Research descriptions do not grant availability.
 
-`provider-research.json` records a dated review for every provider in its captured
-models.dev snapshot. It includes the snapshot digest, current upstream digest, source
-captures, billing types, API-key evidence, subscription names, and unresolved limits.
-Each provider response includes its review under `subscription_research`.
+The model-source review covers every provider in its captured models.dev snapshot.
+A new upstream provider has unknown status until reviewed. `not-found` is bounded to
+the inspected sources. It does not prove that a provider sells no subscription.
+A subscription can pay for an application, seats, routing, credits or reserved capacity.
+None of these facts alone establishes included direct model API access.
 
-`subscription_status: "documented"` means a subscription product was found. The product
-can be a chat app, a seat fee, reserved capacity, or an agent plan. It does not establish
-direct model access. Inspect linked integration routes for that scope.
-`not-found` means no subscription was found in the inspected pages. It does not prove
-that no subscription exists. `unknown` preserves insufficient evidence.
-`direct_api_key` records direct API credential evidence, independently of billing and
-permission to use that credential in a custom application.
+`data/subscriptions.json` owns integration policy. `data/model-sources.json` selects
+public source inputs and reviewed parsers. It contains no model availability rows.
+Parsers live under `src/adapters/catalogs/`. Exact route scopes remain explicit.
 
-`review_status` is `reviewed`, `limited`, or `unreviewed`. A limited review retains
-its known facts and explains blocked, incomplete, or conflicting sources. New models.dev
-providers without a review receive `unreviewed` and unknown access. They never inherit
-a subscription from a similar name. Public counts use the current upstream provider IDs.
-The reviewed snapshot digest and review date remain unchanged during scheduled builds.
+The static outputs report current executable coverage. Use `subscription-coverage.json`
+for published and unavailable model responses. Use `connections.json` for per-route
+model coverage. Use `coverage.json` for native counts, plan tokens and unresolved IDs.
+A research profile can exist without an executable model adapter.
 
-## Provider coverage
+## Source contracts
 
-| Product | Source and coverage | Limits |
-| --- | --- | --- |
-| GitHub Copilot | Official YAML plan and client tables | Missing cells remain unknown. Product and client flags are combined. Account policy and quota remain outside the catalog. |
-| OpenAI Codex | Official bundled JSON, exact plan tokens, CLI surface, minimum version | Plan declarations are client metadata. Hidden models remain unknown. This is not a live account catalog. |
-| ChatGPT Chat | Unknown | Codex support does not establish ChatGPT Chat support. |
-| Claude and Claude Code | Unknown | No qualified structured model-to-plan extractor is implemented. A CLI default is not a complete plan mapping. |
-| Gemini and Gemini CLI | Unknown | Client model categories and dynamic access flags do not establish plan membership. |
+| Source family | Required evidence |
+| --- | --- |
+| Product-specific catalog | Native IDs and explicit subscription scope or per-plan allowance |
+| General model catalog with shared credits | A separate normative rule that the named plans fund that catalog |
+| Plan-specific table | Exact model ID column, plan membership and table boundary |
+| Coding-agent catalog | Supported native client, exact request model identity and subscription scope |
+| Authenticated or incomplete source | Unknown model access, or an unavailable model catalog |
+
+OpenCode Go publishes native IDs, per-plan monthly allowances, protocol URLs and
+privacy or region flags. Free models additionally require zero input and output cost
+and the documented free-model rule. Vercel Token Pass uses its own covered-model table,
+Pro team requirement and serving-provider restriction. General Gateway models are not
+added to Token Pass.
+
+Other parsers preserve source-specific credit pools, editions, plan windows, provider
+pinning, regions, lifecycle and modality restrictions. A nonchat model is not assigned
+to a chat-only route. A source ID can remain visible with unknown plan membership.
+A dynamic router or selector is not expanded into an invented list of underlying models.
+
+A stale or critical source catalog fails refresh. A subscription-only catalog that
+conflicts with a paid-only catalog retains the disputed models as unknown. Missing
+request policies cannot borrow another model's quota or privacy terms.
 
 ### GitHub Copilot
 
-The adapter reads
-[model-supported-plans.yml](https://github.com/github/docs/blob/main/data/tables/copilot/model-supported-plans.yml)
-and [model-supported-clients.yml](https://github.com/github/docs/blob/main/data/tables/copilot/model-supported-clients.yml).
-The loader resolves each file to its latest path-specific commit before fetching it.
+The adapter reads the official
+[plan table](https://github.com/github/docs/blob/main/data/tables/copilot/model-supported-plans.yml)
+and [client table](https://github.com/github/docs/blob/main/data/tables/copilot/model-supported-clients.yml).
+Each file is pinned to its latest path-specific commit. Missing plan cells stay unknown.
+Explicit client exclusions remain exclusions. Unknown columns, duplicate rows or keys,
+invalid booleans and unmatched client-only rows fail the update.
 
-Known plan columns are Free, Pro, Pro+, Max, Business, and Enterprise.
-The current source omits Free. Its absence produces unknown values, except where an
-explicit client exclusion establishes that a surface is unavailable.
-Known client tokens cover GitHub.com, CLI, VS Code, Visual Studio, Eclipse, Xcode,
-and JetBrains. A missing client row does not erase the product-level plan declaration.
-It produces unknown surface-specific availability.
+### OpenAI Codex and direct ChatGPT access
 
-The adapter rejects unknown columns, duplicate YAML keys, duplicate model rows, wrong
-boolean types, empty tables, and unmatched client-only models. A new source column
-needs a reviewed schema update. It does not silently disappear.
+The adapter reads the official
+[bundled model catalog](https://github.com/openai/codex/blob/main/codex-rs/models-manager/models.json).
+It preserves exact plan tokens, visibility and minimum client versions. Hidden models
+remain unknown. API support does not grant subscription access.
 
-The initial live run could not resolve `Claude Opus 4.8 (fast mode) (preview)` to a
-canonical model. It remains unresolved. It is not silently treated as the base variant.
+Bundled declarations are not an authenticated account catalog. They do not establish
+the complete direct ChatGPT API model set. That public integration requires account
+model discovery, which this unauthenticated synchronization does not perform.
 
-### OpenAI Codex
+### Unavailable or restricted sources
 
-The adapter reads
-[codex-rs/models-manager/models.json](https://github.com/openai/codex/blob/main/codex-rs/models-manager/models.json).
-It validates slugs, visibility, API support, minimum version, and plan arrays.
-It preserves upstream plan tokens. It does not label internal tokens as marketed plans.
-An empty or absent plan array produces an unspecified `unknown` subscription record.
-A malformed array fails the provider.
+Claude and Google model defaults or model-family labels do not establish a complete
+native model-to-plan mapping. An authenticated model endpoint is not probed with
+private credentials. Public application plans do not imply arbitrary direct API access.
 
-The bundled JSON declares `available_in_plans`, but the public Rust `ModelInfo` type
-and local authentication filter do not interpret that field as an account grant.
-The client can obtain a separate remote catalog. The adapter's positive status means
-an explicit bundled declaration for a listed model. Hidden models remain unknown.
-See the official [model contract and filter](https://github.com/openai/codex/blob/main/codex-rs/protocol/src/openai_models.rs)
-and [workspace restrictions](https://learn.chatgpt.com/docs/enterprise/workspace-model-availability).
+The current Chutes, DInference and Hostinger Router evidence does not establish an
+active included-model subscription. Earlier plan names do not create current grants.
+Other providers can remain unavailable because their model tables are inaccessible,
+their native identifiers are missing, or their exact tier scope is unpublished.
+Read each profile's sources and limitations in `model-research.json`.
 
-A bounded source-history sample showed 10 file changes over about 45 days.
-This is an observation, not a publication schedule. The source commit date remains
-visible even when a source has not changed for several checks.
-The initial run left `codex-auto-review` unresolved. No identity is invented for it.
+## Failure and provenance
 
-### Claude and Gemini gaps
+Public HTTP sources use explicit canonical URLs. Requests reject redirects, use bounded
+body sizes and timeouts, and send no provider credentials. One synchronization reuses
+identical public input bytes across adapters. GitHub tokens go only to GitHub metadata
+requests. They do not authenticate raw source bodies or provider APIs.
 
-The inspected [Claude Code repository](https://github.com/anthropics/claude-code) contains
-extensions and supporting material, but no public core subscription model resolver.
-The [model configuration guide](https://code.claude.com/docs/en/model-config) contains
-plan-dependent defaults, aliases, and organization limits. Those facts do not establish
-a complete plan-to-model grant list. A future extractor must preserve exact qualifiers.
+The loader records each body digest. A GitHub source also records its commit and commit
+date. HTTP sources do not receive fabricated Git revisions or publication dates.
+Source observations and full captures remain in operational artifacts.
 
-Gemini CLI publishes a
-[model registry](https://github.com/google-gemini/gemini-cli/blob/main/packages/core/src/config/defaultModelConfigs.ts)
-and [model selection logic](https://github.com/google-gemini/gemini-cli/blob/main/packages/core/src/services/modelConfigService.ts).
-Its `tier` values classify models. They are not subscription plans. Runtime preview,
-Pro access, and experiment flags affect selection. The public
-[plans page](https://geminicli.com/plans/) does not provide the missing complete mapping.
-No CLI constant is promoted into a subscription grant.
+A provider refresh fails on structural drift, empty output, conflicting declarations
+or excessive loss of models, identity links or positive scopes. Its last valid records
+remain stale. An isolated unsupported model can remain unknown when the source parser
+can prove its identity and the exact missing qualifier. Other providers can update.
+A failed source never selects an archived fixture automatically.
 
-Google documents the move of individual subscription access from Gemini CLI to
-[Antigravity CLI](https://developers.googleblog.com/en/an-important-update-transitioning-gemini-cli-to-antigravity-cli/).
-The integration profile records the current client and the excluded Gemini CLI
-subscription route. Neither client has a qualified model-plan adapter here.
+## Add or update a source
 
-## Add a provider
+1. Review the existing provider and model research.
+2. Find official public native IDs and exact funding scope.
+3. Verify client, region, modality and policy restrictions.
+4. Add or update the owning integration definition when necessary.
+5. Implement a pure parser with structural and semantic validation.
+6. Register its parser ID and public sources in `data/model-sources.json`.
+7. Preserve unknown native models and their evidence.
+8. Add synthetic tests for exclusions, ambiguity and source drift.
+9. Regenerate schemas and run `bun run check`.
+10. Run a live synchronization and inspect its health report.
 
-1. Find a public source with explicit scope and availability evidence.
-2. Check its source contract and reuse terms.
-3. Add a provider module under `src/adapters/`.
-4. Implement `load` with public immutable snapshots.
-5. Implement `parse` without network or file effects.
-6. Validate every field that affects a claim.
-7. Add the exact identity namespace to `src/reconcile.ts`.
-8. Register the adapter in `src/cli.ts`.
-9. Add fixtures with source URLs, revisions, digests, and notices.
-10. Test exclusions, missing information, source drift, failures, and ordering.
-11. Run `bun run check` and a live synchronization.
-12. Review the coverage report and source evidence.
-
-Prefer JSON or YAML over documentation parsing. If HTML or Markdown is required,
-validate table structure and preserve qualifications. Do not infer plan access from a
-model list. Do not add manually maintained availability rows to fill a source gap.
+Do not add a manually maintained model allowlist to fill an evidence gap.
+Keep source HTML, research experiments and operational reports under `.artifacts/`.
+Keep versioned deliverables and source contracts with their owning modules.

@@ -1,4 +1,9 @@
-export { composeProvider, composeSubscription } from "./compose.ts";
+export {
+  composeProvider,
+  composeSubscription,
+  createCatalogComposer,
+  ModelCatalogUnavailableError,
+} from "./compose.ts";
 export { composeConnections, connectionsSchema } from "./connections.ts";
 export { validateRegistry } from "./engine.ts";
 export type { SubscriptionDefinition, SubscriptionManifest } from "./integration-schema.ts";
@@ -7,6 +12,7 @@ export {
   integrationSchema,
   subscriptionManifestSchema,
 } from "./integration-schema.ts";
+export { composeModelResearch, modelResearch, modelResearchSchema } from "./model-research.ts";
 export type { ProviderReview } from "./provider-research.ts";
 export {
   composeProviderResearch,

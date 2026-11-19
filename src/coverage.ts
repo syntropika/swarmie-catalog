@@ -29,39 +29,22 @@ export function coverage(registry: Registry) {
       id: definition.id,
       ...subscriptionCoverage(registry, definition.products),
     })),
-    gaps: [
-      {
-        product: "openai-chatgpt",
-        status: "unknown",
-        source: "https://learn.chatgpt.com/docs/models",
-        reason: "Codex declarations do not establish ChatGPT Chat access.",
-      },
-      {
-        product: "anthropic-claude-code",
-        status: "unknown",
-        source: "https://code.claude.com/docs/en/model-config",
-        reason:
-          "No qualified public structured model-to-plan adapter. Defaults do not establish a complete grant list.",
-      },
-      {
-        product: "anthropic-claude",
-        status: "unknown",
-        source: "https://www.anthropic.com/pricing",
-        reason: "Claude Code declarations do not establish Claude web access.",
-      },
-      {
-        product: "google-gemini-cli",
-        status: "unknown",
-        source: "https://geminicli.com/plans/",
-        reason:
-          "Client model categories and runtime access flags do not establish a subscription mapping.",
-      },
-      {
-        product: "google-gemini",
-        status: "unknown",
-        source: "https://gemini.google/subscriptions/",
-        reason: "No qualified adapter for exact model identity and plan evidence.",
-      },
-    ],
+    gaps: subscriptions.flatMap((definition) => {
+      const source = subscriptionCoverage(registry, definition.products);
+      const available = source.products.reduce((sum, p) => sum + p.available_models, 0);
+      return available
+        ? []
+        : [
+            {
+              subscription: definition.id,
+              products: definition.products,
+              reason:
+                source.status === "unavailable"
+                  ? "no-published-model-source"
+                  : "no-available-source-models",
+              sources: definition.integration.sources.map((source) => source.url),
+            },
+          ];
+    }),
   };
 }

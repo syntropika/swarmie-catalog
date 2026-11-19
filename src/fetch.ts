@@ -16,7 +16,10 @@ export interface Snapshot {
   source: Source;
   body: string;
 }
-export type SourceLoader = (repo: string, path: string, id: string) => Promise<Snapshot>;
+export type SourceRequest =
+  | { kind: "github"; repo: string; path: string; id: string }
+  | { kind: "http"; url: string; id: string };
+export type SourceLoader = (source: SourceRequest) => Promise<Snapshot>;
 
 export async function fetchText(
   url: string,
@@ -81,7 +84,9 @@ export function githubLoader(request: Fetcher = fetch, githubToken?: string): So
         return request(url, { ...init, headers });
       }
     : request;
-  return async (repo, path, id) => {
+  return async (source) => {
+    if (source.kind !== "github") throw new Error("Expected a GitHub source");
+    const { repo, path, id } = source;
     const commits = commitSchema.parse(
       JSON.parse(
         await fetchText(
@@ -101,6 +106,38 @@ export function githubLoader(request: Fetcher = fetch, githubToken?: string): So
         revision: commit.sha,
         sha256: hash(body),
         modified_at: commit.commit.committer.date,
+      },
+      body,
+    };
+  };
+}
+
+/** Retrieve public source bodies without provider credentials or synthetic revision dates. */
+export function publicLoader(request: Fetcher = fetch, githubToken?: string): SourceLoader {
+  const github = githubLoader(request, githubToken);
+  const bodies = new Map<string, Promise<string>>();
+  return async (source) => {
+    if (source.kind === "github") return github(source);
+    const url = new URL(source.url);
+    if (url.protocol !== "https:" || url.username || url.password)
+      throw new Error("Expected an HTTPS documentation or public catalog URL");
+    let pending = bodies.get(source.url);
+    if (!pending) {
+      pending = fetchText(source.url, (url, init) => {
+        const headers = new Headers(init?.headers);
+        headers.set("Accept", "text/html, application/json;q=0.9, text/plain;q=0.8, */*;q=0.7");
+        return request(url, { ...init, headers });
+      });
+      bodies.set(source.url, pending);
+    }
+    const body = await pending;
+    return {
+      source: {
+        id: source.id,
+        url: source.url,
+        sha256: hash(body),
+        revision: null,
+        modified_at: null,
       },
       body,
     };

@@ -66,7 +66,8 @@ test("limited source access cannot establish direct credentials or subscription 
 });
 
 test("subscription discovery excludes coding runtimes while agent routes retain both billing modes", async () => {
-  const connections = composeConnections(await upstream(), "b".repeat(64));
+  const { registry } = await initial([codex]);
+  const connections = composeConnections(await upstream(), "b".repeat(64), registry);
   const direct = connections.routes.filter((route) => route.connection_kind === "subscription");
   expect(direct.length).toBeGreaterThan(0);
   expect(
@@ -82,4 +83,11 @@ test("subscription discovery excludes coding runtimes while agent routes retain 
   ).toBe(true);
   expect(agents.some((route) => route.kind === "sdk")).toBe(true);
   expect(connections.routes.every((route) => route.support === "documented")).toBe(true);
+  expect(connections.routes.some((route) => route.model_catalog.status === "ready")).toBe(true);
+  expect(direct.every((route) => route.model_catalog.status === "unavailable")).toBe(true);
+  expect(
+    direct
+      .filter((route) => route.subscription_path !== null)
+      .every((route) => route.subscription_id === "chatgpt"),
+  ).toBe(true);
 });

@@ -10,9 +10,12 @@ export const sourceSchema = z
   .object({
     id: text,
     url: z.url(),
-    revision: z.string().regex(/^[a-f0-9]{40}$/),
+    revision: z
+      .string()
+      .regex(/^[a-f0-9]{40}$/)
+      .nullable(),
     sha256: z.string().regex(/^[a-f0-9]{64}$/),
-    modified_at: z.iso.datetime(),
+    modified_at: z.iso.datetime().nullable(),
   })
   .strict();
 export type Source = z.infer<typeof sourceSchema>;
@@ -21,6 +24,11 @@ export const claimSchema = z
     product: text,
     provider: text,
     source_model: text,
+    request_model_id: text.nullable(),
+    offering_provider: text.nullable(),
+    route_ids: z.array(text),
+    request_api: z.record(text, z.url()),
+    conditions: z.record(text, z.json()),
     model_id: text.nullable(),
     channel: z.enum(["subscription", "api"]),
     plan: text.nullable(),
@@ -33,13 +41,13 @@ export const claimSchema = z
   })
   .strict();
 export type Claim = z.infer<typeof claimSchema>;
-export type ExtractedClaim = Omit<Claim, "model_id">;
+export type ExtractedClaim = Omit<Claim, "model_id"> & { canonical_hint?: string };
 export const providerSchema = z
   .object({
     id: text,
     state: z.enum(["current", "stale"]),
     error: text.nullable(),
-    source_updated_at: z.iso.datetime(),
+    source_updated_at: z.iso.datetime().nullable(),
     sources: z.array(sourceSchema).min(1),
     claims: z.array(claimSchema).min(1),
   })
@@ -47,7 +55,7 @@ export const providerSchema = z
 export type ProviderData = z.infer<typeof providerSchema>;
 export const registrySchema = z
   .object({
-    schema_version: z.literal(1),
+    schema_version: z.literal(2),
     upstream: z.literal("https://models.dev/catalog.json?type=all"),
     providers: z.array(providerSchema),
   })
@@ -103,7 +111,7 @@ export const subscriptionOfferSchema = claimSchema.omit({ plan: true }).extend({
   subscription: text,
   plans: z.array(text.nullable()).min(1),
   state: z.enum(["current", "stale"]),
-  source_updated_at: z.iso.datetime(),
+  source_updated_at: z.iso.datetime().nullable(),
   error: text.nullable(),
 });
 export type SubscriptionOffer = z.infer<typeof subscriptionOfferSchema>;
@@ -112,7 +120,7 @@ const enrichedModelSchema = upstreamModelSchema.extend({
 });
 const subscriptionCatalogSchema = z
   .object({
-    schema_version: z.literal(2),
+    schema_version: z.literal(3),
     upstream: z
       .object({
         url: z.literal("https://models.dev/catalog.json?type=all"),
@@ -132,14 +140,17 @@ export const composedSubscriptionSchema = subscriptionDefinitionSchema
   .safeExtend({
     model_catalog: z
       .object({
-        status: z.enum(["partial", "unknown"]),
+        status: z.enum(["partial", "unavailable"]),
         products: z
           .array(
             z
               .object({
                 id: text,
-                status: z.enum(["partial", "unknown"]),
+                status: z.enum(["partial", "unavailable"]),
                 state: z.enum(["current", "stale"]).nullable(),
+                native_models: z.number().int().nonnegative(),
+                available_models: z.number().int().nonnegative(),
+                unresolved_models: z.number().int().nonnegative(),
               })
               .strict(),
           )
@@ -149,5 +160,12 @@ export const composedSubscriptionSchema = subscriptionDefinitionSchema
     models: z.record(text, enrichedModelSchema),
     subscription_catalog: subscriptionCatalogSchema,
   })
-  .strict();
+  .strict()
+  .superRefine((value, ctx) => {
+    if (!Object.keys(value.models).length)
+      ctx.addIssue({
+        code: "custom",
+        message: "A published subscription model catalog must not be empty",
+      });
+  });
 export type ComposedSubscription = z.infer<typeof composedSubscriptionSchema>;
