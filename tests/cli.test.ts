@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { subscriptionManifestSchema } from "../src/integration-schema.ts";
 import { composedProviderSchema, composedSubscriptionSchema } from "../src/schema.ts";
 import { hash } from "../src/stable.ts";
 
@@ -50,7 +51,7 @@ test("offline CLI replay is idempotent and a failed upstream retains stale recor
 test("provider routes embed plan vectors without product or plan files and rebuild deterministically", async () => {
   const directory = path.resolve(root, crypto.randomUUID());
   await mkdir(path.join(directory, "schemas"), { recursive: true });
-  for (const name of ["catalog", "provider", "subscription"]) {
+  for (const name of ["catalog", "provider", "subscription", "subscriptions"]) {
     await Bun.write(
       path.join(directory, "schemas", `${name}.schema.json`),
       await Bun.file(`schemas/${name}.schema.json`).text(),
@@ -100,8 +101,23 @@ test("provider routes embed plan vectors without product or plan files and rebui
       id,
       name: subscription.name,
       products: subscription.products,
+      model_catalog: subscription.model_catalog,
       path: `subscriptions/${id}.json`,
     });
+  }
+  const manifest = subscriptionManifestSchema.parse(
+    await Bun.file(path.join(directory, "dist/subscriptions.json")).json(),
+  );
+  expect(manifest.subscriptions.length).toBeGreaterThan(2);
+  for (const definition of manifest.subscriptions) {
+    const subscription = composedSubscriptionSchema.parse(
+      await Bun.file(path.join(directory, `dist/subscriptions/${definition.id}.json`)).json(),
+    );
+    expect(subscription.integration).toEqual(definition.integration);
+    if (definition.id !== "chatgpt" && definition.id !== "github-copilot") {
+      expect(subscription.models).toEqual({});
+      expect(subscription.model_catalog.status).toBe("unknown");
+    }
   }
   const first = hash(await Bun.file(providerFile).text());
   expect((await cli(args, directory)).code).toBe(0);

@@ -6,6 +6,250 @@
       "minLength": 1,
       "type": "string"
     },
+    "integration": {
+      "additionalProperties": false,
+      "properties": {
+        "reviewed_on": {
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+          "type": "string"
+        },
+        "routes": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "auth_methods": {
+                "items": {
+                  "enum": [
+                    "oauth",
+                    "account-login",
+                    "api-key",
+                    "github-token"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "automation": {
+                "enum": [
+                  "supported",
+                  "restricted",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              "constraints": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "endpoints": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "protocols": {
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "region": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "url": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "protocols"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "evidence": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "direct-api",
+                  "cli",
+                  "sdk"
+                ],
+                "type": "string"
+              },
+              "name": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "products": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "protocols": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "required_clients": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "support": {
+                "enum": [
+                  "documented",
+                  "not-supported",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              "third_party_use": {
+                "enum": [
+                  "supported",
+                  "restricted",
+                  "unknown"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "kind",
+              "products",
+              "support",
+              "auth_methods",
+              "required_clients",
+              "protocols",
+              "endpoints",
+              "third_party_use",
+              "automation",
+              "constraints",
+              "evidence"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "sha256": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "url": {
+                "format": "uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "sha256"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "reviewed_on",
+        "sources",
+        "routes"
+      ],
+      "type": "object"
+    },
+    "model_catalog": {
+      "additionalProperties": false,
+      "properties": {
+        "products": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "state": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "current",
+                      "stale"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "enum": [
+                  "partial",
+                  "unknown"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "state"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "partial",
+            "unknown"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "products"
+      ],
+      "type": "object"
+    },
     "models": {
       "additionalProperties": {
         "additionalProperties": {},
@@ -289,6 +533,8 @@
     "id",
     "name",
     "products",
+    "integration",
+    "model_catalog",
     "models",
     "subscription_catalog"
   ],

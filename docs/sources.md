@@ -4,6 +4,14 @@ The current adapters use public official sources. All extraction is deterministi
 The generated `dist/coverage.json` reports actual plan tokens and unresolved identities
 for the current catalog. The sync report lists failed providers and unresolved names.
 
+## Integration evidence
+
+Reviewed integration profiles cover ChatGPT, GitHub Copilot, Claude, Google AI, Kimi,
+Z.ai GLM Coding Plan, and MiniMax M Plan. Each JSON profile lists its official
+documentation sources, review date, authentication, client requirements, and limits.
+Read the [integration guide](integrations.md) for field meanings and freshness.
+This evidence is independent of the model-plan adapters listed below.
+
 ## Provider coverage
 
 | Product | Source and coverage | Limits |

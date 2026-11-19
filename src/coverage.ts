@@ -1,5 +1,6 @@
 import type { Registry } from "./schema.ts";
 import { compare } from "./stable.ts";
+import { subscriptionCoverage, subscriptions } from "./subscriptions.ts";
 
 export function coverage(registry: Registry) {
   return {
@@ -23,6 +24,10 @@ export function coverage(registry: Registry) {
             .map((claim) => claim.source_model),
         ),
       ].sort(compare),
+    })),
+    subscriptions: subscriptions.map((definition) => ({
+      id: definition.id,
+      ...subscriptionCoverage(registry, definition.products),
     })),
     gaps: [
       {

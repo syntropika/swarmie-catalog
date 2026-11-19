@@ -90,21 +90,35 @@ and `coverage.json` for unresolved source identities and coverage gaps.
 ## Subscription routes
 
 Use `subscriptions/<subscription>.json` to inspect one subscription across model vendors.
-The response contains `id`, `name`, `products`, `models`, and `subscription_catalog`.
+The response contains `id`, `name`, `products`, `integration`, `model_catalog`, `models`,
+and `subscription_catalog`.
 Its schema is [`subscription.schema.json`](../schemas/subscription.schema.json).
 
-| Subscription ID | Qualified products | Scope |
+| Subscription ID | Products | Model-plan coverage |
 | --- | --- | --- |
-| `chatgpt` | `openai-codex` | ChatGPT plan declarations from the Codex CLI catalog |
-| `github-copilot` | `github-copilot` | GitHub Copilot plan and client declarations |
+| `chatgpt` | `openai-codex`, `openai-chatgpt-plan-api` | Partial for the Codex CLI source; unknown for the direct plan API |
+| `github-copilot` | `github-copilot` | Partial for the qualified plan and client sources |
+| `claude` | `anthropic-claude-code` | Unknown |
+| `google-ai` | `google-gemini-cli` | Unknown |
+| `kimi` | `kimi-code` | Unknown |
+| `zai-coding-plan` | `zai-glm-coding-plan` | Unknown |
+| `minimax-m-plan` | `minimax-m-plan` | Unknown |
 
 Codex is included in ChatGPT plans. See the official
 [ChatGPT and Codex pricing guide](https://learn.chatgpt.com/docs/pricing).
 The `chatgpt` route groups Codex access under that subscription. It retains
 `product: "openai-codex"` and the source `surface`. It does not claim complete coverage
 of models in ChatGPT Chat. The source plan tokens are not renamed or expanded.
-`src/subscriptions.ts` owns the qualified subscription-to-product mapping. An unknown product in a resolved
+`data/subscriptions.json` owns the reviewed subscription-to-product mapping and integration
+profiles. `src/subscriptions.ts` validates and exposes that data. An unknown product in a resolved
 subscription declaration fails composition instead of selecting a guessed subscription.
+
+`integration` describes documented access methods. See the [integration contract](integrations.md).
+These methods do not create model-plan declarations. `model_catalog` reports source coverage
+for each product. `partial` means that a qualified source exists; it does not mean complete
+account coverage. `unknown` means that no model-plan adapter is qualified. Source state
+remains explicit when a covered product is stale. A response can have documented methods,
+`models: {}`, and unknown model coverage at the same time.
 
 Subscription model keys and IDs are canonical models.dev IDs, such as `openai/gpt-6-sol`.
 The model fields come from the upstream canonical `models` map. The response attaches
@@ -128,6 +142,8 @@ store the full upstream model database in version control.
 | `index.json` | Provider and subscription routes, with upstream content digest |
 | `providers/<provider>.json` | Original provider models with subscription metadata |
 | `subscriptions/<subscription>.json` | Canonical models and entries for one subscription |
+| `subscriptions.json` | Reviewed subscription definitions and integration profiles |
+| `subscriptions.schema.json` | Definition manifest schema |
 | `subscription.schema.json` | Subscription response schema |
 | `provider.schema.json` | Composed provider response schema |
 | `catalog.json` | Complete declaration layer, including stale and unresolved records |

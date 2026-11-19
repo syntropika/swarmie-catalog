@@ -1,0 +1,751 @@
+{
+  "schema_version": 1,
+  "subscriptions": [
+    {
+      "id": "chatgpt",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "oauth"
+            ],
+            "automation": "unknown",
+            "constraints": [
+              "Documented for open-source and locally hosted apps. Paid or remotely hosted apps must use the provider application process.",
+              "Use dynamic client registration, a persistent host identifier, and user consent for chatgpt.tokens.use.direct. Identity sign-in alone does not grant inference.",
+              "Use streaming Responses requests with store set to false. Preview field and tool limits apply.",
+              "The granted account and workspace determine eligible models and usage. Bundled Codex model declarations do not qualify this route."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "openai-responses"
+                ],
+                "url": "https://api.openai.com/v1"
+              }
+            ],
+            "evidence": [
+              "chatgpt-plan-overview",
+              "chatgpt-plan-signin",
+              "chatgpt-plan-limitations"
+            ],
+            "id": "chatgpt-plan-api",
+            "kind": "direct-api",
+            "name": "Sign in with ChatGPT plan API",
+            "products": [
+              "openai-chatgpt-plan-api"
+            ],
+            "protocols": [
+              "openai-responses"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "restricted"
+          },
+          {
+            "auth_methods": [
+              "oauth"
+            ],
+            "automation": "unknown",
+            "constraints": [
+              "Use the documented Sign in with ChatGPT application registration and consent flow.",
+              "The application communicates with app-server over stdio. App-server sends streaming Responses requests with store set to false.",
+              "The application owns OAuth token renewal. Follow the documented restart and resume procedure for renewed credentials."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "chatgpt-plan-overview",
+              "chatgpt-plan-limitations"
+            ],
+            "id": "codex-app-server",
+            "kind": "sdk",
+            "name": "Codex app-server for ChatGPT plan usage",
+            "products": [
+              "openai-codex"
+            ],
+            "protocols": [
+              "json-rpc-stdio"
+            ],
+            "required_clients": [
+              "Codex app-server"
+            ],
+            "support": "documented",
+            "third_party_use": "restricted"
+          },
+          {
+            "auth_methods": [
+              "oauth"
+            ],
+            "automation": "unknown",
+            "constraints": [
+              "Sign in through Codex with an eligible ChatGPT account. Account and workspace policy can restrict access.",
+              "API-key authentication uses separate API billing and is not subscription authentication."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "codex-auth"
+            ],
+            "id": "codex-cli",
+            "kind": "cli",
+            "name": "Codex CLI with ChatGPT sign-in",
+            "products": [
+              "openai-codex"
+            ],
+            "protocols": [
+              "cli-subprocess"
+            ],
+            "required_clients": [
+              "Codex CLI"
+            ],
+            "support": "documented",
+            "third_party_use": "unknown"
+          }
+        ],
+        "sources": [
+          {
+            "id": "chatgpt-plan-limitations",
+            "sha256": "5df298148ae1af784b031e6e14a4b43c07126fcf79120897acb10ec5fda64758",
+            "url": "https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations"
+          },
+          {
+            "id": "chatgpt-plan-overview",
+            "sha256": "d2eeb938c40cd396b8b548328fda49ce95fd449847a78b5e52e81a41ddcbdbb0",
+            "url": "https://developers.openai.com/siwc/token-sharing-open-source"
+          },
+          {
+            "id": "chatgpt-plan-signin",
+            "sha256": "2bb7c4a87f9a6f08bff1c902812d0d22312fc2248a62d3509cec2ba9c3aa0a3c",
+            "url": "https://developers.openai.com/siwc/token-sharing-open-source/sign-in"
+          },
+          {
+            "id": "codex-auth",
+            "sha256": "c80352e89cb1610575e4f77713afdca1463c79487cf1be41407f45f93e99cd50",
+            "url": "https://learn.chatgpt.com/docs/auth?surface=cli"
+          }
+        ]
+      },
+      "name": "ChatGPT",
+      "products": [
+        "openai-chatgpt-plan-api",
+        "openai-codex"
+      ]
+    },
+    {
+      "id": "claude",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [],
+            "automation": "restricted",
+            "constraints": [
+              "This route describes subscription authentication offered by third-party products. Separate provider approval can change eligibility.",
+              "The SDK runs the Claude Code binary, but that technical relationship does not authorize subscription billing for third-party products.",
+              "The SDK overview directs third-party products to API-key authentication unless separately approved."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "claude-agent-sdk",
+              "claude-legal"
+            ],
+            "id": "claude-agent-sdk-subscription",
+            "kind": "sdk",
+            "name": "Claude Agent Sdk Subscription",
+            "products": [
+              "anthropic-claude-code"
+            ],
+            "protocols": [
+              "sdk-spawns-cli"
+            ],
+            "required_clients": [
+              "Claude Agent SDK",
+              "Claude Code"
+            ],
+            "support": "not-supported",
+            "third_party_use": "restricted"
+          },
+          {
+            "auth_methods": [
+              "oauth"
+            ],
+            "automation": "unknown",
+            "constraints": [
+              "Run the unmodified Claude Code binary published by Anthropic.",
+              "Each end user signs in through Anthropic's own flow with their own account.",
+              "Hosting Claude Code in a product requires the Commercial Terms and the published hosting conditions.",
+              "Do not collect, intermediate, or reuse Claude account tokens outside the native client."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "claude-auth",
+              "claude-legal"
+            ],
+            "id": "claude-code-cli",
+            "kind": "cli",
+            "name": "Claude Code Cli",
+            "products": [
+              "anthropic-claude-code"
+            ],
+            "protocols": [
+              "cli-subprocess"
+            ],
+            "required_clients": [
+              "Claude Code"
+            ],
+            "support": "documented",
+            "third_party_use": "restricted"
+          },
+          {
+            "auth_methods": [],
+            "automation": "restricted",
+            "constraints": [
+              "This route describes subscription authentication offered by third-party products. Separate provider approval can change eligibility.",
+              "Third-party products must not offer Claude account login or route their users' requests through consumer subscription credentials.",
+              "Use separately billed Console API or supported cloud credentials for third-party products."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "claude-legal"
+            ],
+            "id": "claude-subscription-direct-api",
+            "kind": "direct-api",
+            "name": "Claude Subscription Direct Api",
+            "products": [
+              "anthropic-claude-code"
+            ],
+            "protocols": [],
+            "required_clients": [],
+            "support": "not-supported",
+            "third_party_use": "restricted"
+          }
+        ],
+        "sources": [
+          {
+            "id": "claude-agent-sdk",
+            "sha256": "1eb6be04d9c9845cec06a3920989d4a0b3bfbd63f432d0235381cf4e2cc0b1aa",
+            "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+          },
+          {
+            "id": "claude-auth",
+            "sha256": "f498d9651e2a9a4912780cc917b4449720167c67ff289791e8c149d026dde420",
+            "url": "https://code.claude.com/docs/en/authentication"
+          },
+          {
+            "id": "claude-legal",
+            "sha256": "e1976f159a2dc5cfb8f735f4bfa687f7b1f4886f09abf793a66dd608656f23f8",
+            "url": "https://code.claude.com/docs/en/legal-and-compliance"
+          }
+        ]
+      },
+      "name": "Claude",
+      "products": [
+        "anthropic-claude-code"
+      ]
+    },
+    {
+      "id": "github-copilot",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "oauth",
+              "github-token"
+            ],
+            "automation": "supported",
+            "constraints": [
+              "Use an entitled GitHub identity and a supported OAuth or fine-grained token. Classic personal access tokens are not supported.",
+              "Organization policy and model availability still apply. A generic GitHub Actions token is not automatically a subscription grant."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "copilot-cli-auth",
+              "copilot-sdk-auth"
+            ],
+            "id": "copilot-cli",
+            "kind": "cli",
+            "name": "GitHub Copilot CLI",
+            "products": [
+              "github-copilot"
+            ],
+            "protocols": [
+              "cli-subprocess"
+            ],
+            "required_clients": [
+              "GitHub Copilot CLI"
+            ],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "oauth",
+              "github-token"
+            ],
+            "automation": "supported",
+            "constraints": [
+              "The SDK manages a bundled CLI or connects to a separately managed CLI runtime.",
+              "Use explicit user or session credentials in multi-user applications. Follow provider token and policy requirements.",
+              "BYOK uses separate provider billing. Organization-attributed authentication is a separate billing route."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "copilot-sdk-auth",
+              "copilot-sdk-setup"
+            ],
+            "id": "copilot-sdk",
+            "kind": "sdk",
+            "name": "GitHub Copilot SDK with CLI runtime",
+            "products": [
+              "github-copilot"
+            ],
+            "protocols": [
+              "json-rpc"
+            ],
+            "required_clients": [
+              "GitHub Copilot SDK",
+              "GitHub Copilot CLI"
+            ],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "oauth",
+              "github-token"
+            ],
+            "automation": "supported",
+            "constraints": [
+              "In-process hosting is experimental and requires a matching native runtime for the target platform.",
+              "The SDK uses the native runtime without a separate CLI process. This is not a general provider HTTP API.",
+              "Subscription and per-user authentication requirements still apply."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "copilot-sdk-auth",
+              "copilot-sdk-inprocess"
+            ],
+            "id": "copilot-sdk-inprocess",
+            "kind": "sdk",
+            "name": "GitHub Copilot SDK with native runtime",
+            "products": [
+              "github-copilot"
+            ],
+            "protocols": [
+              "json-rpc"
+            ],
+            "required_clients": [
+              "GitHub Copilot SDK",
+              "GitHub Copilot native runtime"
+            ],
+            "support": "documented",
+            "third_party_use": "supported"
+          }
+        ],
+        "sources": [
+          {
+            "id": "copilot-cli-auth",
+            "sha256": "3545514953f185f26ea8f5d1ab8047d0066aef2b1e0d363c0b17eb0b54b326b0",
+            "url": "https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/authenticate-copilot-cli"
+          },
+          {
+            "id": "copilot-sdk-auth",
+            "sha256": "31bebdc69cb95563c33f5ff40c9045891f6f8433c619c4c77fb6187a8a7d2dd6",
+            "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate"
+          },
+          {
+            "id": "copilot-sdk-inprocess",
+            "sha256": "581a14d483e3709556f686c73e2982a30f26e9253cfcc55b99319c8bf26f0339",
+            "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/in-process-runtime"
+          },
+          {
+            "id": "copilot-sdk-setup",
+            "sha256": "fe0f3cb642ebd69f50ba00b0b4892d0701686bf03106f6770155f0132cd5eb36",
+            "url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup"
+          }
+        ]
+      },
+      "name": "GitHub Copilot",
+      "products": [
+        "github-copilot"
+      ]
+    },
+    {
+      "id": "google-ai",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "oauth"
+            ],
+            "automation": "supported",
+            "constraints": [
+              "Use the Google account associated with the subscription.",
+              "The official client supports cached authentication in headless mode.",
+              "Developer tools can control Gemini CLI through its documented ACP mode.",
+              "This CLI bridge does not authorize direct access to Gemini Code Assist using copied OAuth credentials.",
+              "AI Studio API keys and Vertex AI credentials are separate billing routes."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "gemini-acp",
+              "gemini-auth",
+              "gemini-headless",
+              "gemini-terms"
+            ],
+            "id": "gemini-cli",
+            "kind": "cli",
+            "name": "Gemini Cli",
+            "products": [
+              "google-gemini-cli"
+            ],
+            "protocols": [
+              "cli-subprocess",
+              "acp-json-rpc-stdio"
+            ],
+            "required_clients": [
+              "Gemini CLI"
+            ],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [],
+            "automation": "restricted",
+            "constraints": [
+              "Direct access to services powering Gemini CLI through third-party software using CLI OAuth violates the published service policies."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "gemini-terms"
+            ],
+            "id": "gemini-subscription-direct-api",
+            "kind": "direct-api",
+            "name": "Gemini Subscription Direct Api",
+            "products": [
+              "google-gemini-cli"
+            ],
+            "protocols": [],
+            "required_clients": [],
+            "support": "not-supported",
+            "third_party_use": "restricted"
+          }
+        ],
+        "sources": [
+          {
+            "id": "gemini-acp",
+            "sha256": "adc412f09be7a133b81a00975dbfcc921d188ca974b6f0b0397a2d460ab785f7",
+            "url": "https://geminicli.com/docs/cli/acp-mode/"
+          },
+          {
+            "id": "gemini-auth",
+            "sha256": "7c39f7d2e6d090f27d3235eeb43a1888976d1c947e4565bab140e33243d1dc38",
+            "url": "https://geminicli.com/docs/get-started/authentication/"
+          },
+          {
+            "id": "gemini-headless",
+            "sha256": "8388192b3052db4763e0228cbb4a006e7bbc3a2214f52e1ef95223c128751ac6",
+            "url": "https://geminicli.com/docs/cli/headless/"
+          },
+          {
+            "id": "gemini-terms",
+            "sha256": "9cb6a8d005b7a1180ad5931fbc07470bc267505da89ed32dcac8f7eb56a3014f",
+            "url": "https://geminicli.com/docs/resources/tos-privacy/"
+          }
+        ]
+      },
+      "name": "Google AI",
+      "products": [
+        "google-gemini-cli"
+      ]
+    },
+    {
+      "id": "kimi",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "restricted",
+            "constraints": [
+              "Use a Kimi Code key from the Kimi Code Console, not an Open Platform key.",
+              "Only personal interactive use is documented for subscription benefits.",
+              "Do not use scripted noninteractive batches or data annotation pipelines.",
+              "Do not resell account access or capabilities, or spoof client identity.",
+              "Enterprise integrations and commercial services require a separate platform arrangement."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "openai-chat-completions",
+                  "openai-responses"
+                ],
+                "region": "china",
+                "url": "https://api.kimi.com/coding/v1"
+              },
+              {
+                "protocols": [
+                  "openai-chat-completions",
+                  "openai-responses"
+                ],
+                "region": "overseas",
+                "url": "https://api.kimi.ai/coding/v1"
+              },
+              {
+                "protocols": [
+                  "anthropic-messages"
+                ],
+                "region": "china",
+                "url": "https://api.kimi.com/coding/"
+              },
+              {
+                "protocols": [
+                  "anthropic-messages"
+                ],
+                "region": "overseas",
+                "url": "https://api.kimi.ai/coding/"
+              }
+            ],
+            "evidence": [
+              "kimi-guidelines",
+              "kimi-membership",
+              "kimi-overview"
+            ],
+            "id": "kimi-code-api",
+            "kind": "direct-api",
+            "name": "Kimi Code Api",
+            "products": [
+              "kimi-code"
+            ],
+            "protocols": [
+              "openai-chat-completions",
+              "openai-responses",
+              "anthropic-messages"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "account-login"
+            ],
+            "automation": "restricted",
+            "constraints": [
+              "Editors can connect through the official CLI ACP protocol. The documentation names JetBrains and Zed.",
+              "Sign in through the native CLI account login. OAuth mechanics and generic hosting are not established by the reviewed source.",
+              "Personal interactive use limits apply. Do not extract the native client credentials for direct requests."
+            ],
+            "endpoints": [],
+            "evidence": [
+              "kimi-guidelines",
+              "kimi-overview"
+            ],
+            "id": "kimi-code-cli",
+            "kind": "cli",
+            "name": "Kimi Code CLI editor bridge",
+            "products": [
+              "kimi-code"
+            ],
+            "protocols": [
+              "acp"
+            ],
+            "required_clients": [
+              "Kimi Code CLI"
+            ],
+            "support": "documented",
+            "third_party_use": "supported"
+          }
+        ],
+        "sources": [
+          {
+            "id": "kimi-guidelines",
+            "sha256": "4d9f46fb9295df239951f763fa848eaa39e92a8cd3562dfc8fda451574b28989",
+            "url": "https://www.kimi.com/code/docs/en/kimi-code/community-guidelines.html"
+          },
+          {
+            "id": "kimi-membership",
+            "sha256": "f90c993cd6a74ac1bc55bf10dbcd3ccb91cdb98f9d6f18d6c58ea071670547ea",
+            "url": "https://www.kimi.com/code/docs/en/kimi-code/membership.html"
+          },
+          {
+            "id": "kimi-overview",
+            "sha256": "a5781ccce32302c9c7546382464f68aae90206a1bff5767e6135f486940cb4de",
+            "url": "https://www.kimi.com/code/docs/en/"
+          }
+        ]
+      },
+      "name": "Kimi Membership",
+      "products": [
+        "kimi-code"
+      ]
+    },
+    {
+      "id": "minimax-m-plan",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "constraints": [
+              "Use the dedicated M Plan API key; standard pay-as-you-go keys use separate billing.",
+              "The quickstart demonstrates an Anthropic SDK call with the subscription key.",
+              "Custom AI tools with a compatible API protocol are documented.",
+              "The offer targets individual interactive developer use; pay-as-you-go is recommended for production.",
+              "No unrestricted unattended production automation permission was established."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "openai-chat-completions"
+                ],
+                "url": "https://api.minimax.io/v1"
+              },
+              {
+                "protocols": [
+                  "anthropic-messages"
+                ],
+                "url": "https://api.minimax.io/anthropic"
+              }
+            ],
+            "evidence": [
+              "minimax-faq",
+              "minimax-intro",
+              "minimax-quickstart",
+              "minimax-tools"
+            ],
+            "id": "minimax-m-plan-api",
+            "kind": "direct-api",
+            "name": "Minimax M Plan Api",
+            "products": [
+              "minimax-m-plan"
+            ],
+            "protocols": [
+              "openai-chat-completions",
+              "anthropic-messages"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          }
+        ],
+        "sources": [
+          {
+            "id": "minimax-faq",
+            "sha256": "5387059a7b1a61292265b6884b325b40de6cca127a371f000c1ed3dfd70bdaf5",
+            "url": "https://platform.minimax.io/docs/m-plan/faq"
+          },
+          {
+            "id": "minimax-intro",
+            "sha256": "f8060fba595292d341dd175b64313eac8a6a995f2ff8eb0dc58c9c19f586ff58",
+            "url": "https://platform.minimax.io/docs/m-plan/intro"
+          },
+          {
+            "id": "minimax-quickstart",
+            "sha256": "5a80e52b3ac589d4c02577ed71424b0073b281ecd3a017baca98ece720097794",
+            "url": "https://platform.minimax.io/docs/m-plan/quickstart"
+          },
+          {
+            "id": "minimax-tools",
+            "sha256": "cc86367540d8b25cd171b4ff7817ffce6df8c72f53e7f2cb7a608f27da28dcfb",
+            "url": "https://platform.minimax.io/docs/m-plan/other-tools"
+          }
+        ]
+      },
+      "name": "MiniMax M Plan",
+      "products": [
+        "minimax-m-plan"
+      ]
+    },
+    {
+      "id": "zai-coding-plan",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "supported",
+            "constraints": [
+              "Subscription benefits are limited to officially supported tools and product environments.",
+              "The current official list includes coding tools and general-purpose agent tools.",
+              "The current overview documents automated task execution in supported tools.",
+              "An arbitrary custom application is not established as an approved client.",
+              "The subscriber must not share the account or provide multi-user access."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "anthropic-messages"
+                ],
+                "url": "https://api.z.ai/api/anthropic"
+              },
+              {
+                "protocols": [
+                  "openai-chat-completions"
+                ],
+                "url": "https://api.z.ai/api/coding/paas/v4"
+              },
+              {
+                "protocols": [
+                  "openai-responses"
+                ],
+                "url": "https://api.z.ai/api/v1"
+              }
+            ],
+            "evidence": [
+              "zai-overview",
+              "zai-policy",
+              "zai-tools"
+            ],
+            "id": "zai-supported-tool-api",
+            "kind": "direct-api",
+            "name": "Zai Supported Tool Api",
+            "products": [
+              "zai-glm-coding-plan"
+            ],
+            "protocols": [
+              "openai-chat-completions",
+              "openai-responses",
+              "anthropic-messages"
+            ],
+            "required_clients": [
+              "Provider-approved tools"
+            ],
+            "support": "documented",
+            "third_party_use": "restricted"
+          }
+        ],
+        "sources": [
+          {
+            "id": "zai-overview",
+            "sha256": "1c24a8e4cfae60e17dfcb5d4f98a8a1da140dec90cfffdc7784c37f9e114b6df",
+            "url": "https://docs.z.ai/devpack/overview"
+          },
+          {
+            "id": "zai-policy",
+            "sha256": "b8694c5b717d2256a16640e7d0d39a6f37164e210e46c48c2b1cb755b9cdd438",
+            "url": "https://docs.z.ai/devpack/usage-policy"
+          },
+          {
+            "id": "zai-tools",
+            "sha256": "e11a582983d173f12c61418f5ec5b2093a5cea40f81d0a61b93fa7b228fcfc65",
+            "url": "https://docs.z.ai/devpack/tool/others"
+          }
+        ]
+      },
+      "name": "Z.ai GLM Coding Plan",
+      "products": [
+        "zai-glm-coding-plan"
+      ]
+    }
+  ]
+}

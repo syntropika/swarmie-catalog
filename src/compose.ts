@@ -9,7 +9,7 @@ import {
   type Upstream,
 } from "./schema.ts";
 import { compare, stable } from "./stable.ts";
-import { subscriptionForProduct, subscriptions } from "./subscriptions.ts";
+import { subscriptionCoverage, subscriptionForProduct, subscriptions } from "./subscriptions.ts";
 
 function accessByModel(registry: Registry): Map<string, SubscriptionOffer[]> {
   const owners = new Map(registry.providers.map((item) => [item.id, item]));
@@ -132,6 +132,7 @@ export function composeSubscription(
   );
   return composedSubscriptionSchema.parse({
     ...definition,
+    model_catalog: subscriptionCoverage(registry, definition.products),
     models,
     subscription_catalog: catalogMetadata(
       registry,

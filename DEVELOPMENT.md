@@ -49,11 +49,12 @@ bun run check
 | `src/engine.ts` | Validation, conflict handling, retention, and reports |
 | `src/query.ts` | Scoped declaration queries |
 | `src/compose.ts` | Provider and subscription composition, with plan grouping |
-| `src/subscriptions.ts` | Subscription namespaces and qualified product membership |
+| `src/subscriptions.ts` | Validated subscription definitions and model coverage |
+| `src/integration-schema.ts` | Integration profile and manifest validation |
 | `src/index.ts` | Public consumer exports |
 | `src/cli.ts` | Files and static distribution |
 | `src/publish.ts` | Automation branch and PR updates |
-| `data/` | Availability output and explicit identity aliases |
+| `data/` | Availability output, identity aliases, and reviewed subscription profiles |
 | `schemas/` | Generated JSON schema |
 | `tests/fixtures/` | Reproducible provider captures and identity fixtures |
 | `.github/workflows/` | Validation, synchronization, and Pages deployment |

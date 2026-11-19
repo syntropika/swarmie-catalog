@@ -7,6 +7,7 @@ import { composeProvider, composeSubscription } from "./compose.ts";
 import { coverage } from "./coverage.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
 import { fetchText, githubLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
+import { subscriptionManifestSchema } from "./integration-schema.ts";
 import {
   aliasesSchema,
   composedProviderSchema,
@@ -17,7 +18,7 @@ import {
   upstreamSchema,
 } from "./schema.ts";
 import { compare, hash, stable } from "./stable.ts";
-import { subscriptions } from "./subscriptions.ts";
+import { subscriptionManifest, subscriptions } from "./subscriptions.ts";
 
 const adapters = [copilot, codex];
 const args = process.argv.slice(2);
@@ -125,10 +126,16 @@ async function validate(): Promise<Registry> {
   for (const [name, schema] of [
     ["provider", composedProviderSchema],
     ["subscription", composedSubscriptionSchema],
+    ["subscriptions", subscriptionManifestSchema],
   ] as const) {
     if ((await Bun.file(`schemas/${name}.schema.json`).text()) !== stable(z.toJSONSchema(schema)))
       throw new Error(`${name} JSON schema is outdated; run bun src/cli.ts schema`);
   }
+  if (
+    (await Bun.file(new URL("../data/subscriptions.json", import.meta.url)).text()) !==
+    stable(subscriptionManifest)
+  )
+    throw new Error("Subscription manifest is not canonically formatted");
   if ((await Bun.file(catalogPath).text()) !== stable(registry))
     throw new Error("Catalog is not canonically formatted");
   console.log(
@@ -185,6 +192,11 @@ async function build(): Promise<void> {
     "dist/subscription.schema.json",
     await Bun.file("schemas/subscription.schema.json").text(),
   );
+  await write("dist/subscriptions.json", stable(subscriptionManifest));
+  await write(
+    "dist/subscriptions.schema.json",
+    await Bun.file("schemas/subscriptions.schema.json").text(),
+  );
   const providers: { id: string; path: string }[] = [];
   for (const providerId of Object.keys(upstream.providers).sort(compare)) {
     const provider = composeProvider(upstream, registry, providerId, upstreamDigest);
@@ -201,6 +213,7 @@ async function build(): Promise<void> {
       id,
       name: subscription.name,
       products: subscription.products,
+      model_catalog: subscription.model_catalog,
       path: subscriptionPath,
     });
   }
@@ -212,6 +225,8 @@ async function build(): Promise<void> {
       catalog: "catalog.json",
       provider_schema: "provider.schema.json",
       subscription_schema: "subscription.schema.json",
+      subscription_manifest: "subscriptions.json",
+      subscription_manifest_schema: "subscriptions.schema.json",
       subscriptions: subscriptionRoutes,
       notices: "THIRD_PARTY_NOTICES.md",
       providers,
@@ -246,6 +261,10 @@ try {
     await write(
       "schemas/subscription.schema.json",
       stable(z.toJSONSchema(composedSubscriptionSchema)),
+    );
+    await write(
+      "schemas/subscriptions.schema.json",
+      stable(z.toJSONSchema(subscriptionManifestSchema)),
     );
   } else
     throw new Error(

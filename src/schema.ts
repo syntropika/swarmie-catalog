@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { subscriptionDefinitionSchema } from "./integration-schema.ts";
 
 const text = z.string().min(1);
 export const availabilitySchema = z.enum(["available", "unavailable", "unknown"]);
@@ -125,11 +126,24 @@ export const composedProviderSchema = upstreamProviderSchema.extend({
   subscription_catalog: subscriptionCatalogSchema,
 });
 export type ComposedProvider = z.infer<typeof composedProviderSchema>;
-export const composedSubscriptionSchema = z
-  .object({
-    id: text,
-    name: text,
-    products: z.array(text).min(1),
+export const composedSubscriptionSchema = subscriptionDefinitionSchema
+  .safeExtend({
+    model_catalog: z
+      .object({
+        status: z.enum(["partial", "unknown"]),
+        products: z
+          .array(
+            z
+              .object({
+                id: text,
+                status: z.enum(["partial", "unknown"]),
+                state: z.enum(["current", "stale"]).nullable(),
+              })
+              .strict(),
+          )
+          .min(1),
+      })
+      .strict(),
     models: z.record(text, enrichedModelSchema),
     subscription_catalog: subscriptionCatalogSchema,
   })
