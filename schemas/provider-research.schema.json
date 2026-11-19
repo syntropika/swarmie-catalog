@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "limited": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reviewed": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "total": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unreviewed": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total",
+        "reviewed",
+        "limited",
+        "unreviewed"
+      ],
+      "type": "object"
+    },
+    "current_upstream_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "providers": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "billing_models": {
+            "items": {
+              "enum": [
+                "subscription",
+                "pay-as-you-go",
+                "credits",
+                "free",
+                "byok",
+                "self-hosted",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "direct_api_key": {
+            "enum": [
+              "documented",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "provider_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "review_status": {
+            "enum": [
+              "reviewed",
+              "limited",
+              "unreviewed"
+            ],
+            "type": "string"
+          },
+          "reviewed_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sources": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "capture_kind": {
+                  "enum": [
+                    "http-body",
+                    "web-extract"
+                  ],
+                  "type": "string"
+                },
+                "sha256": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "type": "string"
+                },
+                "summary": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url",
+                "sha256",
+                "capture_kind",
+                "summary"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "subscription_ids": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subscription_names": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subscription_status": {
+            "enum": [
+              "documented",
+              "not-found",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider_id",
+          "reviewed_on",
+          "review_status",
+          "subscription_status",
+          "billing_models",
+          "direct_api_key",
+          "subscription_names",
+          "subscription_ids",
+          "summary",
+          "sources",
+          "limitations"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "reviewed_on": {
+      "format": "date",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "number"
+    },
+    "upstream_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "reviewed_on",
+    "upstream_sha256",
+    "providers",
+    "current_upstream_sha256",
+    "counts"
+  ],
+  "type": "object"
+}

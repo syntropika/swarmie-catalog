@@ -55,6 +55,8 @@ The public API consists of static JSON files. It uses the provider IDs and offer
 from models.dev. A provider response preserves its original fields, including the
 `models` map. Each model receives a `subscription_access` array. The provider receives
 `subscription_catalog` metadata with source definitions and the upstream content digest.
+It also receives `subscription_research`, with the reviewed provider billing and
+integration evidence described in the [source guide](sources.md#integration-evidence).
 The provider response uses `subscription_catalog.schema_version: 2`. The declaration
 registry keeps its independent `schema_version: 1` contract.
 The complete response schema is [`provider.schema.json`](../schemas/provider.schema.json).
@@ -90,21 +92,30 @@ and `coverage.json` for unresolved source identities and coverage gaps.
 ## Subscription routes
 
 Use `subscriptions/<subscription>.json` to inspect one subscription across model vendors.
-The response contains `id`, `name`, `products`, `models`, and `subscription_catalog`.
+The response contains `id`, `name`, `products`, `integration`, `model_catalog`, `models`,
+and `subscription_catalog`.
 Its schema is [`subscription.schema.json`](../schemas/subscription.schema.json).
 
-| Subscription ID | Qualified products | Scope |
-| --- | --- | --- |
-| `chatgpt` | `openai-codex` | ChatGPT plan declarations from the Codex CLI catalog |
-| `github-copilot` | `github-copilot` | GitHub Copilot plan and client declarations |
+Use `index.json` or `subscriptions.json` for the complete service list. ChatGPT has
+partial Codex CLI model-plan coverage and unknown direct plan API coverage. GitHub
+Copilot has partial coverage from its qualified plan and client sources. Other
+products report unknown model-plan coverage until an adapter is qualified.
 
 Codex is included in ChatGPT plans. See the official
 [ChatGPT and Codex pricing guide](https://learn.chatgpt.com/docs/pricing).
 The `chatgpt` route groups Codex access under that subscription. It retains
 `product: "openai-codex"` and the source `surface`. It does not claim complete coverage
 of models in ChatGPT Chat. The source plan tokens are not renamed or expanded.
-`src/subscriptions.ts` owns the qualified subscription-to-product mapping. An unknown product in a resolved
+`data/subscriptions.json` owns the reviewed subscription-to-product mapping and integration
+profiles. `src/subscriptions.ts` validates and exposes that data. An unknown product in a resolved
 subscription declaration fails composition instead of selecting a guessed subscription.
+
+`integration` describes documented access methods. See the [integration contract](integrations.md).
+These methods do not create model-plan declarations. `model_catalog` reports source coverage
+for each product. `partial` means that a qualified source exists; it does not mean complete
+account coverage. `unknown` means that no model-plan adapter is qualified. Source state
+remains explicit when a covered product is stale. A response can have documented methods,
+`models: {}`, and unknown model coverage at the same time.
 
 Subscription model keys and IDs are canonical models.dev IDs, such as `openai/gpt-6-sol`.
 The model fields come from the upstream canonical `models` map. The response attaches
@@ -128,6 +139,12 @@ store the full upstream model database in version control.
 | `index.json` | Provider and subscription routes, with upstream content digest |
 | `providers/<provider>.json` | Original provider models with subscription metadata |
 | `subscriptions/<subscription>.json` | Canonical models and entries for one subscription |
+| `subscriptions.json` | Reviewed subscription definitions and integration profiles |
+| `connections.json` | Documented connection categories and direct API-key provider references |
+| `connections.schema.json` | Connection discovery schema |
+| `provider-research.json` | Complete current provider review coverage and source evidence |
+| `provider-research.schema.json` | Provider review response schema |
+| `subscriptions.schema.json` | Definition manifest schema |
 | `subscription.schema.json` | Subscription response schema |
 | `provider.schema.json` | Composed provider response schema |
 | `catalog.json` | Complete declaration layer, including stale and unresolved records |

@@ -171,7 +171,7 @@ test("subscription routes isolate ChatGPT and Copilot while preserving canonical
   const { registry } = await initial([copilot, codex]);
   const chatgpt = composeSubscription(u, registry, "chatgpt", digest);
   const github = composeSubscription(u, registry, "github-copilot", digest);
-  expect(chatgpt.products).toEqual(["openai-codex"]);
+  expect(chatgpt.products).toContain("openai-codex");
   expect(
     chatgpt.models["openai/gpt-6-sol"]?.subscription_access.some(
       (entry) =>

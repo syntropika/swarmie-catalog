@@ -4,9 +4,16 @@ import { z } from "zod";
 import { codex } from "./adapters/codex.ts";
 import { copilot } from "./adapters/copilot.ts";
 import { composeProvider, composeSubscription } from "./compose.ts";
+import { composeConnections, connectionsSchema } from "./connections.ts";
 import { coverage } from "./coverage.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
 import { fetchText, githubLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
+import { subscriptionManifestSchema } from "./integration-schema.ts";
+import {
+  composedProviderResearchSchema,
+  composeProviderResearch,
+  providerResearch,
+} from "./provider-research.ts";
 import {
   aliasesSchema,
   composedProviderSchema,
@@ -17,7 +24,7 @@ import {
   upstreamSchema,
 } from "./schema.ts";
 import { compare, hash, stable } from "./stable.ts";
-import { subscriptions } from "./subscriptions.ts";
+import { subscriptionManifest, subscriptions } from "./subscriptions.ts";
 
 const adapters = [copilot, codex];
 const args = process.argv.slice(2);
@@ -125,9 +132,26 @@ async function validate(): Promise<Registry> {
   for (const [name, schema] of [
     ["provider", composedProviderSchema],
     ["subscription", composedSubscriptionSchema],
+    ["subscriptions", subscriptionManifestSchema],
+    ["provider-research", composedProviderResearchSchema],
+    ["connections", connectionsSchema],
   ] as const) {
     if ((await Bun.file(`schemas/${name}.schema.json`).text()) !== stable(z.toJSONSchema(schema)))
       throw new Error(`${name} JSON schema is outdated; run bun src/cli.ts schema`);
+  }
+  if (
+    (await Bun.file(new URL("../data/subscriptions.json", import.meta.url)).text()) !==
+    stable(subscriptionManifest)
+  )
+    throw new Error("Subscription manifest is not canonically formatted");
+  if (
+    (await Bun.file(new URL("../data/provider-research.json", import.meta.url)).text()) !==
+    stable(providerResearch)
+  )
+    throw new Error("Provider research is not canonically formatted");
+  for (const review of providerResearch.providers) {
+    if (review.subscription_ids.some((id) => !subscriptions.some((item) => item.id === id)))
+      throw new Error(`Unknown reviewed subscription namespace: ${review.provider_id}`);
   }
   if ((await Bun.file(catalogPath).text()) !== stable(registry))
     throw new Error("Catalog is not canonically formatted");
@@ -185,6 +209,24 @@ async function build(): Promise<void> {
     "dist/subscription.schema.json",
     await Bun.file("schemas/subscription.schema.json").text(),
   );
+  await write("dist/subscriptions.json", stable(subscriptionManifest));
+  await write(
+    "dist/subscriptions.schema.json",
+    await Bun.file("schemas/subscriptions.schema.json").text(),
+  );
+  await write("dist/connections.json", stable(composeConnections(upstream, upstreamDigest)));
+  await write(
+    "dist/connections.schema.json",
+    await Bun.file("schemas/connections.schema.json").text(),
+  );
+  await write(
+    "dist/provider-research.json",
+    stable(composeProviderResearch(upstream, upstreamDigest)),
+  );
+  await write(
+    "dist/provider-research.schema.json",
+    await Bun.file("schemas/provider-research.schema.json").text(),
+  );
   const providers: { id: string; path: string }[] = [];
   for (const providerId of Object.keys(upstream.providers).sort(compare)) {
     const provider = composeProvider(upstream, registry, providerId, upstreamDigest);
@@ -201,6 +243,7 @@ async function build(): Promise<void> {
       id,
       name: subscription.name,
       products: subscription.products,
+      model_catalog: subscription.model_catalog,
       path: subscriptionPath,
     });
   }
@@ -212,6 +255,12 @@ async function build(): Promise<void> {
       catalog: "catalog.json",
       provider_schema: "provider.schema.json",
       subscription_schema: "subscription.schema.json",
+      subscription_manifest: "subscriptions.json",
+      subscription_manifest_schema: "subscriptions.schema.json",
+      provider_research: "provider-research.json",
+      provider_research_schema: "provider-research.schema.json",
+      connections: "connections.json",
+      connections_schema: "connections.schema.json",
       subscriptions: subscriptionRoutes,
       notices: "THIRD_PARTY_NOTICES.md",
       providers,
@@ -247,6 +296,15 @@ try {
       "schemas/subscription.schema.json",
       stable(z.toJSONSchema(composedSubscriptionSchema)),
     );
+    await write(
+      "schemas/subscriptions.schema.json",
+      stable(z.toJSONSchema(subscriptionManifestSchema)),
+    );
+    await write(
+      "schemas/provider-research.schema.json",
+      stable(z.toJSONSchema(composedProviderResearchSchema)),
+    );
+    await write("schemas/connections.schema.json", stable(z.toJSONSchema(connectionsSchema)));
   } else
     throw new Error(
       "Usage: bun src/cli.ts sync|validate|build|schema [--fixtures DIR] [--upstream FILE] [--output FILE] [--report-dir DIR]",

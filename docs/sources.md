@@ -4,6 +4,33 @@ The current adapters use public official sources. All extraction is deterministi
 The generated `dist/coverage.json` reports actual plan tokens and unresolved identities
 for the current catalog. The sync report lists failed providers and unresolved names.
 
+## Integration evidence
+
+Reviewed integration profiles cover services with evidenced subscription routes.
+Each JSON profile lists its official
+documentation sources, review date, authentication, client requirements, and limits.
+Read the [integration guide](integrations.md) for field meanings and freshness.
+This evidence is independent of the model-plan adapters listed below.
+
+`provider-research.json` records a dated review for every provider in its captured
+models.dev snapshot. It includes the snapshot digest, current upstream digest, source
+captures, billing types, API-key evidence, subscription names, and unresolved limits.
+Each provider response includes its review under `subscription_research`.
+
+`subscription_status: "documented"` means a subscription product was found. The product
+can be a chat app, a seat fee, reserved capacity, or an agent plan. It does not establish
+direct model access. Inspect linked integration routes for that scope.
+`not-found` means no subscription was found in the inspected pages. It does not prove
+that no subscription exists. `unknown` preserves insufficient evidence.
+`direct_api_key` records direct API credential evidence, independently of billing and
+permission to use that credential in a custom application.
+
+`review_status` is `reviewed`, `limited`, or `unreviewed`. A limited review retains
+its known facts and explains blocked, incomplete, or conflicting sources. New models.dev
+providers without a review receive `unreviewed` and unknown access. They never inherit
+a subscription from a similar name. Public counts use the current upstream provider IDs.
+The reviewed snapshot digest and review date remain unchanged during scheduled builds.
+
 ## Provider coverage
 
 | Product | Source and coverage | Limits |
@@ -71,6 +98,11 @@ Its `tier` values classify models. They are not subscription plans. Runtime prev
 Pro access, and experiment flags affect selection. The public
 [plans page](https://geminicli.com/plans/) does not provide the missing complete mapping.
 No CLI constant is promoted into a subscription grant.
+
+Google documents the move of individual subscription access from Gemini CLI to
+[Antigravity CLI](https://developers.googleblog.com/en/an-important-update-transitioning-gemini-cli-to-antigravity-cli/).
+The integration profile records the current client and the excluded Gemini CLI
+subscription route. Neither client has a qualified model-plan adapter here.
 
 ## Add a provider
 

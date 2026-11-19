@@ -1,3 +1,4 @@
+import { providerReview } from "./provider-research.ts";
 import { query } from "./query.ts";
 import {
   type ComposedProvider,
@@ -9,7 +10,7 @@ import {
   type Upstream,
 } from "./schema.ts";
 import { compare, stable } from "./stable.ts";
-import { subscriptionForProduct, subscriptions } from "./subscriptions.ts";
+import { subscriptionCoverage, subscriptionForProduct, subscriptions } from "./subscriptions.ts";
 
 function accessByModel(registry: Registry): Map<string, SubscriptionOffer[]> {
   const owners = new Map(registry.providers.map((item) => [item.id, item]));
@@ -80,7 +81,8 @@ export function composeProvider(
 ): ComposedProvider {
   const provider = upstream.providers[providerId];
   if (!provider) throw new Error(`Unknown upstream provider: ${providerId}`);
-  if ("subscription_catalog" in provider) throw new Error("Upstream enrichment field collision");
+  if ("subscription_catalog" in provider || "subscription_research" in provider)
+    throw new Error("Upstream enrichment field collision");
   const access = accessByModel(registry);
   const models = Object.fromEntries(
     Object.entries(provider.models)
@@ -102,6 +104,7 @@ export function composeProvider(
   );
   return composedProviderSchema.parse({
     ...provider,
+    subscription_research: providerReview(providerId),
     models,
     subscription_catalog: catalogMetadata(
       registry,
@@ -132,6 +135,7 @@ export function composeSubscription(
   );
   return composedSubscriptionSchema.parse({
     ...definition,
+    model_catalog: subscriptionCoverage(registry, definition.products),
     models,
     subscription_catalog: catalogMetadata(
       registry,

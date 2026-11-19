@@ -26,6 +26,10 @@ Upstream uses provider adapters, schema validation, Bun, and scheduled sync jobs
 Its deployment uses Cloudflare Workers and SST. This project consumes its public data
 and does not copy that deployment or its agent workflows.
 
+Reviewed integration facts are stored separately in `data/subscriptions.json`. They
+describe authentication and client requirements without producing model availability.
+See [integration profiles](integrations.md) for their evidence and review lifecycle.
+
 ## Synchronization stages
 
 1. Fetch and validate the combined upstream catalog.
