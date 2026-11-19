@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "profiles": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "connection_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "method": {
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "combine": {
+                    "const": "intersection",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "const": "documented",
+                    "type": "string"
+                  },
+                  "reviewed_on": {
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+                    "type": "string"
+                  },
+                  "sources": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "capture_kind": {
+                          "enum": [
+                            "http-body",
+                            "web-extract"
+                          ],
+                          "type": "string"
+                        },
+                        "id": {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "sha256": {
+                          "pattern": "^[a-f0-9]{64}$",
+                          "type": "string"
+                        },
+                        "url": {
+                          "format": "uri",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "url",
+                        "sha256",
+                        "capture_kind"
+                      ],
+                      "type": "object"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "steps": {
+                    "items": {
+                      "oneOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "authentication": {
+                              "const": "connection-credentials",
+                              "type": "string"
+                            },
+                            "evidence": {
+                              "items": {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "minItems": 1,
+                              "type": "array"
+                            },
+                            "format": {
+                              "enum": [
+                                "chatgpt-models",
+                                "openai-models"
+                              ],
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "http",
+                              "type": "string"
+                            },
+                            "method": {
+                              "const": "GET",
+                              "type": "string"
+                            },
+                            "url": {
+                              "format": "uri",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "method",
+                            "url",
+                            "authentication",
+                            "format",
+                            "evidence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "authentication": {
+                              "const": "connection-credentials",
+                              "type": "string"
+                            },
+                            "evidence": {
+                              "items": {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "minItems": 1,
+                              "type": "array"
+                            },
+                            "format": {
+                              "const": "codex-models",
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "json-rpc",
+                              "type": "string"
+                            },
+                            "method": {
+                              "const": "model/list",
+                              "type": "string"
+                            },
+                            "params": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "includeHidden": {
+                                  "const": false,
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "includeHidden"
+                              ],
+                              "type": "object"
+                            },
+                            "runtime": {
+                              "const": "codex",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "runtime",
+                            "method",
+                            "params",
+                            "authentication",
+                            "format",
+                            "evidence"
+                          ],
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "combine",
+                  "steps",
+                  "reviewed_on",
+                  "sources"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "unavailable",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "const": "no-reviewed-discovery-method",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "reason"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "oauth_scopes": {
+            "anyOf": [
+              {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "connection_id",
+          "oauth_scopes",
+          "method"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema_version",
+    "profiles"
+  ],
+  "type": "object"
+}

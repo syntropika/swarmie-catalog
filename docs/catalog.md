@@ -1,9 +1,12 @@
 # Data contract and consumption
 
 The declaration registry uses `schema_version: 2`. Composed provider and subscription
-metadata uses `subscription_catalog.schema_version: 3`. Connection discovery uses
-`schema_version: 2`. The static index uses `schema_version: 3`.
-The owning contracts are in `src/schema.ts` and `src/connections.ts`.
+metadata uses `subscription_catalog.schema_version: 4`. Connection discovery uses
+`schema_version: 3`. The static index uses `schema_version: 4`.
+The owning contracts are in `src/schema.ts`, `src/connections.ts` and `src/discovery.ts`.
+Composed model catalogs have `role: "reference-only"` and
+`model_selection: "connection-discovery-required"`. Clients obtain account model choices
+through the selected connection. These public declarations do not grant account access.
 
 ## Declarations and identity
 
@@ -97,7 +100,7 @@ records remain visible and cannot make a connection route ready.
 | `subscriptions/<subscription>.json` | Source model records for one subscription |
 | `subscriptions.json` | Reviewed integration definitions |
 | `subscription-coverage.json` | Published paths and explicit unavailable model catalogs |
-| `connections.json` | Connection categories, route model coverage and API-key provider references |
+| `connections.json` | Unified connections with authentication, billing, execution and required discovery |
 | `provider-research.json` | Commercial review and direct API-key evidence |
 | `model-research.json` | Provider-by-provider discovery sources, plans, parser strategies and limitations |
 | `model-sources.json` | Executable public source definitions, without model allowlists |
@@ -107,41 +110,13 @@ records remain visible and cannot make a connection route ready.
 | `*.schema.json` | Owning JSON contracts |
 
 The server only serves files. Query parameters do not compute filters. A frontend
-filters entries locally. It does not need another models.dev request.
+filters reference entries locally. Model selection requires connection discovery.
 
-Use `connection_kind: "subscription"` for direct subscription model access without a
-required coding-agent runtime. Use `coding-agent` for agent or approved-tool routes.
-Use `api-key` for separately billed direct usage. Authentication and billing remain
-independent: a subscription can use an API key.
-
-Connection `model_catalog.status: "ready"` requires current, available native model
-records with a named plan and that exact route. `unavailable` establishes no current
-route model set. `not-applicable` identifies separately billed routes. A nullable
-`subscription_path` prevents discovery from advertising a missing model-response file.
-Read integration constraints before selecting any route.
-
-```ts
-const response = await fetch(`${baseUrl}/connections.json`);
-if (!response.ok) throw new Error("Connection discovery is unavailable");
-const connections = await response.json();
-const route = connections.routes.find((entry) =>
-  entry.subscription_id === "vercel-token-pass" &&
-  entry.connection_kind === "subscription" &&
-  entry.model_catalog.status === "ready"
-);
-if (!route?.subscription_path) throw new Error("No current model source for this route");
-const modelsResponse = await fetch(`${baseUrl}/${route.subscription_path}`);
-if (!modelsResponse.ok) throw new Error("Subscription models are unavailable");
-const subscription = await modelsResponse.json();
-const access = Object.values(subscription.models).flatMap((model) =>
-  model.subscription_access.filter((entry) =>
-    entry.plans.includes("Token Pass") &&
-    entry.route_ids.includes(route.id) &&
-    entry.state === "current" && entry.status === "available" &&
-    entry.request_model_id !== null
-  )
-);
-```
+Connection discovery is independent of reference model coverage. A connection can
+have a reviewed discovery procedure without a public subscription model list.
+`reference_catalog` records public evidence. It does not establish selectable models.
+Use the [connection contract](integrations.md) and [client workflow](client-model-discovery.md)
+for required account or runtime discovery, context invalidation and source formats.
 
 Per-model `conditions.route_protocols` can narrow a route's general protocols.
 Required headers, privacy, region, client and quota conditions also apply. Source
@@ -153,6 +128,8 @@ membership never grants application authority or permission to reuse a native to
 namespace and upstream digest. `composeSubscription` throws
 `ModelCatalogUnavailableError` when no model records exist.
 `createCatalogComposer` reuses one model index for several views of immutable snapshots.
-`composeConnections` also requires the registry to report current route coverage.
+`composeConnections` also requires the registry to report public reference coverage.
+`resolveDiscoveredModels` accepts complete client discovery results for the current
+connection context. It never reads reference model declarations.
 `query` inspects scalar declarations. Its default filters omit stale sources and
 unresolved canonical identities. Use `includeUnresolved` to inspect native records.

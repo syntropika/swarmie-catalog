@@ -120,7 +120,10 @@ const enrichedModelSchema = upstreamModelSchema.extend({
 });
 const subscriptionCatalogSchema = z
   .object({
-    schema_version: z.literal(3),
+    schema_version: z.literal(4),
+    role: z.literal("reference-only"),
+    model_selection: z.literal("connection-discovery-required"),
+    connections: z.literal("connections.json"),
     upstream: z
       .object({
         url: z.literal("https://models.dev/catalog.json?type=all"),

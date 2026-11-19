@@ -80,15 +80,6 @@
                 ],
                 "type": "string"
               },
-              "connection_kind": {
-                "enum": [
-                  "subscription",
-                  "api-key",
-                  "coding-agent",
-                  "unknown"
-                ],
-                "type": "string"
-              },
               "constraints": {
                 "items": {
                   "minLength": 1,
@@ -203,7 +194,6 @@
               "kind",
               "execution",
               "billing",
-              "connection_kind",
               "products",
               "support",
               "auth_methods",
@@ -611,8 +601,20 @@
     "subscription_catalog": {
       "additionalProperties": false,
       "properties": {
+        "connections": {
+          "const": "connections.json",
+          "type": "string"
+        },
+        "model_selection": {
+          "const": "connection-discovery-required",
+          "type": "string"
+        },
+        "role": {
+          "const": "reference-only",
+          "type": "string"
+        },
         "schema_version": {
-          "const": 3,
+          "const": 4,
           "type": "number"
         },
         "sources": {
@@ -687,6 +689,9 @@
       },
       "required": [
         "schema_version",
+        "role",
+        "model_selection",
+        "connections",
         "upstream",
         "sources"
       ],

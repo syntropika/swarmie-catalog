@@ -132,10 +132,10 @@ test("native models survive unresolved canonical links and plans keep their own 
   expect(Object.keys(view.models)).toHaveLength(1);
   expect(Object.values(view.models)[0]?.subscription_access).toHaveLength(2);
   expect(
-    composeConnections(u, "a".repeat(64), result.registry).routes.find(
-      (r) => r.subscription_id === "vercel-token-pass" && r.id === direct,
-    )?.model_catalog.status,
-  ).toBe("ready");
+    composeConnections(u, "a".repeat(64), result.registry).connections.find(
+      (r) => r.billing.subscription_id === "vercel-token-pass" && r.route_id === direct,
+    )?.reference_catalog.status,
+  ).toBe("documented");
   row.plans = [];
   row.status = "unknown";
   row.conditions = { route_ids: [] };
@@ -154,9 +154,9 @@ test("native models survive unresolved canonical links and plans keep their own 
     ),
   ).toHaveLength(1);
   expect(
-    composeConnections(u, "a".repeat(64), unknown.registry).routes.find(
-      (r) => r.subscription_id === "vercel-token-pass" && r.id === direct,
-    )?.model_catalog.status,
+    composeConnections(u, "a".repeat(64), unknown.registry).connections.find(
+      (r) => r.billing.subscription_id === "vercel-token-pass" && r.route_id === direct,
+    )?.reference_catalog.status,
   ).toBe("unavailable");
   row.status = "available";
   expect(() =>

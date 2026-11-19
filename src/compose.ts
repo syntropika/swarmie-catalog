@@ -64,7 +64,10 @@ function catalogMetadata(registry: Registry, upstreamSha256: string, entries: Su
     entries.flatMap((entry) => entry.evidence.map((item) => item.source)),
   );
   return {
-    schema_version: 3 as const,
+    schema_version: 4 as const,
+    role: "reference-only" as const,
+    model_selection: "connection-discovery-required" as const,
+    connections: "connections.json" as const,
     upstream: { url: registry.upstream, sha256: upstreamSha256 },
     sources: registry.providers
       .flatMap((item) => item.sources)

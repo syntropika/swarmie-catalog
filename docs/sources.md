@@ -22,9 +22,12 @@ None of these facts alone establishes included direct model API access.
 public source inputs and reviewed parsers. It contains no model availability rows.
 Parsers live under `src/adapters/catalogs/`. Exact route scopes remain explicit.
 
-The static outputs report current executable coverage. Use `subscription-coverage.json`
-for published and unavailable model responses. Use `connections.json` for per-route
-model coverage. Use `coverage.json` for native counts, plan tokens and unresolved IDs.
+The static outputs report public source coverage. Use `subscription-coverage.json`
+for published and unavailable reference model responses. Use `connections.json` for
+required client discovery procedures and per-route reference coverage. Use
+`coverage.json` for native counts, plan tokens and unresolved IDs.
+`data/connection-discovery.json` owns reviewed account and runtime discovery procedures.
+The static publisher does not execute them. See the [client workflow](client-model-discovery.md).
 A research profile can exist without an executable model adapter.
 
 ## Source contracts

@@ -15,6 +15,8 @@ Set `CATALOG_TEST_ARTIFACT_DIR` to select an external directory for CLI test art
 `sync` fetches public sources. It writes `data/catalog.json` and operational evidence
 under `.artifacts/`. `build` writes static distribution files to `dist/`.
 The build fetches models.dev once and joins its provider models with the enrichment layer.
+It publishes unified connections and service, provider and execution group paths.
+It never fetches authenticated account models. Clients own that discovery.
 Use `bun run build --upstream tests/fixtures/upstream.json` for an offline build.
 The build owns and replaces a marked `dist/` directory. It refuses an unmarked directory.
 No command runs an AI service.
@@ -55,11 +57,12 @@ bun run check
 | `src/model-research.ts` | Native model discovery evidence and parser research |
 | `src/model-sources.ts` | Public source definitions and ownership validation |
 | `src/provider-research.ts` | Reviewed provider inventory and explicit coverage gaps |
-| `src/connections.ts` | Connection discovery by execution and billing |
+| `src/connections.ts` | Unified connections, reference coverage and static grouping |
+| `src/discovery.ts` | Required discovery policy, response parsing and context validation |
 | `src/index.ts` | Public consumer exports |
 | `src/cli.ts` | Files and static distribution |
 | `src/publish.ts` | Automation branch and PR updates |
-| `data/` | Availability output, identity aliases, subscription profiles, and provider research |
+| `data/` | Availability output, identity aliases, subscription profiles, provider research and reviewed discovery procedures |
 | `schemas/` | Generated JSON schema |
 | `tests/fixtures/` | Reproducible provider captures and identity fixtures |
 | `.github/workflows/` | Validation, synchronization, and Pages deployment |

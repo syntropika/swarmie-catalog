@@ -5,8 +5,14 @@ import { codex } from "./adapters/codex.ts";
 import { copilot } from "./adapters/copilot.ts";
 import { publicCatalogAdapters } from "./adapters/public.ts";
 import { createCatalogComposer, ModelCatalogUnavailableError } from "./compose.ts";
-import { composeConnections, connectionsSchema } from "./connections.ts";
+import {
+  composeConnections,
+  connectionSchema,
+  connectionsSchema,
+  discoveryProfiles,
+} from "./connections.ts";
 import { coverage } from "./coverage.ts";
+import { discoveryProfilesSchema } from "./discovery.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
 import { fetchText, publicLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
 import { subscriptionManifestSchema } from "./integration-schema.ts";
@@ -150,6 +156,8 @@ async function validate(): Promise<Registry> {
     ["subscriptions", subscriptionManifestSchema],
     ["provider-research", composedProviderResearchSchema],
     ["connections", connectionsSchema],
+    ["connection", connectionSchema],
+    ["connection-discovery", discoveryProfilesSchema],
     ["model-sources", modelSourcesSchema],
     ["model-research", modelResearchSchema],
   ] as const) {
@@ -168,6 +176,7 @@ async function validate(): Promise<Registry> {
     throw new Error("Provider research is not canonically formatted");
   for (const [name, value] of [
     ["model-sources", modelSources],
+    ["connection-discovery", discoveryProfiles],
     ["model-research", modelResearch],
   ] as const) {
     if ((await Bun.file(new URL(`../data/${name}.json`, import.meta.url)).text()) !== stable(value))
@@ -239,10 +248,68 @@ async function build(): Promise<void> {
     "dist/subscriptions.schema.json",
     await Bun.file("schemas/subscriptions.schema.json").text(),
   );
+  const connectionCatalog = composeConnections(upstream, upstreamDigest, registry);
+  await write("dist/connections.json", stable(connectionCatalog));
   await write(
-    "dist/connections.json",
-    stable(composeConnections(upstream, upstreamDigest, registry)),
+    "dist/connection.schema.json",
+    await Bun.file("schemas/connection.schema.json").text(),
   );
+  for (const connection of connectionCatalog.connections) {
+    await write(`dist/${connection.path}`, stable(connection));
+  }
+  const connectionGroups = [
+    {
+      id: "direct-subscriptions",
+      connections: connectionCatalog.connections.filter(
+        (connection) =>
+          connection.execution === "direct-model" && connection.billing.kind === "subscription",
+      ),
+    },
+    {
+      id: "direct-api",
+      connections: connectionCatalog.connections.filter(
+        (connection) =>
+          connection.execution === "direct-model" && connection.billing.subscription_id === null,
+      ),
+    },
+    {
+      id: "coding-agents",
+      connections: connectionCatalog.connections.filter(
+        (connection) => connection.execution === "coding-agent",
+      ),
+    },
+  ];
+  for (const group of connectionGroups) {
+    await write(
+      `dist/connections/${group.id}.json`,
+      stable({ ...connectionCatalog, connections: group.connections }),
+    );
+  }
+  const connectionServices = [
+    ...new Set(connectionCatalog.connections.map((connection) => connection.service_id)),
+  ].sort(compare);
+  for (const service of connectionServices) {
+    await write(
+      `dist/connections/services/${segment(service)}/index.json`,
+      stable({
+        ...connectionCatalog,
+        connections: connectionCatalog.connections.filter(
+          (connection) => connection.service_id === service,
+        ),
+      }),
+    );
+  }
+  for (const provider of Object.keys(upstream.providers).sort(compare)) {
+    await write(
+      `dist/connections/providers/${segment(provider)}.json`,
+      stable({
+        ...connectionCatalog,
+        connections: connectionCatalog.connections.filter((connection) =>
+          connection.provider_ids.includes(provider),
+        ),
+      }),
+    );
+  }
   await write(
     "dist/connections.schema.json",
     await Bun.file("schemas/connections.schema.json").text(),
@@ -257,6 +324,7 @@ async function build(): Promise<void> {
   );
   for (const [name, value] of [
     ["model-sources", modelSources],
+    ["connection-discovery", discoveryProfiles],
     ["model-research", composeModelResearch(upstream)],
   ] as const) {
     await write(`dist/${name}.json`, stable(value));
@@ -309,7 +377,8 @@ async function build(): Promise<void> {
   await write(
     "dist/index.json",
     stable({
-      schema_version: 3,
+      schema_version: 4,
+      model_selection: "connection-discovery-required",
       upstream: { url: upstreamUrl, sha256: upstreamDigest },
       catalog: "catalog.json",
       provider_schema: "provider.schema.json",
@@ -320,6 +389,14 @@ async function build(): Promise<void> {
       provider_research_schema: "provider-research.schema.json",
       connections: "connections.json",
       connections_schema: "connections.schema.json",
+      connection_schema: "connection.schema.json",
+      connection_discovery: "connection-discovery.json",
+      connection_discovery_schema: "connection-discovery.schema.json",
+      connection_groups: connectionGroups.map(({ id }) => ({ id, path: `connections/${id}.json` })),
+      connection_services: connectionServices.map((id) => ({
+        id,
+        path: `connections/services/${segment(id)}/index.json`,
+      })),
       subscription_coverage: "subscription-coverage.json",
       model_sources: "model-sources.json",
       model_research: "model-research.json",
@@ -367,6 +444,11 @@ try {
       stable(z.toJSONSchema(composedProviderResearchSchema)),
     );
     await write("schemas/connections.schema.json", stable(z.toJSONSchema(connectionsSchema)));
+    await write("schemas/connection.schema.json", stable(z.toJSONSchema(connectionSchema)));
+    await write(
+      "schemas/connection-discovery.schema.json",
+      stable(z.toJSONSchema(discoveryProfilesSchema)),
+    );
     await write("schemas/model-sources.schema.json", stable(z.toJSONSchema(modelSourcesSchema)));
     await write("schemas/model-research.schema.json", stable(z.toJSONSchema(modelResearchSchema)));
   } else

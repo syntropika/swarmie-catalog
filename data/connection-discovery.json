@@ -1,0 +1,195 @@
+{
+  "profiles": [
+    {
+      "connection_id": "chatgpt/chatgpt-plan-direct-responses",
+      "method": {
+        "combine": "intersection",
+        "kind": "documented",
+        "reviewed_on": "2026-11-19",
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "chatgpt-models",
+            "sha256": "d66a1b4425f5957b9bf6fa29902061fee830ae198496f5e46ad480483f25bb2f",
+            "url": "https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference"
+          }
+        ],
+        "steps": [
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "chatgpt-models"
+            ],
+            "format": "chatgpt-models",
+            "kind": "http",
+            "method": "GET",
+            "url": "https://api.openai.com/v1/models"
+          }
+        ]
+      },
+      "oauth_scopes": [
+        "chatgpt.tokens.use.direct"
+      ]
+    },
+    {
+      "connection_id": "chatgpt/codex-app-server-chatgpt",
+      "method": {
+        "combine": "intersection",
+        "kind": "documented",
+        "reviewed_on": "2026-11-19",
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "chatgpt-models",
+            "sha256": "d66a1b4425f5957b9bf6fa29902061fee830ae198496f5e46ad480483f25bb2f",
+            "url": "https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "codex-models",
+            "sha256": "23c30b4f68ce6dc33c604b5d738266527b69882aa7c3743cd204212cfc49566b",
+            "url": "https://learn.chatgpt.com/docs/app-server"
+          }
+        ],
+        "steps": [
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "chatgpt-models"
+            ],
+            "format": "chatgpt-models",
+            "kind": "http",
+            "method": "GET",
+            "url": "https://api.openai.com/v1/models"
+          },
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "codex-models"
+            ],
+            "format": "codex-models",
+            "kind": "json-rpc",
+            "method": "model/list",
+            "params": {
+              "includeHidden": false
+            },
+            "runtime": "codex"
+          }
+        ]
+      },
+      "oauth_scopes": [
+        "chatgpt.tokens.use.direct"
+      ]
+    },
+    {
+      "connection_id": "chatgpt/codex-cli-chatgpt",
+      "method": {
+        "combine": "intersection",
+        "kind": "documented",
+        "reviewed_on": "2026-11-19",
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "codex-models",
+            "sha256": "23c30b4f68ce6dc33c604b5d738266527b69882aa7c3743cd204212cfc49566b",
+            "url": "https://learn.chatgpt.com/docs/app-server"
+          }
+        ],
+        "steps": [
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "codex-models"
+            ],
+            "format": "codex-models",
+            "kind": "json-rpc",
+            "method": "model/list",
+            "params": {
+              "includeHidden": false
+            },
+            "runtime": "codex"
+          }
+        ]
+      },
+      "oauth_scopes": null
+    },
+    {
+      "connection_id": "chatgpt/codex-cli-api-key",
+      "method": {
+        "combine": "intersection",
+        "kind": "documented",
+        "reviewed_on": "2026-11-19",
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "codex-models",
+            "sha256": "23c30b4f68ce6dc33c604b5d738266527b69882aa7c3743cd204212cfc49566b",
+            "url": "https://learn.chatgpt.com/docs/app-server"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "openai-models",
+            "sha256": "b5e088c1c0f01400268144c559f1a985a2fc99b391452e83f6fa0d0899f9c44d",
+            "url": "https://developers.openai.com/api/reference/resources/models/methods/list"
+          }
+        ],
+        "steps": [
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "openai-models"
+            ],
+            "format": "openai-models",
+            "kind": "http",
+            "method": "GET",
+            "url": "https://api.openai.com/v1/models"
+          },
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "codex-models"
+            ],
+            "format": "codex-models",
+            "kind": "json-rpc",
+            "method": "model/list",
+            "params": {
+              "includeHidden": false
+            },
+            "runtime": "codex"
+          }
+        ]
+      },
+      "oauth_scopes": null
+    },
+    {
+      "connection_id": "openai/api-key",
+      "method": {
+        "combine": "intersection",
+        "kind": "documented",
+        "reviewed_on": "2026-11-19",
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "openai-models",
+            "sha256": "b5e088c1c0f01400268144c559f1a985a2fc99b391452e83f6fa0d0899f9c44d",
+            "url": "https://developers.openai.com/api/reference/resources/models/methods/list"
+          }
+        ],
+        "steps": [
+          {
+            "authentication": "connection-credentials",
+            "evidence": [
+              "openai-models"
+            ],
+            "format": "openai-models",
+            "kind": "http",
+            "method": "GET",
+            "url": "https://api.openai.com/v1/models"
+          }
+        ]
+      },
+      "oauth_scopes": null
+    }
+  ],
+  "schema_version": 1
+}

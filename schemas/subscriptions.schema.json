@@ -3,7 +3,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": 1,
+      "const": 2,
       "type": "number"
     },
     "subscriptions": {
@@ -51,15 +51,6 @@
                         "subscription",
                         "usage-based",
                         "byok",
-                        "unknown"
-                      ],
-                      "type": "string"
-                    },
-                    "connection_kind": {
-                      "enum": [
-                        "subscription",
-                        "api-key",
-                        "coding-agent",
                         "unknown"
                       ],
                       "type": "string"
@@ -178,7 +169,6 @@
                     "kind",
                     "execution",
                     "billing",
-                    "connection_kind",
                     "products",
                     "support",
                     "auth_methods",
