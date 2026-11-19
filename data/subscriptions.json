@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "subscriptions": [
     {
       "id": "abacus",
@@ -12,7 +12,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct model calls need no coding-agent runtime.",
               "The guide and marketing FAQ differ on current credit/subscription terms; verify account billing before use.",
@@ -87,7 +86,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "The plan fee becomes monthly usage credit each billing cycle; the plan discount applies to API usage charges, not credit purchases.",
               "Rate-limit tier is the higher of subscription tier and spend tier.",
@@ -151,7 +149,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Monthly Plan Credits and five-hour limits apply separately from non-expiring top-up credits.",
               "Retained Token Plan scope is Flash-only; default-user trial prices do not apply to Agent Plan billing."
@@ -221,7 +218,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -293,7 +289,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Plan-specific sk-sp credentials and supported coding-tool scope apply.",
               "This legacy transport is not a qualified current Token Plan endpoint."
@@ -336,7 +331,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Use only interactive coding or agent tools.",
               "Automation scripts, custom application backends and noninteractive batches are explicitly forbidden.",
@@ -407,7 +401,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Only for interactive use in coding tools (listed: OpenClaw, Hermes Agent, Claude Code, OpenCode, Cursor, Codex, Qwen Code, Cline, Kilo CLI, etc.); automation scripts, custom application backends and non-interactive batch calls are prohibited and may cause suspension or key bans.",
               "Requires a dedicated sk-sp- key; general sk- keys bill pay-as-you-go and must not be mixed.",
@@ -484,7 +477,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Limited to coding tools such as Claude Code, Qoder and OpenClaw.",
               "API calls for automation scripts, custom backends or non-interactive batches are prohibited.",
@@ -553,7 +545,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Use the dedicated sk-sp- Coding Plan key; general Model Studio keys bill pay-as-you-go.",
               "Interactive use in programming tools such as Claude Code, Qoder and OpenClaw only.",
@@ -622,7 +613,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Personal Edition is for one individual's interactive development in official tools.",
               "No production automation, batch scripts or background scheduled tasks on Personal keys.",
@@ -683,7 +673,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Interactive use only within coding and agent tools.",
               "No automation scripts, custom application backends or batch calls; violations may lead to suspension or key bans.",
@@ -744,7 +733,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct model API; no coding-agent runtime required.",
               "Monthly monetary allowance and rolling five-hour/seven-day limits apply.",
@@ -817,7 +805,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Monthly AnyTokens and overage funding rules apply.",
               "Enterprise/Custom BYOK is a separate credential and provider billing choice."
@@ -880,7 +867,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -945,7 +931,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Initialize through npx berget code init and connect through the supported harness.",
               "Use OAuth. API keys debit wallet funds instead of the Code seat.",
@@ -978,7 +963,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Use the officially supported Pi harness with OAuth seat authentication.",
               "Do not reuse an API key to claim subscription seat billing."
@@ -1010,7 +994,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Serverless plans supply recurring wallet credits and retain per-token metering.",
               "This route does not spend Berget Code seat allowance."
@@ -1079,7 +1062,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Pro and Max were marked sold out on the opened page.",
               "Daily token caps: Pro up to 24M per day, Max up to 120M per day.",
@@ -1128,7 +1110,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Preview for open-source and locally hosted apps; paid or remotely hosted apps must apply.",
               "User consent and the chatgpt.tokens.use.direct scope are required.",
@@ -1167,7 +1148,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "App-server talks to the app over stdio and to Responses over HTTP/SSE with store false.",
               "Same preview eligibility and limitations as the direct route."
@@ -1199,7 +1179,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Billed at standard API rates, not ChatGPT plan credits.",
               "Some ChatGPT workspace and cloud features are unavailable."
@@ -1231,7 +1210,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Device-code login supports headless machines.",
               "OpenAI recommends API keys for programmatic CI/CD workflows.",
@@ -1299,70 +1277,6 @@
       ]
     },
     {
-      "id": "chutes",
-      "integration": {
-        "reviewed_on": "2026-11-19",
-        "routes": [
-          {
-            "auth_methods": [
-              "api-key"
-            ],
-            "automation": "restricted",
-            "billing": "subscription",
-            "connection_kind": "subscription",
-            "constraints": [
-              "Subscriptions are for casual direct interactive and low-volume API use.",
-              "Automated or high-volume workloads must use pay-as-you-go.",
-              "Daily request, monthly spend-equivalent and four-hour burst limits apply; overage uses discounted PAYG."
-            ],
-            "endpoints": [
-              {
-                "protocols": [
-                  "openai-chat-completions"
-                ],
-                "url": "https://llm.chutes.ai/v1"
-              }
-            ],
-            "evidence": [
-              "official-81e062a6c563af8e",
-              "official-a89a73efc116c449"
-            ],
-            "execution": "direct-model",
-            "id": "api",
-            "kind": "direct-api",
-            "name": "Low-volume subscription model API",
-            "products": [
-              "chutes"
-            ],
-            "protocols": [
-              "openai-chat-completions"
-            ],
-            "required_clients": [],
-            "support": "documented",
-            "third_party_use": "restricted"
-          }
-        ],
-        "sources": [
-          {
-            "capture_kind": "http-body",
-            "id": "official-81e062a6c563af8e",
-            "sha256": "f5bfee325a601294ae2229287821fa0cf1a1fc21c8b52a5ffeedc9f7d2ffe717",
-            "url": "https://www.chutes.ai/pricing"
-          },
-          {
-            "capture_kind": "http-body",
-            "id": "official-a89a73efc116c449",
-            "sha256": "cf8e8ab1cff7006dff11f791b8020750d5685634673e295ed17457c6039d3d55",
-            "url": "https://www.chutes.ai/terms"
-          }
-        ]
-      },
-      "name": "Chutes",
-      "products": [
-        "chutes"
-      ]
-    },
-    {
       "id": "claude",
       "integration": {
         "reviewed_on": "2026-11-19",
@@ -1373,7 +1287,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Governed by the Commercial Terms, including products offered to end users.",
               "Use Console API keys or a supported cloud provider."
@@ -1406,7 +1319,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Unless previously approved, third-party products built on the Agent SDK may not offer claude.ai login or rate limits."
             ],
@@ -1437,7 +1349,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Each end user uses their own Anthropic API key or cloud credentials billed to them; no resale or intermediation.",
               "ANTHROPIC_API_KEY is always used in non-interactive (-p) mode when present."
@@ -1470,7 +1381,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Run the unmodified Claude Code binary; do not remove built-in authentication methods.",
               "Each end user signs in through Anthropic's own flow; the host must not pay for, resell, or intermediate usage.",
@@ -1504,7 +1414,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Third parties may not offer Claude.ai login or route requests through Free, Pro, Max or Ultra credentials.",
               "Do not collect, store, or intermediate Claude.ai credentials or session tokens."
@@ -1563,7 +1472,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Hourly anti-runaway spending ceiling of $2, $4 or $10 per hour depending on plan, resetting hourly.",
               "Overflow beyond the ceiling is billed per token from a $5 top-up.",
@@ -1624,7 +1532,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Billed separately from ClinePass: Cline provider inference credits or your own provider API keys."
             ],
@@ -1653,7 +1560,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Use cline-pass/<model> slugs.",
               "OpenAI-compatible clients must send X-Response-Format: openai.",
@@ -1690,7 +1596,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Select ClinePass in /settings and sign in.",
               "The Cline IDE extension is also supported; it is not modeled as a separate route."
@@ -1745,7 +1650,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Plans fund the CLI from monthly credits; top-up credits roll over.",
               "Headless mode is documented for scripting.",
@@ -1777,7 +1681,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Go plan has no API access (403 upgrade_required).",
               "Claude models only on /messages.",
@@ -1820,7 +1723,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "api-key",
             "constraints": [
               "$15/mo plus processing fee; usage billed at underlying API rates with no included credit bucket and no usage windows."
             ],
@@ -1892,7 +1794,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -1965,7 +1866,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct SDK/HTTP model route; no coding-agent harness is required.",
               "Use a Nexus account key; platform keys do not carry a Nexus plan.",
@@ -2046,7 +1946,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -2115,7 +2014,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Included in all Copilot plans; usage consumes GitHub AI Credits.",
               "Environment-variable tokens are documented for CI/CD."
@@ -2147,7 +2045,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "unknown",
             "constraints": [
               "No official direct-model endpoint was documented in the inspected pages."
             ],
@@ -2173,7 +2070,6 @@
             ],
             "automation": "supported",
             "billing": "byok",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Uses Microsoft Foundry, OpenAI, Anthropic or OpenAI-compatible keys; no Copilot subscription required.",
               "Billed directly by the model provider; not Copilot subscription usage."
@@ -2206,7 +2102,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Requires the authenticating user's Copilot subscription.",
               "OAuth tokens must be gho_, ghu_ or github_pat_; classic PATs are not supported.",
@@ -2242,7 +2137,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Experimental in every SDK; packaging may change.",
               "Runtime bundle must match host OS, architecture and C library."
@@ -2313,7 +2207,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Only within officially supported tools and environments.",
               "General agent tools have lower priority and may be queued.",
@@ -2396,7 +2289,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Set modelProvider to gemini and export GEMINI_API_KEY; the variable alone has no effect.",
               "Requests go directly to the Gemini API with no account session; billed under Gemini API terms."
@@ -2436,7 +2328,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Personal OAuth for Free, Pro or Ultra plans; credentials are shared across local Antigravity surfaces.",
               "Terms prohibit third-party software accessing the service; orchestrating the official CLI is not explicitly addressed.",
@@ -2469,7 +2360,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Documented SDK auth is GEMINI_API_KEY, Vertex/Gemini Enterprise, or local models.",
               "Python 3.10+."
@@ -2500,7 +2390,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Gemini CLI remains accessible with paid Gemini and Agent Platform API keys.",
               "Headless mode requires API key or Vertex variables when no cached login exists."
@@ -2532,7 +2421,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Gemini CLI stopped serving Google AI Pro and Ultra subscribers on June 18, 2026."
             ],
@@ -2564,7 +2452,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Third-party software using Gemini CLI or Antigravity OAuth violates the terms and may lead to suspension."
             ],
@@ -2642,7 +2529,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Only supported AI tools and individual developer scope are covered.",
               "The provider explicitly excludes ordinary API calls and non-AI-tool use.",
@@ -2714,7 +2600,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Included credit is only $2 per month (PRO) or $2 per seat (Team/Enterprise); usage beyond that is pay-as-you-go with purchased credits.",
               "Team/Enterprise credits require the X-HF-Bill-To header or the bill_to parameter.",
@@ -2778,7 +2663,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -2845,7 +2729,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -2916,7 +2799,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct model API; no coding-agent runtime required.",
               "Monthly credit funds metered requests; overage remains usage-based."
@@ -2986,7 +2868,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API and chat share the membership monthly allowance.",
               "Additional credit packs fund usage after that allowance."
@@ -3049,7 +2930,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Chat and API share refreshing subscription credits.",
               "Developer is documented for continuous production and automation workloads.",
@@ -3113,7 +2993,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct model API; no coding-agent runtime required.",
               "The billing guide applies subscription packages before account balance.",
@@ -3184,7 +3063,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Plans cover chat only, for each plan's listed models; other models and modalities bill the PAYG balance.",
               "Quota is valued in Rupiah at normal model prices, with 5-hour, weekly and monthly rolling windows.",
@@ -3232,7 +3110,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Plan quota applies only to models covered by the plan, per the general subscription rule; others bill the balance.",
               "Background and subagent Claude models bill at their own prices unless aliases are overridden."
@@ -3309,7 +3186,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -3397,7 +3273,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "unknown",
             "constraints": [
               "Use a Kimi Code Console key, not a Kimi Platform key.",
               "Personal interactive use only; no scripted batches or data annotation pipelines.",
@@ -3445,7 +3320,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "unknown",
             "constraints": [
               "Use a Kimi Code Console key, not a Kimi Platform key.",
               "Personal interactive use only; no non-interactive automation.",
@@ -3492,7 +3366,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Official clients use Kimi account login.",
               "Personal interactive use limits apply."
@@ -3524,7 +3397,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Personal interactive use limits apply."
             ],
@@ -3580,7 +3452,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct model calls need no coding-agent runtime.",
               "Use a One key or a user-approved One application connection.",
@@ -3645,7 +3516,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Use is limited to the specified programming tools.",
               "Subscriber-only; account sharing may restrict benefits or lead to bans.",
@@ -3720,7 +3590,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Marketed for coding agents; docs say the key works with any OpenAI- or Anthropic-compatible coding tool.",
               "Daily pacing (8/9/10% of credits) and weekly premium-model caps (10/12/15%).",
@@ -3766,7 +3635,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Browser login via 'devpass-code auth login' is documented for the first-party agent; reusing its login tokens in other applications is not documented."
             ],
@@ -3794,7 +3662,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Daily pacing of 8-10% of credits per day and a weekly premium-model cap of 10-15%.",
               "Premium models ($5+/M input or $15+/M output) draw on the weekly fair-use allowance.",
@@ -3827,7 +3694,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "api-key",
             "constraints": [
               "A separately billed alternative: prepaid credits with a 5% platform fee, or free routing with BYOK provider keys."
             ],
@@ -3854,7 +3720,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "First-party terminal agent using browser login ('no keys to copy').",
               "Same DevPass pacing and caps apply."
@@ -3915,7 +3780,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Whether plan energy covers API-key requests depends on the plan; otherwise requests pay in credits.",
               "An API key can override the account's balance order.",
@@ -3992,7 +3856,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Official subscription credential is expressly limited to Muse Code CLI.",
               "Use separately billed Meta Model API keys for direct model requests."
@@ -4022,7 +3885,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Runs the native coding-agent engine; not a direct model subscription route.",
               "Subscription credential is for Muse Code CLI only; additional API keys are PAYG.",
@@ -4095,7 +3957,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Use the sk-cp- M Plan key; standard keys bill pay-as-you-go.",
               "Individual interactive developer use; pay-as-you-go recommended for production.",
@@ -4168,7 +4029,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Use the sk-cp- M Plan key; pay-as-you-go keys are billed separately.",
               "The plan targets individual interactive developer use; pay-as-you-go is recommended for production.",
@@ -4241,7 +4101,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "The Organization plan shares monthly usage across Studio, API and Vibe Code.",
               "Prepaid overage requires pay-as-you-go to be enabled.",
@@ -4281,7 +4140,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Browser sign-in provisions credentials; custom API keys are also documented.",
               "The same global monthly allowance is consumed before enabled prepaid overage.",
@@ -4352,7 +4210,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct model HTTP API; no coding-agent runtime required.",
               "Use X-RapidAPI-Key and X-RapidAPI-Host, not the console bearer key.",
@@ -4410,7 +4267,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "The subscription multiplies the available limit (×2-×5) for 30 days; it is not a fixed token quota.",
               "Subscriptions are paid from the crypto-funded balance and auto-renew.",
@@ -4474,7 +4330,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "This is a recurring API credit package: credits reset monthly and do not roll over.",
               "Ultra's unlimited access covers only named models, with per-user limits and 429s at capacity.",
@@ -4538,7 +4393,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Membership credits form one pool across credit-metered models.",
               "Community membership supplies no inference credits; credit packs are separate.",
@@ -4602,7 +4456,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Covers only subscription-included open-source text models; closed models (Claude, GPT, Gemini, Grok), video, voice and web search bill the balance.",
               "60M input tokens/week (cached input counts fully) plus daily caps returned by the usage endpoint; resets Monday 00:00 UTC.",
@@ -4673,7 +4526,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Subscription allowance is billed energy, not the illustrative token counts on pricing cards.",
               "Team members retain individual keys while sharing the owner energy pool.",
@@ -4744,7 +4596,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Membership grants recurring credit and member rates.",
               "The documented model exception does not receive the membership discount.",
@@ -4806,7 +4657,6 @@
             "auth_methods": [],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Plan includes a fixed monthly usage amount ($15 Casual, $35 Pro); overage draws from prepaid balance.",
               "API requires a positive balance; billed at web chat prices.",
@@ -4856,7 +4706,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -4934,82 +4783,6 @@
       ]
     },
     {
-      "id": "opencode",
-      "integration": {
-        "reviewed_on": "2026-11-19",
-        "routes": [
-          {
-            "auth_methods": [
-              "api-key"
-            ],
-            "automation": "restricted",
-            "billing": "subscription",
-            "connection_kind": "subscription",
-            "constraints": [
-              "Direct model API without an official coding-agent runtime requirement.",
-              "Allowed client traffic must resemble coding-agent requests, carry its own user agent and a stable session ID.",
-              "Generic app/SDK traffic is not automatically eligible.",
-              "Usage windows and workspace membership rules apply; Go Teams excludes service accounts."
-            ],
-            "endpoints": [
-              {
-                "protocols": [
-                  "OpenAI Chat Completions",
-                  "OpenAI Responses",
-                  "Anthropic Messages"
-                ],
-                "url": "https://opencode.ai/inference/go"
-              }
-            ],
-            "evidence": [
-              "official-31049fd0e230d80e",
-              "official-6b0db23c6a9105fd",
-              "official-721893c4a3e10a99"
-            ],
-            "execution": "direct-model",
-            "id": "go-subscription-api",
-            "kind": "direct-api",
-            "name": "Go direct coding-traffic model API",
-            "products": [
-              "opencode"
-            ],
-            "protocols": [
-              "Anthropic Messages",
-              "OpenAI Chat Completions",
-              "OpenAI Responses"
-            ],
-            "required_clients": [],
-            "support": "documented",
-            "third_party_use": "supported"
-          }
-        ],
-        "sources": [
-          {
-            "capture_kind": "http-body",
-            "id": "official-31049fd0e230d80e",
-            "sha256": "e1da61312d81fefce7e76b803741ed679160de4364b224489538394584ff700c",
-            "url": "https://opencode.ai/docs/console/api/inference/"
-          },
-          {
-            "capture_kind": "http-body",
-            "id": "official-6b0db23c6a9105fd",
-            "sha256": "f2d038048f243780f1260bd1e08a001f8767dd39882491bf03930f8560f0ef58",
-            "url": "https://opencode.ai/v2/docs/console/go"
-          },
-          {
-            "capture_kind": "http-body",
-            "id": "official-721893c4a3e10a99",
-            "sha256": "834a237380119af7f65c9a86a659020cbfcbd7ac4d2bde9ce16dd5fad6280ed8",
-            "url": "https://opencode.ai/black"
-          }
-        ]
-      },
-      "name": "OpenCode",
-      "products": [
-        "opencode"
-      ]
-    },
-    {
       "id": "opencode-go",
       "integration": {
         "reviewed_on": "2026-11-19",
@@ -5020,7 +4793,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Official docs explicitly describe SDK packages for applications calling Go directly, so an OpenCode process is not mandatory.",
               "Clients must generate typical coding-agent traffic, identify their own user agent and send a stable x-opencode-session per conversation.",
@@ -5079,7 +4851,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -5152,7 +4923,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Only public bots; App-Creator and Script-Bot-Creator excluded.",
               "500 requests per minute.",
@@ -5225,7 +4995,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Requires running the privatemode-proxy locally (container, binary, Helm or desktop app) for attestation and encryption.",
               "Business monthly fee becomes a token budget; 5x standard rate limits.",
@@ -5262,7 +5031,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "SDK performs attestation and encryption client-side; JS/TS only.",
               "The inspected sources did not explicitly establish that this subscription funds this API route."
@@ -5326,7 +5094,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -5395,7 +5162,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Workspace must be explicitly linked for Workshop billing; otherwise requests draw prepaid API balance.",
               "AI credits are distinct from Cloud credits.",
@@ -5466,7 +5232,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Chat models only; embeddings, STT, image, OCR and rerank excluded.",
               "Monthly and daily token caps with per-model multipliers (0.5x–5x).",
@@ -5530,7 +5295,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -5604,7 +5368,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Enterprise subscription terms require a sales agreement.",
               "The guide uses a per-deployment base URL; this review does not guess an account endpoint.",
@@ -5651,6 +5414,167 @@
       ]
     },
     {
+      "id": "sarvam-credit-plans",
+      "integration": {
+        "reviewed_on": "2026-11-19",
+        "routes": [
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "billing": "subscription",
+            "constraints": [
+              "Pro, Growth and Business monthly fees become universal credits; tokens consume that shared balance.",
+              "Credits do not expire; monthly renewal preserves plan rates and limits.",
+              "Only standard serverless models are included without separate organization enablement. Provisioned Throughput models require approval.",
+              "Model-list visibility does not establish organization authorization."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "openai-chat-completions",
+                  "openai-responses"
+                ],
+                "url": "https://api.sarvam.ai/v2"
+              }
+            ],
+            "evidence": [
+              "official-48bf248d0adb329f",
+              "official-850ff1652297a9fa"
+            ],
+            "execution": "direct-model",
+            "id": "token-factory-credit-api",
+            "kind": "direct-api",
+            "name": "Sarvam Token Factory API with recurring plan credits",
+            "products": [
+              "sarvam-credit-plans"
+            ],
+            "protocols": [
+              "openai-chat-completions",
+              "openai-responses"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "billing": "subscription",
+            "constraints": [
+              "Pro, Growth and Business monthly fees become universal credits; tokens consume that shared balance.",
+              "Credits do not expire; monthly renewal preserves plan rates and limits.",
+              "Only standard serverless models are included without separate organization enablement. Provisioned Throughput models require approval.",
+              "Model-list visibility does not establish organization authorization."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "sarvam-decisions"
+                ],
+                "url": "https://api.sarvam.ai/v2"
+              }
+            ],
+            "evidence": [
+              "official-48bf248d0adb329f",
+              "official-1c8ea3f10146f1f3"
+            ],
+            "execution": "direct-model",
+            "id": "token-factory-decisions",
+            "kind": "direct-api",
+            "name": "Sarvam Prism Decisions API with recurring plan credits",
+            "products": [
+              "sarvam-credit-plans"
+            ],
+            "protocols": [
+              "sarvam-decisions"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          },
+          {
+            "auth_methods": [
+              "api-key"
+            ],
+            "automation": "unknown",
+            "billing": "subscription",
+            "constraints": [
+              "Pro, Growth and Business monthly fees become universal credits; tokens consume that shared balance.",
+              "Credits do not expire; monthly renewal preserves plan rates and limits.",
+              "Only standard serverless models are included without separate organization enablement. Provisioned Throughput models require approval.",
+              "Model-list visibility does not establish organization authorization."
+            ],
+            "endpoints": [
+              {
+                "protocols": [
+                  "sarvam-model-api"
+                ],
+                "url": "https://api.sarvam.ai"
+              }
+            ],
+            "evidence": [
+              "official-48bf248d0adb329f",
+              "official-79877dd86cb38021",
+              "official-99fec2f3fd4ea0e4"
+            ],
+            "execution": "direct-model",
+            "id": "sarvam-native-api",
+            "kind": "direct-api",
+            "name": "Sarvam native model APIs with recurring plan credits",
+            "products": [
+              "sarvam-credit-plans"
+            ],
+            "protocols": [
+              "sarvam-model-api"
+            ],
+            "required_clients": [],
+            "support": "documented",
+            "third_party_use": "supported"
+          }
+        ],
+        "sources": [
+          {
+            "capture_kind": "http-body",
+            "id": "official-48bf248d0adb329f",
+            "sha256": "448a603cecf7d18be4b0b726875b6ee24407aa640610c2c9df611012145dd37a",
+            "url": "https://www.sarvam.ai/api-pricing"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-850ff1652297a9fa",
+            "sha256": "7a74f206d431adcc0952135982dc78850c3f820a2ef02ffebd14e488f1e1666e",
+            "url": "https://docs.sarvam.ai/api/token-factory/models.md"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-1c8ea3f10146f1f3",
+            "sha256": "63812b78be3aa9cd806f2d6c4a2b6e80e4a39f2533fad32acf305f93f2638f6b",
+            "url": "https://docs.sarvam.ai/api/token-factory/models/sarvam-prism.md"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-79877dd86cb38021",
+            "sha256": "5bfb5008787fe6bd1bb268b29f3d1614b4b4217d6927f2abfda561ea6fa7f9fa",
+            "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/saaras.md"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "official-99fec2f3fd4ea0e4",
+            "sha256": "0bb2f495066923e393edfc2d4191f9f5d16e6c797d0b206104c2e6945e4004ff",
+            "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/bulbul.md"
+          }
+        ]
+      },
+      "name": "Sarvam recurring API credit plans",
+      "products": [
+        "sarvam-credit-plans"
+      ]
+    },
+    {
       "id": "scnet-token-plan",
       "integration": {
         "reviewed_on": "2026-11-19",
@@ -5661,7 +5585,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Use the sk-tp- key; general sk- keys bill pay-as-you-go.",
               "Only for AI coding and agent tools; no scripts, custom backends, batch calls or workflow platforms.",
@@ -5728,7 +5651,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Runs the full coding-agent engine.",
               "Plans last 30 days and do not renew automatically.",
@@ -5801,7 +5723,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Monthly compute budget equal to plan price, consumed at per-token rates; 402 budget_exhausted until renewal.",
               "Plans intended for individual developers and their agents; fair use policy applies.",
@@ -5860,7 +5781,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -5926,7 +5846,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Sign in with the subscription account to use Step Plan quota.",
               "The agreement's anti-circumvention clauses apply.",
@@ -5957,7 +5876,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Use is limited to supported or explicitly compatible tools and access methods (agreement §3.3).",
               "No scripts, proxies, key rotation or abnormal concurrency to bypass limits (§3.6).",
@@ -6004,7 +5922,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "api-key",
             "constraints": [
               "Billed from a separate account balance, not plan credits.",
               "Base URL not verified on the opened pages."
@@ -6071,7 +5988,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Requires an active Step Plan package and a StepFun API key.",
               "Step 5 Preview uses 2x Credits at weekday peak hours.",
@@ -6144,7 +6060,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Requires an active Step Plan subscription and a StepFun API key.",
               "Only the /step_plan path uses plan Credits; standard API addresses bill separately.",
@@ -6217,7 +6132,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Monthly price funds a daily allowance shared by the team.",
               "Daily limits and plan concurrency caps apply; overage bills per token.",
@@ -6288,7 +6202,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Weekly credit quota that regenerates continuously; heavier models cost more credits.",
               "Extra usage is billed at usage-based rates.",
@@ -6373,7 +6286,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Use only within programming tools; direct API calls are prohibited.",
               "No automation scripts, custom backends or non-interactive batches.",
@@ -6441,7 +6353,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Plan keys only within supported AI tools; no API calls from scripts or custom apps.",
               "Account sharing is prohibited.",
@@ -6509,7 +6420,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Interactive coding tools only (OpenClaw, CodeBuddy Code, Claude Code, OpenCode, Cline, Cursor, Codex, Kilo); automation scripts, app backends and batch calls prohibited.",
               "sk-sp- key not interchangeable with standard keys; model 'tc-code-latest' (Auto) only; no multimodal.",
@@ -6557,7 +6467,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Only for use inside AI tools (listed claw tools and coding tools such as Claude Code, Codex, Cline, Cursor, OpenCode, Kilo Code); automation scripts, custom app backends and non-interactive batch calls are strictly prohibited.",
               "sk-tp- key shared by both series; one key per personal plan; no sharing.",
@@ -6638,7 +6547,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -6713,7 +6621,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Account approval is manual.",
               "Commercial or production traffic requires a separate written agreement.",
@@ -6785,7 +6692,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Subscription credit arrives weekly ($10, $25 or $50) and does not roll over.",
               "How subscription credit is consumed versus pay-as-you-go balance is not stated.",
@@ -6856,7 +6762,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -6922,7 +6827,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Plan includes only a bundled monthly API credit allowance (Pro $1/month); not free or unlimited API usage.",
               "Charges apply DIEM, earned, bundled, then USD credit; 402 INSUFFICIENT_BALANCE when exhausted.",
@@ -6986,7 +6890,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "api-key",
             "constraints": [
               "A separately billed alternative: purchased AI Gateway Credits at provider list price with no markup.",
               "Add-on surcharges apply when enabled."
@@ -7022,7 +6925,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "'fx login vercel'; featured-model requests draw on Token Pass and then fall back to AI Gateway credits.",
               "An API-key alternative is documented via 'npx vercel@latest ai-gateway setup --agent fx'."
@@ -7052,7 +6954,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Requires a paid Vercel Pro team plus $30 per team per month; Enterprise teams are not eligible.",
               "$150 credit per billing period, featured models only, no rollover, shared per team.",
@@ -7132,7 +7033,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Direct Model API; no coding-agent runtime required.",
               "Growth includes monthly monetary token credits, with PAYG beyond them.",
@@ -7203,7 +7103,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Dedicated subscription keys and plan endpoints are required.",
               "The overview prohibits ordinary API use of text-generation and embedding benefits.",
@@ -7274,7 +7173,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Quota only takes effect in AI coding tools and cannot be used for API calls.",
               "Use in non-coding tools may lead to suspension or bans.",
@@ -7349,7 +7247,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Personal use by one individual; no sharing of API key or subscription; no proxying for third parties or team pooling.",
               "3 concurrent in-flight requests per account.",
@@ -7430,7 +7327,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Sign-in is documented, but whether usage draws on the X Subscription weekly pool is not explicitly stated.",
               "Headless and ACP can use a cached 'grok login' token.",
@@ -7464,7 +7360,6 @@
             ],
             "automation": "supported",
             "billing": "usage-based",
-            "connection_kind": "coding-agent",
             "constraints": [
               "A separately billed API-key alternative; xAI API usage is billed per token at team level, and credits are non-refundable."
             ],
@@ -7534,7 +7429,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Quota only in programming tools; no API calls for automated scripts or custom backends.",
               "The tp- key is valid only while the package is active; do not disclose it.",
@@ -7582,7 +7476,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Quota only in programming tools; no API calls for automated scripts or custom backends.",
               "The tp- key is valid only while the package is active.",
@@ -7630,7 +7523,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Quota only in programming tools; no API calls for automated scripts or custom backends.",
               "The tp- key is valid only while the package is active."
@@ -7697,7 +7589,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "api-key",
             "constraints": [
               "Separate sk- keys billed per token; cannot be mixed with Token Plan keys."
             ],
@@ -7739,7 +7630,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Quota may only be used in programming tools.",
               "Non-coding API use, such as automated scripts and custom app backends, is prohibited and may lead to suspension or key blocking.",
@@ -7835,7 +7725,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",
@@ -7901,7 +7790,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "coding-agent",
             "constraints": [
               "Benefits are limited to officially supported tools and environments.",
               "Automated tasks are in scope only inside supported tools.",
@@ -7992,7 +7880,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "ZCore includes a monthly private-model token pool with throughput limits.",
               "Bulk scripted generation and resale are outside fair use.",
@@ -8033,7 +7920,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "ZDev is business/organization-only and covers normal coding work.",
               "Non-coding usage, unusual bulk scripted generation and access resale are excluded.",
@@ -8101,7 +7987,6 @@
             ],
             "automation": "unknown",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "Per-member plans; personal API key.",
               "Lite/Standard limits renew every 5 hours and weekly; Premium renews weekly; key pauses at limit with no extra charge.",
@@ -8151,7 +8036,6 @@
             ],
             "automation": "unknown",
             "billing": "usage-based",
-            "connection_kind": "api-key",
             "constraints": [
               "A separately billed alternative; Extra Usage can switch traffic to a pay-as-you-go key when the subscription quota runs out."
             ],
@@ -8201,7 +8085,6 @@
             ],
             "automation": "restricted",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "For non-production personal development, learning and 'Vibe Coding' only.",
               "Banned: production, commercial products, end-user-facing apps, account sharing, multi-account pooling or rotation, resale, and automated abuse.",
@@ -8286,7 +8169,6 @@
             ],
             "automation": "supported",
             "billing": "subscription",
-            "connection_kind": "subscription",
             "constraints": [
               "API-key authentication does not imply usage-based billing; this route consumes a documented subscription allowance.",
               "No coding-agent runtime is required for this direct model route.",

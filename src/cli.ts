@@ -3,12 +3,21 @@ import path from "node:path";
 import { z } from "zod";
 import { codex } from "./adapters/codex.ts";
 import { copilot } from "./adapters/copilot.ts";
-import { composeProvider, composeSubscription } from "./compose.ts";
-import { composeConnections, connectionsSchema } from "./connections.ts";
+import { publicCatalogAdapters } from "./adapters/public.ts";
+import { createCatalogComposer, ModelCatalogUnavailableError } from "./compose.ts";
+import {
+  composeConnections,
+  connectionSchema,
+  connectionsSchema,
+  discoveryProfiles,
+} from "./connections.ts";
 import { coverage } from "./coverage.ts";
+import { discoveryProfilesSchema } from "./discovery.ts";
 import { emptyRegistry, synchronize, upstreamUrl, validateRegistry } from "./engine.ts";
-import { fetchText, githubLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
+import { fetchText, publicLoader, type Snapshot, type SourceLoader } from "./fetch.ts";
 import { subscriptionManifestSchema } from "./integration-schema.ts";
+import { composeModelResearch, modelResearch, modelResearchSchema } from "./model-research.ts";
+import { modelSources, modelSourcesSchema } from "./model-sources.ts";
 import {
   composedProviderResearchSchema,
   composeProviderResearch,
@@ -16,6 +25,7 @@ import {
 } from "./provider-research.ts";
 import {
   aliasesSchema,
+  type ComposedSubscription,
   composedProviderSchema,
   composedSubscriptionSchema,
   type Registry,
@@ -24,9 +34,9 @@ import {
   upstreamSchema,
 } from "./schema.ts";
 import { compare, hash, stable } from "./stable.ts";
-import { subscriptionManifest, subscriptions } from "./subscriptions.ts";
+import { subscriptionCoverage, subscriptionManifest, subscriptions } from "./subscriptions.ts";
 
-const adapters = [copilot, codex];
+const adapters = [copilot, codex, ...publicCatalogAdapters];
 const args = process.argv.slice(2);
 const command = args.shift();
 const supported = new Set(["--fixtures", "--upstream", "--output", "--report-dir"]);
@@ -54,12 +64,23 @@ async function sync(): Promise<void> {
   const previous = await readRegistry();
   const now = new Date().toISOString();
   const fixtureDir = options.get("--fixtures");
+  const selectedAdapters = fixtureDir
+    ? z
+        .array(z.string())
+        .min(1)
+        .parse(await Bun.file(path.join(fixtureDir, "adapters.json")).json())
+        .map((id) => {
+          const adapter = adapters.find((item) => item.id === id);
+          if (!adapter) throw new Error(`Unknown fixture adapter: ${id}`);
+          return adapter;
+        })
+    : adapters;
+  const liveLoader = publicLoader(fetch, process.env.GITHUB_TOKEN);
   const loader: SourceLoader = fixtureDir
-    ? async (_repo, _path, id) =>
-        (await Bun.file(path.join(fixtureDir, `${id}.json`)).json()) as Snapshot
-    : async (repo, sourcePath, id) => {
-        const snapshot = await githubLoader(fetch, process.env.GITHUB_TOKEN)(repo, sourcePath, id);
-        await write(path.join(reportDir, "inputs", `${id}.json`), stable(snapshot));
+    ? async ({ id }) => (await Bun.file(path.join(fixtureDir, `${id}.json`)).json()) as Snapshot
+    : async (source) => {
+        const snapshot = await liveLoader(source);
+        await write(path.join(reportDir, "inputs", `${source.id}.json`), stable(snapshot));
         return snapshot;
       };
   let upstream: Upstream;
@@ -103,7 +124,7 @@ async function sync(): Promise<void> {
   const result = await synchronize({
     previous,
     upstream,
-    adapters,
+    adapters: selectedAdapters,
     loader,
     aliases: aliasesSchema.parse(await Bun.file("data/aliases.json").json()),
     now,
@@ -135,6 +156,10 @@ async function validate(): Promise<Registry> {
     ["subscriptions", subscriptionManifestSchema],
     ["provider-research", composedProviderResearchSchema],
     ["connections", connectionsSchema],
+    ["connection", connectionSchema],
+    ["connection-discovery", discoveryProfilesSchema],
+    ["model-sources", modelSourcesSchema],
+    ["model-research", modelResearchSchema],
   ] as const) {
     if ((await Bun.file(`schemas/${name}.schema.json`).text()) !== stable(z.toJSONSchema(schema)))
       throw new Error(`${name} JSON schema is outdated; run bun src/cli.ts schema`);
@@ -149,6 +174,14 @@ async function validate(): Promise<Registry> {
     stable(providerResearch)
   )
     throw new Error("Provider research is not canonically formatted");
+  for (const [name, value] of [
+    ["model-sources", modelSources],
+    ["connection-discovery", discoveryProfiles],
+    ["model-research", modelResearch],
+  ] as const) {
+    if ((await Bun.file(new URL(`../data/${name}.json`, import.meta.url)).text()) !== stable(value))
+      throw new Error(`${name} is not canonically formatted`);
+  }
   for (const review of providerResearch.providers) {
     if (review.subscription_ids.some((id) => !subscriptions.some((item) => item.id === id)))
       throw new Error(`Unknown reviewed subscription namespace: ${review.provider_id}`);
@@ -172,6 +205,7 @@ async function build(): Promise<void> {
     : await fetchText(upstreamUrl);
   const upstream = upstreamSchema.parse(JSON.parse(upstreamBody));
   const upstreamDigest = hash(upstreamBody);
+  const composer = createCatalogComposer(upstream, registry, upstreamDigest);
   await write(path.join(reportDir, "inputs", "build-upstream.json"), upstreamBody);
   const marker = "swarmie-catalog generated output\n";
   const output = await lstat("dist").catch((error: NodeJS.ErrnoException) => {
@@ -214,7 +248,68 @@ async function build(): Promise<void> {
     "dist/subscriptions.schema.json",
     await Bun.file("schemas/subscriptions.schema.json").text(),
   );
-  await write("dist/connections.json", stable(composeConnections(upstream, upstreamDigest)));
+  const connectionCatalog = composeConnections(upstream, upstreamDigest, registry);
+  await write("dist/connections.json", stable(connectionCatalog));
+  await write(
+    "dist/connection.schema.json",
+    await Bun.file("schemas/connection.schema.json").text(),
+  );
+  for (const connection of connectionCatalog.connections) {
+    await write(`dist/${connection.path}`, stable(connection));
+  }
+  const connectionGroups = [
+    {
+      id: "direct-subscriptions",
+      connections: connectionCatalog.connections.filter(
+        (connection) =>
+          connection.execution === "direct-model" && connection.billing.kind === "subscription",
+      ),
+    },
+    {
+      id: "direct-api",
+      connections: connectionCatalog.connections.filter(
+        (connection) =>
+          connection.execution === "direct-model" && connection.billing.subscription_id === null,
+      ),
+    },
+    {
+      id: "coding-agents",
+      connections: connectionCatalog.connections.filter(
+        (connection) => connection.execution === "coding-agent",
+      ),
+    },
+  ];
+  for (const group of connectionGroups) {
+    await write(
+      `dist/connections/${group.id}.json`,
+      stable({ ...connectionCatalog, connections: group.connections }),
+    );
+  }
+  const connectionServices = [
+    ...new Set(connectionCatalog.connections.map((connection) => connection.service_id)),
+  ].sort(compare);
+  for (const service of connectionServices) {
+    await write(
+      `dist/connections/services/${segment(service)}/index.json`,
+      stable({
+        ...connectionCatalog,
+        connections: connectionCatalog.connections.filter(
+          (connection) => connection.service_id === service,
+        ),
+      }),
+    );
+  }
+  for (const provider of Object.keys(upstream.providers).sort(compare)) {
+    await write(
+      `dist/connections/providers/${segment(provider)}.json`,
+      stable({
+        ...connectionCatalog,
+        connections: connectionCatalog.connections.filter((connection) =>
+          connection.provider_ids.includes(provider),
+        ),
+      }),
+    );
+  }
   await write(
     "dist/connections.schema.json",
     await Bun.file("schemas/connections.schema.json").text(),
@@ -227,16 +322,40 @@ async function build(): Promise<void> {
     "dist/provider-research.schema.json",
     await Bun.file("schemas/provider-research.schema.json").text(),
   );
+  for (const [name, value] of [
+    ["model-sources", modelSources],
+    ["connection-discovery", discoveryProfiles],
+    ["model-research", composeModelResearch(upstream)],
+  ] as const) {
+    await write(`dist/${name}.json`, stable(value));
+    await write(`dist/${name}.schema.json`, await Bun.file(`schemas/${name}.schema.json`).text());
+  }
   const providers: { id: string; path: string }[] = [];
   for (const providerId of Object.keys(upstream.providers).sort(compare)) {
-    const provider = composeProvider(upstream, registry, providerId, upstreamDigest);
+    const provider = composer.provider(providerId);
     const providerPath = `providers/${segment(providerId)}.json`;
     await write(`dist/${providerPath}`, stable(provider));
     providers.push({ id: providerId, path: providerPath });
   }
   const subscriptionRoutes = [];
+  const unavailableSubscriptions = [];
   for (const id of subscriptions.map((definition) => definition.id).sort(compare)) {
-    const subscription = composeSubscription(upstream, registry, id, upstreamDigest);
+    let subscription: ComposedSubscription;
+    try {
+      subscription = composer.subscription(id);
+    } catch (error) {
+      if (!(error instanceof ModelCatalogUnavailableError)) throw error;
+      const definition = subscriptions.find((item) => item.id === id);
+      if (!definition) throw error;
+      unavailableSubscriptions.push({
+        id,
+        name: definition.name,
+        reason: "no-qualified-public-model-source",
+        model_catalog: subscriptionCoverage(registry, definition.products),
+        sources: definition.integration.sources,
+      });
+      continue;
+    }
     const subscriptionPath = `subscriptions/${segment(id)}.json`;
     await write(`dist/${subscriptionPath}`, stable(subscription));
     subscriptionRoutes.push({
@@ -248,9 +367,18 @@ async function build(): Promise<void> {
     });
   }
   await write(
+    "dist/subscription-coverage.json",
+    stable({
+      schema_version: 1,
+      available: subscriptionRoutes,
+      unavailable: unavailableSubscriptions,
+    }),
+  );
+  await write(
     "dist/index.json",
     stable({
-      schema_version: 2,
+      schema_version: 4,
+      model_selection: "connection-discovery-required",
       upstream: { url: upstreamUrl, sha256: upstreamDigest },
       catalog: "catalog.json",
       provider_schema: "provider.schema.json",
@@ -261,6 +389,17 @@ async function build(): Promise<void> {
       provider_research_schema: "provider-research.schema.json",
       connections: "connections.json",
       connections_schema: "connections.schema.json",
+      connection_schema: "connection.schema.json",
+      connection_discovery: "connection-discovery.json",
+      connection_discovery_schema: "connection-discovery.schema.json",
+      connection_groups: connectionGroups.map(({ id }) => ({ id, path: `connections/${id}.json` })),
+      connection_services: connectionServices.map((id) => ({
+        id,
+        path: `connections/services/${segment(id)}/index.json`,
+      })),
+      subscription_coverage: "subscription-coverage.json",
+      model_sources: "model-sources.json",
+      model_research: "model-research.json",
       subscriptions: subscriptionRoutes,
       notices: "THIRD_PARTY_NOTICES.md",
       providers,
@@ -305,6 +444,13 @@ try {
       stable(z.toJSONSchema(composedProviderResearchSchema)),
     );
     await write("schemas/connections.schema.json", stable(z.toJSONSchema(connectionsSchema)));
+    await write("schemas/connection.schema.json", stable(z.toJSONSchema(connectionSchema)));
+    await write(
+      "schemas/connection-discovery.schema.json",
+      stable(z.toJSONSchema(discoveryProfilesSchema)),
+    );
+    await write("schemas/model-sources.schema.json", stable(z.toJSONSchema(modelSourcesSchema)));
+    await write("schemas/model-research.schema.json", stable(z.toJSONSchema(modelResearchSchema)));
   } else
     throw new Error(
       "Usage: bun src/cli.ts sync|validate|build|schema [--fixtures DIR] [--upstream FILE] [--output FILE] [--report-dir DIR]",

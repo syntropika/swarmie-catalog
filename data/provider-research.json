@@ -1847,12 +1847,13 @@
     },
     {
       "billing_models": [
-        "subscription",
         "pay-as-you-go",
         "credits"
       ],
       "direct_api_key": "documented",
-      "limitations": [],
+      "limitations": [
+        "This is bounded to current public pricing and terms; a legacy account entitlement was not inspected. Remove or block the previously advertised Plus/Pro subscription profile until current supporting evidence exists."
+      ],
       "provider_id": "chutes",
       "review_status": "reviewed",
       "reviewed_on": "2026-11-19",
@@ -1868,17 +1869,18 @@
           "sha256": "cf8e8ab1cff7006dff11f791b8020750d5685634673e295ed17457c6039d3d55",
           "summary": "Terms distinguish permitted subscription use from automated or high-volume workloads and govern API access.",
           "url": "https://www.chutes.ai/terms"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "ede0d94d5d76a380585800d75378e51119ca3f1c884a15f1d094f53717c1db0f",
+          "summary": "Current subscription model discovery and scope verification.",
+          "url": "https://www.chutes.ai/pricing"
         }
       ],
-      "subscription_ids": [
-        "chutes"
-      ],
-      "subscription_names": [
-        "Plus",
-        "Pro"
-      ],
-      "subscription_status": "documented",
-      "summary": "Chutes offers optional Plus and Pro subscriptions alongside default prepaid pay-as-you-go. Plans cover daily requests with monthly and four-hour caps, then usage falls back to discounted pay-as-you-go. Pricing and terms restrict subscriptions to casual/direct interactive or low-volume API use; automated or high-volume workloads must use pay-as-you-go."
+      "subscription_ids": [],
+      "subscription_names": [],
+      "subscription_status": "not-found",
+      "summary": "The current official pricing page explicitly states that inference has no subscription and uses per-token billing. The current terms were updated on November 1, 2026. Older Plus/Pro review evidence must not be used to manufacture an active subscription model catalog."
     },
     {
       "billing_models": [
@@ -2476,12 +2478,11 @@
     },
     {
       "billing_models": [
-        "pay-as-you-go",
-        "subscription"
+        "pay-as-you-go"
       ],
       "direct_api_key": "documented",
       "limitations": [
-        "Coding Plan endpoint, auth, quota thresholds and terms are not documented."
+        "The earlier review inferred a coding subscription from now-unusable landing-page evidence; that evidence must not grant model access."
       ],
       "provider_id": "dinference",
       "review_status": "reviewed",
@@ -2498,14 +2499,24 @@
           "sha256": "5f64ee2a58b9ed8e40063463b6d72137f8b5ec9e983010be90dcd306080b3e2f",
           "summary": "Beta Coding Plan at $9.95/mo for unlimited DeepSeek-v4.1-flash under an undefined fair-use policy. Names Cursor, Cline and Continue. Beta access granted in waves. No base URL or auth details.",
           "url": "https://dinference.com/coding-plan"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "88d06c7c687fb2e5e8f48d15d5e4bfdfeae8fb01248d507f9b10cf1f721f9783",
+          "summary": "Reused commercial review: Beta Coding Plan at $9.95/mo for unlimited DeepSeek-v4.1-flash under an undefined fair-use policy. Names Cursor, Cline and Continue. Beta access granted in waves. No base URL or auth details.",
+          "url": "https://dinference.com/coding-plan"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "88d06c7c687fb2e5e8f48d15d5e4bfdfeae8fb01248d507f9b10cf1f721f9783",
+          "summary": "Current first-party pricing explicitly says No subscriptions and lists metered token rates.",
+          "url": "https://dinference.com/pricing"
         }
       ],
       "subscription_ids": [],
-      "subscription_names": [
-        "Coding Plan (beta)"
-      ],
-      "subscription_status": "documented",
-      "summary": "DInference mainly sells pay-per-token API access ('no subscriptions'), with direct API aimed at customers spending over $1,000/month. A separate beta Coding Plan offers $9.95/month for 'unlimited' DeepSeek-v4.1-flash under fair use, with access granted in waves. The plan's endpoint and auth are not documented, so no candidate profile is given."
+      "subscription_names": [],
+      "subscription_status": "not-found",
+      "summary": "The current official pricing page explicitly says pay only for use and no subscriptions. The earlier coding-plan URL now returns an application shell without model, tier or quota details. No current model subscription is substantiated."
     },
     {
       "billing_models": [
@@ -3589,16 +3600,29 @@
       ],
       "direct_api_key": "unknown",
       "limitations": [
-        "Official product-page requests returned HTTP 403, including a language-query retry. Official-domain search did not resolve the limitation."
+        "This bounded result concerns the Router product itself. Shared credits can originate from other product plans; those plans were not promoted into an unsupported model subscription catalog."
       ],
       "provider_id": "hostinger-router",
-      "review_status": "limited",
+      "review_status": "reviewed",
       "reviewed_on": "2026-11-19",
-      "sources": [],
+      "sources": [
+        {
+          "capture_kind": "http-body",
+          "sha256": "80785f76d2f30071b9813db22d1aca91ec7480ed0b5097bc36c192d1b8302a04",
+          "summary": "Current subscription model discovery and scope verification.",
+          "url": "https://www.hostinger.com/support/what-is-hostinger-ai-router-and-how-to-get-started/"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "438e9ee8a773e2fc601903d14af1d7cda597cc274e22ed67063463cc46f00882",
+          "summary": "Current subscription model discovery and scope verification.",
+          "url": "https://www.hostinger.com/support/hostinger-credits-how-the-shared-balance-works/"
+        }
+      ],
       "subscription_ids": [],
       "subscription_names": [],
-      "subscription_status": "unknown",
-      "summary": "The Hostinger AI Router page returned an access-denied response on both attempts. The captured content does not establish a subscription, billing model, or direct API-key integration contract."
+      "subscription_status": "not-found",
+      "summary": "Current first-party Router documentation establishes prepaid credit API-key access and explicitly says no subscription or monthly commitment. Exact model IDs are copied from the authenticated Hostinger dashboard. Other Hostinger product plan credits share a balance, but do not define Router model-plan membership."
     },
     {
       "billing_models": [
@@ -6934,7 +6958,7 @@
         }
       ],
       "subscription_ids": [
-        "opencode"
+        "opencode-go"
       ],
       "subscription_names": [
         "Go",
@@ -8208,10 +8232,10 @@
     },
     {
       "billing_models": [
-        "subscription",
         "credits",
+        "free",
         "pay-as-you-go",
-        "free"
+        "subscription"
       ],
       "direct_api_key": "documented",
       "limitations": [
@@ -8233,17 +8257,84 @@
           "sha256": "55c83f8303ce3823b71d24012ac8d64df40c2a00be0594c8a5a32a7573a7a1b2",
           "summary": "Two model families share 'one API key, one SDK, and one credit balance'. Token Factory models use an OpenAI-compatible /v2 path.",
           "url": "https://docs.sarvam.ai/api-reference-docs/getting-started/models"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "7a74f206d431adcc0952135982dc78850c3f820a2ef02ffebd14e488f1e1666e",
+          "summary": "Exact Token Factory model IDs and standard/provisioned access distinction.",
+          "url": "https://docs.sarvam.ai/api/token-factory/models.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "448a603cecf7d18be4b0b726875b6ee24407aa640610c2c9df611012145dd37a",
+          "summary": "Recurring plan names and explicit universal-credit scope.",
+          "url": "https://www.sarvam.ai/api-pricing"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "052647408acfe43698f7e9672a4962076ee6c17c3bd1a12cfec6ab64222b0422",
+          "summary": "Complete model-family index and shared balance.",
+          "url": "https://docs.sarvam.ai/api-reference-docs/getting-started/models.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "b51a8017b16fc07ef3255e40e10d0163e59feb8d5081273822b03b72c383d362",
+          "summary": "Documented authenticated model-list schema and access flag.",
+          "url": "https://docs.sarvam.ai/api-reference/chat/models-v2.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "3732596a3b1b9f65f61b06d3b831845b7cf9d55e4e36c08a225b114600e9405e",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/deepseek-v4.1-flash-1017.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "63812b78be3aa9cd806f2d6c4a2b6e80e4a39f2533fad32acf305f93f2638f6b",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/sarvam-prism.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "5bfb5008787fe6bd1bb268b29f3d1614b4b4217d6927f2abfda561ea6fa7f9fa",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/saaras.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "0bb2f495066923e393edfc2d4191f9f5d16e6c797d0b206104c2e6945e4004ff",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/bulbul.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "35ab3945f1320dcc69cf0d339e732b0495e649d42e26ccf7cc2198b8c9fac9f2",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/mayura.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "f2207b2b716b65bbe34c92b6a50b1fd2d522a9b4495820b8ce875bea87c8e7a4",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/sarvam-translate.md"
+        },
+        {
+          "capture_kind": "http-body",
+          "sha256": "7e24b51348444fceb9f1bb484eaac6f726c6c3db282ca60a896ab0f205ae0e3c",
+          "summary": "Exact native model ID and supported serverless or own-model variants.",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/sarvam-vision.md"
         }
       ],
-      "subscription_ids": [],
+      "subscription_ids": [
+        "sarvam-credit-plans"
+      ],
       "subscription_names": [
         "Pro",
         "Growth",
-        "Business",
-        "Enterprise"
+        "Business"
       ],
       "subscription_status": "documented",
-      "summary": "Sarvam uses one non-expiring credit balance for all APIs, with ₹100 free on signup. Pay-as-you-go has no monthly fee. Pro, Growth and Business are minimum monthly subscriptions that 'come back in full as credits', with better rates and limits. These are recurring API credit commitments billed per token, not an included-usage model subscription."
+      "summary": "Pro, Growth and Business are recurring subscriptions returned as universal API credits. Official billing explicitly covers all supported APIs. Public native-ID tables identify serverless chat, decisions, speech, translation and document models. Provisioned Throughput models require organization-specific approval and are not granted by these plans."
     },
     {
       "billing_models": [

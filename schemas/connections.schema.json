@@ -2,11 +2,93 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "provider_api_keys": {
+    "connections": {
       "items": {
         "additionalProperties": false,
         "properties": {
-          "billing_models": {
+          "authentication": {
+            "additionalProperties": false,
+            "properties": {
+              "methods": {
+                "items": {
+                  "enum": [
+                    "oauth",
+                    "account-login",
+                    "api-key",
+                    "github-token"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "oauth_scopes": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "methods",
+              "oauth_scopes"
+            ],
+            "type": "object"
+          },
+          "automation": {
+            "enum": [
+              "supported",
+              "restricted",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "billing": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "subscription",
+                  "usage-based",
+                  "byok",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              "models": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "subscription_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "models",
+              "subscription_id"
+            ],
+            "type": "object"
+          },
+          "constraints": {
             "items": {
               "minLength": 1,
               "type": "string"
@@ -14,27 +96,489 @@
             "minItems": 1,
             "type": "array"
           },
-          "provider_id": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "provider_path": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "review_status": {
+          "execution": {
             "enum": [
-              "reviewed",
-              "limited"
+              "direct-model",
+              "coding-agent",
+              "unknown"
             ],
             "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "model_discovery": {
+            "additionalProperties": false,
+            "properties": {
+              "context": {
+                "prefixItems": [
+                  {
+                    "const": "connection",
+                    "type": "string"
+                  },
+                  {
+                    "const": "account",
+                    "type": "string"
+                  },
+                  {
+                    "const": "workspace",
+                    "type": "string"
+                  },
+                  {
+                    "const": "authorization",
+                    "type": "string"
+                  },
+                  {
+                    "const": "runtime",
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "method": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "combine": {
+                        "const": "intersection",
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "documented",
+                        "type": "string"
+                      },
+                      "reviewed_on": {
+                        "format": "date",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+                        "type": "string"
+                      },
+                      "sources": {
+                        "items": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "capture_kind": {
+                              "enum": [
+                                "http-body",
+                                "web-extract"
+                              ],
+                              "type": "string"
+                            },
+                            "id": {
+                              "minLength": 1,
+                              "type": "string"
+                            },
+                            "sha256": {
+                              "pattern": "^[a-f0-9]{64}$",
+                              "type": "string"
+                            },
+                            "url": {
+                              "format": "uri",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "url",
+                            "sha256",
+                            "capture_kind"
+                          ],
+                          "type": "object"
+                        },
+                        "minItems": 1,
+                        "type": "array"
+                      },
+                      "steps": {
+                        "items": {
+                          "oneOf": [
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "authentication": {
+                                  "const": "connection-credentials",
+                                  "type": "string"
+                                },
+                                "evidence": {
+                                  "items": {
+                                    "minLength": 1,
+                                    "type": "string"
+                                  },
+                                  "minItems": 1,
+                                  "type": "array"
+                                },
+                                "format": {
+                                  "enum": [
+                                    "chatgpt-models",
+                                    "openai-models"
+                                  ],
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "const": "http",
+                                  "type": "string"
+                                },
+                                "method": {
+                                  "const": "GET",
+                                  "type": "string"
+                                },
+                                "url": {
+                                  "format": "uri",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "method",
+                                "url",
+                                "authentication",
+                                "format",
+                                "evidence"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "authentication": {
+                                  "const": "connection-credentials",
+                                  "type": "string"
+                                },
+                                "evidence": {
+                                  "items": {
+                                    "minLength": 1,
+                                    "type": "string"
+                                  },
+                                  "minItems": 1,
+                                  "type": "array"
+                                },
+                                "format": {
+                                  "const": "codex-models",
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "const": "json-rpc",
+                                  "type": "string"
+                                },
+                                "method": {
+                                  "const": "model/list",
+                                  "type": "string"
+                                },
+                                "params": {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "includeHidden": {
+                                      "const": false,
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "includeHidden"
+                                  ],
+                                  "type": "object"
+                                },
+                                "runtime": {
+                                  "const": "codex",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "runtime",
+                                "method",
+                                "params",
+                                "authentication",
+                                "format",
+                                "evidence"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        "minItems": 1,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "combine",
+                      "steps",
+                      "reviewed_on",
+                      "sources"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "unavailable",
+                        "type": "string"
+                      },
+                      "reason": {
+                        "const": "no-reviewed-discovery-method",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "reason"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              },
+              "refresh_on": {
+                "prefixItems": [
+                  {
+                    "const": "connect",
+                    "type": "string"
+                  },
+                  {
+                    "const": "context-change",
+                    "type": "string"
+                  },
+                  {
+                    "const": "model-rejection",
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "requirement": {
+                "const": "required",
+                "type": "string"
+              },
+              "static_fallback": {
+                "const": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "requirement",
+              "static_fallback",
+              "context",
+              "refresh_on",
+              "method"
+            ],
+            "type": "object"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "products": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "provider_ids": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reference_catalog": {
+            "additionalProperties": false,
+            "properties": {
+              "documented_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "native_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "path": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "role": {
+                "const": "reference-only",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "documented",
+                  "unavailable",
+                  "not-applicable"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "role",
+              "path",
+              "status",
+              "native_models",
+              "documented_models"
+            ],
+            "type": "object"
+          },
+          "reviewed_on": {
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+            "type": "string"
+          },
+          "route_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "service_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "capture_kind": {
+                  "enum": [
+                    "http-body",
+                    "web-extract"
+                  ],
+                  "type": "string"
+                },
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sha256": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "type": "string"
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "url",
+                "sha256",
+                "capture_kind"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "support": {
+            "enum": [
+              "documented",
+              "not-supported",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "third_party_use": {
+            "enum": [
+              "supported",
+              "restricted",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "transport": {
+            "additionalProperties": false,
+            "properties": {
+              "endpoints": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "protocols": {
+                      "items": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "region": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "url": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "protocols"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "kind": {
+                "enum": [
+                  "direct-api",
+                  "cli",
+                  "sdk"
+                ],
+                "type": "string"
+              },
+              "protocols": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "required_clients": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "kind",
+              "protocols",
+              "endpoints",
+              "required_clients"
+            ],
+            "type": "object"
           }
         },
         "required": [
-          "provider_id",
-          "provider_path",
-          "billing_models",
-          "review_status"
+          "id",
+          "path",
+          "service_id",
+          "route_id",
+          "name",
+          "provider_ids",
+          "products",
+          "execution",
+          "transport",
+          "authentication",
+          "billing",
+          "support",
+          "third_party_use",
+          "automation",
+          "constraints",
+          "reviewed_on",
+          "sources",
+          "model_discovery",
+          "reference_catalog"
         ],
         "type": "object"
       },
@@ -72,197 +616,14 @@
       ],
       "type": "object"
     },
-    "routes": {
-      "items": {
-        "additionalProperties": false,
-        "properties": {
-          "auth_methods": {
-            "items": {
-              "enum": [
-                "oauth",
-                "account-login",
-                "api-key",
-                "github-token"
-              ],
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "automation": {
-            "enum": [
-              "supported",
-              "restricted",
-              "unknown"
-            ],
-            "type": "string"
-          },
-          "billing": {
-            "enum": [
-              "subscription",
-              "usage-based",
-              "byok",
-              "unknown"
-            ],
-            "type": "string"
-          },
-          "connection_kind": {
-            "enum": [
-              "subscription",
-              "api-key",
-              "coding-agent",
-              "unknown"
-            ],
-            "type": "string"
-          },
-          "constraints": {
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "minItems": 1,
-            "type": "array"
-          },
-          "endpoints": {
-            "items": {
-              "additionalProperties": false,
-              "properties": {
-                "protocols": {
-                  "items": {
-                    "minLength": 1,
-                    "type": "string"
-                  },
-                  "minItems": 1,
-                  "type": "array"
-                },
-                "region": {
-                  "minLength": 1,
-                  "type": "string"
-                },
-                "url": {
-                  "format": "uri",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "url",
-                "protocols"
-              ],
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "evidence": {
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "minItems": 1,
-            "type": "array"
-          },
-          "execution": {
-            "enum": [
-              "direct-model",
-              "coding-agent",
-              "unknown"
-            ],
-            "type": "string"
-          },
-          "id": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "kind": {
-            "enum": [
-              "direct-api",
-              "cli",
-              "sdk"
-            ],
-            "type": "string"
-          },
-          "name": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "products": {
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "minItems": 1,
-            "type": "array"
-          },
-          "protocols": {
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "required_clients": {
-            "items": {
-              "minLength": 1,
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "subscription_id": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "subscription_path": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "support": {
-            "enum": [
-              "documented",
-              "not-supported",
-              "unknown"
-            ],
-            "type": "string"
-          },
-          "third_party_use": {
-            "enum": [
-              "supported",
-              "restricted",
-              "unknown"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "kind",
-          "execution",
-          "billing",
-          "connection_kind",
-          "products",
-          "support",
-          "auth_methods",
-          "required_clients",
-          "protocols",
-          "endpoints",
-          "third_party_use",
-          "automation",
-          "constraints",
-          "evidence",
-          "subscription_id",
-          "subscription_path"
-        ],
-        "type": "object"
-      },
-      "type": "array"
-    },
     "schema_version": {
-      "const": 1,
+      "const": 3,
       "type": "number"
     }
   },
   "required": [
     "schema_version",
-    "routes",
-    "provider_api_keys",
+    "connections",
     "research_coverage"
   ],
   "type": "object"

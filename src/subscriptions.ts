@@ -23,12 +23,27 @@ export function subscriptionCoverage(
     );
     return {
       id,
-      status: owner ? ("partial" as const) : ("unknown" as const),
+      status: owner ? ("partial" as const) : ("unavailable" as const),
       state: owner?.state ?? null,
+      native_models: new Set(
+        owner?.claims
+          .filter((claim) => claim.channel === "subscription")
+          .map((claim) => claim.source_model),
+      ).size,
+      available_models: new Set(
+        owner?.claims
+          .filter((claim) => claim.channel === "subscription" && claim.status === "available")
+          .map((claim) => claim.source_model),
+      ).size,
+      unresolved_models: new Set(
+        owner?.claims
+          .filter((claim) => claim.channel === "subscription" && claim.model_id === null)
+          .map((claim) => claim.source_model),
+      ).size,
     };
   });
   return {
-    status: coverage.some((item) => item.status === "partial") ? "partial" : "unknown",
+    status: coverage.some((item) => item.status === "partial") ? "partial" : "unavailable",
     products: coverage,
   };
 }

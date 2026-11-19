@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { connectionSchema, connectionsSchema } from "../src/connections.ts";
 import { subscriptionManifestSchema } from "../src/integration-schema.ts";
 import { composedProviderSchema, composedSubscriptionSchema } from "../src/schema.ts";
 import { hash } from "../src/stable.ts";
@@ -58,6 +59,10 @@ test("provider routes embed plan vectors without product or plan files and rebui
     "subscriptions",
     "provider-research",
     "connections",
+    "connection",
+    "connection-discovery",
+    "model-sources",
+    "model-research",
   ]) {
     await Bun.write(
       path.join(directory, "schemas", `${name}.schema.json`),
@@ -82,7 +87,7 @@ test("provider routes embed plan vectors without product or plan files and rebui
   const provider = composedProviderSchema.parse(await Bun.file(providerFile).json());
   expect(provider.id).toBe("openai");
   expect(Object.keys(provider.models).length).toBeGreaterThan(0);
-  expect(provider.subscription_catalog.schema_version).toBe(2);
+  expect(provider.subscription_catalog.schema_version).toBe(4);
   expect(
     Object.values(provider.models).some((model) =>
       model.subscription_access.some(
@@ -116,21 +121,61 @@ test("provider routes embed plan vectors without product or plan files and rebui
     await Bun.file(path.join(directory, "dist/subscriptions.json")).json(),
   );
   expect(manifest.subscriptions.length).toBeGreaterThan(2);
+  const modelCoverage = await Bun.file(
+    path.join(directory, "dist/subscription-coverage.json"),
+  ).json();
+  expect(modelCoverage.available.length + modelCoverage.unavailable.length).toBe(
+    manifest.subscriptions.length,
+  );
   for (const definition of manifest.subscriptions) {
-    const subscription = composedSubscriptionSchema.parse(
-      await Bun.file(path.join(directory, `dist/subscriptions/${definition.id}.json`)).json(),
-    );
-    expect(subscription.integration).toEqual(definition.integration);
-    if (definition.id !== "chatgpt" && definition.id !== "github-copilot") {
-      expect(subscription.models).toEqual({});
-      expect(subscription.model_catalog.status).toBe("unknown");
+    const file = Bun.file(path.join(directory, `dist/subscriptions/${definition.id}.json`));
+    if (index.subscriptions.some((item: { id: string }) => item.id === definition.id)) {
+      const subscription = composedSubscriptionSchema.parse(await file.json());
+      expect(Object.keys(subscription.models).length).toBeGreaterThan(0);
+      expect(subscription.integration).toEqual(definition.integration);
+    } else {
+      expect(await file.exists()).toBe(false);
+      expect(
+        modelCoverage.unavailable.some(
+          (item: { id: string; reason: string }) =>
+            item.id === definition.id && item.reason === "no-qualified-public-model-source",
+        ),
+      ).toBe(true);
     }
   }
-  const connections = await Bun.file(path.join(directory, "dist/connections.json")).json();
+  const connections = connectionsSchema.parse(
+    await Bun.file(path.join(directory, "dist/connections.json")).json(),
+  );
   expect(
-    connections.routes.some(
-      (route: { connection_kind: string }) => route.connection_kind === "coding-agent",
-    ),
+    connections.connections.some((connection) => connection.execution === "coding-agent"),
+  ).toBe(true);
+  expect(index.model_selection).toBe("connection-discovery-required");
+  for (const connection of connections.connections) {
+    expect(
+      connectionSchema.parse(await Bun.file(path.join(directory, "dist", connection.path)).json()),
+    ).toEqual(connection);
+  }
+  for (const group of index.connection_groups) {
+    const view = connectionsSchema.parse(
+      await Bun.file(path.join(directory, "dist", group.path)).json(),
+    );
+    expect(
+      view.connections.every((connection) =>
+        group.id === "coding-agents"
+          ? connection.execution === "coding-agent"
+          : connection.execution === "direct-model" &&
+            (group.id === "direct-subscriptions"
+              ? connection.billing.kind === "subscription"
+              : connection.billing.subscription_id === null),
+      ),
+    ).toBe(true);
+  }
+  const openaiConnections = connectionsSchema.parse(
+    await Bun.file(path.join(directory, "dist/connections/providers/openai.json")).json(),
+  );
+  expect(openaiConnections.connections).toHaveLength(5);
+  expect(
+    openaiConnections.connections.every((connection) => connection.service_id !== "github-copilot"),
   ).toBe(true);
   const research = await Bun.file(path.join(directory, "dist/provider-research.json")).json();
   expect(research.counts.total).toBe(Object.keys(JSON.parse(input).providers).length);
@@ -141,4 +186,4 @@ test("provider routes embed plan vectors without product or plan files and rebui
   await Bun.write(path.join(directory, "upstream.json"), "{}");
   expect((await cli(args, directory)).code).toBe(1);
   expect(hash(await Bun.file(providerFile).text())).toBe(first);
-});
+}, 30000);

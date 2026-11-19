@@ -7,10 +7,10 @@ import { hash } from "../src/stable.ts";
 
 const snapshotSchema = z.object({ source: sourceSchema, body: z.string() }).strict();
 export const now = "2026-11-12T00:00:00.000Z";
-export const fixtureLoader: SourceLoader = async (_repo, _path, id) =>
+export const fixtureLoader: SourceLoader = async ({ id }) =>
   snapshotSchema.parse(await Bun.file(new URL(`./fixtures/${id}.json`, import.meta.url)).json());
 export async function snapshot(id: string, body?: string): Promise<Snapshot> {
-  const value = await fixtureLoader("", "", id);
+  const value = await fixtureLoader({ kind: "http", url: "https://fixture.invalid/", id });
   return body === undefined
     ? value
     : { ...value, body, source: { ...value.source, sha256: hash(body) } };

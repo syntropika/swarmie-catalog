@@ -1,12 +1,25 @@
-export { composeProvider, composeSubscription } from "./compose.ts";
-export { composeConnections, connectionsSchema } from "./connections.ts";
+export {
+  composeProvider,
+  composeSubscription,
+  createCatalogComposer,
+  ModelCatalogUnavailableError,
+} from "./compose.ts";
+export type { Connection } from "./connections.ts";
+export { composeConnections, connectionSchema, connectionsSchema } from "./connections.ts";
+export type { DiscoveredModel, ModelDiscovery } from "./discovery.ts";
+export {
+  ModelDiscoveryError,
+  modelDiscoverySchema,
+  readModelPage,
+  resolveDiscoveredModels,
+} from "./discovery.ts";
 export { validateRegistry } from "./engine.ts";
 export type { SubscriptionDefinition, SubscriptionManifest } from "./integration-schema.ts";
 export {
-  classifyConnection,
   integrationSchema,
   subscriptionManifestSchema,
 } from "./integration-schema.ts";
+export { composeModelResearch, modelResearch, modelResearchSchema } from "./model-research.ts";
 export type { ProviderReview } from "./provider-research.ts";
 export {
   composeProviderResearch,

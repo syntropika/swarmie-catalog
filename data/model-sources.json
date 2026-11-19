@@ -1,0 +1,1506 @@
+{
+  "products": [
+    {
+      "offering_provider": "abacus",
+      "parser": "abacus",
+      "product": "abacus",
+      "routes": [
+        "routellm-subscription"
+      ],
+      "sources": [
+        {
+          "id": "official-9f0a8e48c511",
+          "url": "https://routellm.abacus.ai/v1/models"
+        },
+        {
+          "id": "official-c15db006f633",
+          "url": "https://abacus.ai/help/route-llm/"
+        },
+        {
+          "id": "official-977d8df4d2d2",
+          "url": "https://routellm-apis.abacus.ai/faq"
+        },
+        {
+          "id": "official-78c0a465d2e2",
+          "url": "https://abacus.ai/teams/hxi"
+        }
+      ]
+    },
+    {
+      "offering_provider": "abliteration-ai",
+      "parser": "abliteration-ai-monthly-plans",
+      "product": "abliteration-ai-monthly-plans",
+      "routes": [
+        "abliteration-api"
+      ],
+      "sources": [
+        {
+          "id": "source-30b6a983d7de",
+          "url": "https://abliteration.ai/pricing"
+        },
+        {
+          "id": "source-572a28bd416c",
+          "url": "https://docs.abliteration.ai/models.md"
+        },
+        {
+          "id": "source-03666eab5bf8",
+          "url": "https://docs.abliteration.ai/pricing.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "agnes",
+      "parser": "agnes",
+      "product": "agnes",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-d82eb3e69a546db7",
+          "url": "https://agnes-ai.com/en/docs/tokenplan.md"
+        },
+        {
+          "id": "source-aa5edac99c6d0063",
+          "url": "https://agnes-ai.com/en/docs/pricing.md"
+        },
+        {
+          "id": "source-cc497a1fcfec1407",
+          "url": "https://agnes-ai.com/en/docs/quickstart"
+        }
+      ]
+    },
+    {
+      "offering_provider": "aigrow",
+      "parser": "aigrow-subscription",
+      "product": "aigrow-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-f5a9c9cae36b",
+          "url": "https://aigrow.gg/ai-api"
+        }
+      ]
+    },
+    {
+      "offering_provider": "alibaba",
+      "parser": "alibaba",
+      "product": "alibaba",
+      "routes": [
+        "legacy-coding-plan",
+        "token-plan-tools"
+      ],
+      "sources": [
+        {
+          "id": "official-edfa46e4d1d2",
+          "url": "https://docs.modelstudio.console.alibabacloud.com/en/model-studio/token-plan-personal-overview.md"
+        },
+        {
+          "id": "official-bdba62001643",
+          "url": "https://docs.modelstudio.console.alibabacloud.com/en/model-studio/token-plan-team-overview.md"
+        },
+        {
+          "id": "official-845b36cae803",
+          "url": "https://www.alibabacloud.com/help/en/model-studio/coding-plan"
+        }
+      ]
+    },
+    {
+      "offering_provider": "alibaba-cn",
+      "parser": "alibaba-cn-coding-plan",
+      "product": "alibaba-cn-coding-plan",
+      "routes": [
+        "alibaba-cn-coding-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "official-f93256b5ee16",
+          "url": "https://help.aliyun.com/zh/model-studio/coding-plan"
+        }
+      ]
+    },
+    {
+      "offering_provider": "alibaba-coding-plan-cn",
+      "parser": "alibaba-coding-plan-cn",
+      "product": "alibaba-coding-plan-cn",
+      "routes": [
+        "alibaba-coding-plan-cn-api"
+      ],
+      "sources": [
+        {
+          "id": "official-f93256b5ee16",
+          "url": "https://help.aliyun.com/zh/model-studio/coding-plan"
+        }
+      ]
+    },
+    {
+      "offering_provider": "alibaba-coding-plan",
+      "parser": "alibaba-coding-plan-intl",
+      "product": "alibaba-coding-plan-intl",
+      "routes": [
+        "alibaba-coding-plan-intl-api"
+      ],
+      "sources": [
+        {
+          "id": "official-845b36cae803",
+          "url": "https://www.alibabacloud.com/help/en/model-studio/coding-plan"
+        }
+      ]
+    },
+    {
+      "offering_provider": "alibaba-token-plan-cn",
+      "parser": "alibaba-token-plan-cn",
+      "product": "alibaba-token-plan-cn",
+      "routes": [
+        "alibaba-token-plan-cn-api"
+      ],
+      "sources": [
+        {
+          "id": "official-6cea5570b338",
+          "url": "https://help.aliyun.com/zh/model-studio/token-plan-personal-overview"
+        },
+        {
+          "id": "official-dee7f0e38224",
+          "url": "https://help.aliyun.com/zh/model-studio/token-plan-team-overview"
+        }
+      ]
+    },
+    {
+      "offering_provider": "alibaba-token-plan",
+      "parser": "alibaba-token-plan-intl",
+      "product": "alibaba-token-plan-intl",
+      "routes": [
+        "alibaba-token-plan-intl-api"
+      ],
+      "sources": [
+        {
+          "id": "official-edfa46e4d1d2",
+          "url": "https://docs.modelstudio.console.alibabacloud.com/en/model-studio/token-plan-personal-overview.md"
+        },
+        {
+          "id": "official-bdba62001643",
+          "url": "https://docs.modelstudio.console.alibabacloud.com/en/model-studio/token-plan-team-overview.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "augure",
+      "parser": "augure-subscription",
+      "product": "augure-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-495b0198e872",
+          "url": "https://augureai.ca/docs/api"
+        },
+        {
+          "id": "source-61f0346f3f58",
+          "url": "https://augureai.ca/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "berget",
+      "parser": "berget",
+      "product": "berget",
+      "routes": [
+        "serverless"
+      ],
+      "sources": [
+        {
+          "id": "source-9b56a6e202b3",
+          "url": "https://api.berget.ai/v1/models"
+        },
+        {
+          "id": "source-157a1669fd2c",
+          "url": "https://berget.ai/en/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "cline-pass",
+      "parser": "cline-pass",
+      "product": "cline-pass",
+      "routes": [
+        "clinepass-api",
+        "clinepass-cline-cli"
+      ],
+      "sources": [
+        {
+          "id": "source-2abe7484c62f",
+          "url": "https://docs.cline.bot/getting-started/clinepass"
+        }
+      ]
+    },
+    {
+      "offering_provider": "commandcode",
+      "parser": "commandcode-plans",
+      "product": "commandcode-plans",
+      "routes": [
+        "commandcode-cli",
+        "commandcode-provider-api-plan"
+      ],
+      "sources": [
+        {
+          "id": "source-f03eb3b925d696bd",
+          "url": "https://api.commandcode.ai/provider/v1/models"
+        },
+        {
+          "id": "source-ba6d40c83d28f222",
+          "url": "https://commandcode.ai/docs/plans/go"
+        },
+        {
+          "id": "source-f77ab69979d3060d",
+          "url": "https://commandcode.ai/docs/plans/goat"
+        },
+        {
+          "id": "source-3f01a015b6b5004f",
+          "url": "https://commandcode.ai/docs/plans/pro"
+        },
+        {
+          "id": "source-a680d8b60c447374",
+          "url": "https://commandcode.ai/docs/plans/max"
+        },
+        {
+          "id": "source-7877c6996e6c2813",
+          "url": "https://commandcode.ai/docs/resources/pricing-limits"
+        },
+        {
+          "id": "source-d7d07343646aa7d7",
+          "url": "https://commandcode.ai/docs/provider"
+        }
+      ]
+    },
+    {
+      "offering_provider": "empiriolabs",
+      "parser": "empiriolabs-subscription",
+      "product": "empiriolabs-subscription",
+      "routes": [],
+      "sources": [
+        {
+          "id": "source-a172930fdf37",
+          "url": "https://api.empiriolabs.ai/v1/models"
+        },
+        {
+          "id": "source-8ac28d0eb636",
+          "url": "https://docs.empiriolabs.ai/plans"
+        },
+        {
+          "id": "source-55997e28a822",
+          "url": "https://empiriolabs.ai/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "fireworks-ai",
+      "parser": "fireworks-ai",
+      "product": "fireworks-ai",
+      "routes": [
+        "nexus-auto-api"
+      ],
+      "sources": [
+        {
+          "id": "official-6c14aaa70ccd",
+          "url": "https://docs.fireworks.ai/nexus/plans.md"
+        },
+        {
+          "id": "official-07a7d27e74d7",
+          "url": "https://docs.fireworks.ai/nexus/auto.md"
+        },
+        {
+          "id": "official-e71f7487b6bc",
+          "url": "https://docs.fireworks.ai/nexus/open-models.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "frogbot",
+      "parser": "frogbot-subscription",
+      "product": "frogbot-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-d764f6af0a6f",
+          "url": "https://docs.frogbot.ai/api-reference/models.md"
+        },
+        {
+          "id": "source-8c3590e241a2",
+          "url": "https://docs.frogbot.ai/balance-usage-pricing.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "zhipuai-coding-plan",
+      "parser": "glm-coding-plan-cn",
+      "product": "glm-coding-plan-cn",
+      "routes": [
+        "zhipuai-coding-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "source-b66ee8e4b4e7",
+          "url": "https://docs.bigmodel.cn/cn/coding-plan/overview"
+        },
+        {
+          "id": "source-e709e4bd3b51",
+          "url": "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3.md"
+        },
+        {
+          "id": "source-f62d0c84a763",
+          "url": "https://docs.bigmodel.cn/cn/guide/models/vlm/glm-5.3-flash.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "huawei-maas",
+      "parser": "huawei-maas",
+      "product": "huawei-maas",
+      "routes": [
+        "ai-tools"
+      ],
+      "sources": [
+        {
+          "id": "source-a82e3c73cb57",
+          "url": "https://support.huaweicloud.com/Token-Plan-maas/tokenplan-maas-0008.html"
+        },
+        {
+          "id": "source-5610deeae11c",
+          "url": "https://support.huaweicloud.com/Token-Plan-maas/tokenplan-maas-0001.html"
+        }
+      ]
+    },
+    {
+      "offering_provider": "huggingface",
+      "parser": "huggingface-pro-inference-credits",
+      "product": "huggingface-pro-inference-credits",
+      "routes": [
+        "hf-router-token"
+      ],
+      "sources": [
+        {
+          "id": "official-14d32c711845",
+          "url": "https://router.huggingface.co/v1/models"
+        },
+        {
+          "id": "official-ab27080818d0",
+          "url": "https://huggingface.co/docs/inference-providers/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "hyper",
+      "parser": "hyper-subscription",
+      "product": "hyper-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-72c697746680",
+          "url": "https://hyper.charm.land/v1/models"
+        },
+        {
+          "id": "source-a8b4736fe76c",
+          "url": "https://hyper.charm.land/docs/plans-billing.html"
+        },
+        {
+          "id": "source-9563997a6be3",
+          "url": "https://hyper.charm.land/docs/api/list-models.html"
+        }
+      ]
+    },
+    {
+      "offering_provider": "inferall",
+      "parser": "inferall-subscription",
+      "product": "inferall-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-19428407a91cf3f5",
+          "url": "https://api.inferall.ai/v1/models"
+        },
+        {
+          "id": "source-2f151cb8679e1398",
+          "url": "https://inferall.ai/pricing"
+        },
+        {
+          "id": "source-c611c8b023bcf9cc",
+          "url": "https://inferall.ai/docs"
+        },
+        {
+          "id": "source-8f2807615163a4bd",
+          "url": "https://www.inferall.ai/models"
+        }
+      ]
+    },
+    {
+      "offering_provider": "inference",
+      "parser": "inference",
+      "product": "inference",
+      "routes": [],
+      "sources": [
+        {
+          "id": "source-8f7899c80343dead",
+          "url": "https://api.inference.net/v1/models"
+        },
+        {
+          "id": "source-754cbd770b8f75f3",
+          "url": "https://inference.net/subscription/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "io-net",
+      "parser": "io-net",
+      "product": "io-net",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-4d2a0dca4253",
+          "url": "https://api.intelligence.io.solutions/api/v1/models"
+        },
+        {
+          "id": "source-aa54f6e7b4dd",
+          "url": "https://io.net/docs/guides/payment/io-intelligence-payments.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "jiekou",
+      "parser": "jiekou",
+      "product": "jiekou",
+      "routes": [
+        "token-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "official-68148b1b74de",
+          "url": "https://jiekou.vip/resource-pack"
+        }
+      ]
+    },
+    {
+      "offering_provider": "kenari",
+      "parser": "kenari-plans",
+      "product": "kenari-plans",
+      "routes": [
+        "kenari-api",
+        "kenari-claude-code"
+      ],
+      "sources": [
+        {
+          "id": "source-6dbee068f5ef",
+          "url": "https://kenari.id/api/plans"
+        },
+        {
+          "id": "source-6eb40a6c760c",
+          "url": "https://kenari.id/api/public/pricing"
+        },
+        {
+          "id": "source-7eead6fd5635",
+          "url": "https://kenari.id/docs/subscriptions"
+        }
+      ]
+    },
+    {
+      "offering_provider": "kilo",
+      "parser": "kilo-subscription",
+      "product": "kilo-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-0ddbde1fef24e600",
+          "url": "https://ai-gateway.kilo.ai/api/v1/models"
+        },
+        {
+          "id": "source-97d72d112b5ece15",
+          "url": "https://kilo.ai/pricing/kilo-pass"
+        },
+        {
+          "id": "source-3fee22be5132d1bd",
+          "url": "https://kilo.ai/docs/gateway/models-and-providers"
+        }
+      ]
+    },
+    {
+      "offering_provider": "kimi-code-plan-cn",
+      "parser": "kimi",
+      "product": "kimi-code",
+      "routes": [
+        "kimi-code-cli",
+        "kimi-code-plan-global-kimi-code-cli"
+      ],
+      "sources": [
+        {
+          "id": "source-55f15e0403a8",
+          "url": "https://www.kimi.com/code/docs/en/kimi-code/membership.html"
+        },
+        {
+          "id": "source-e39ac096f86a",
+          "url": "https://www.kimi.com/code/docs/en/kimi-code/models.html"
+        }
+      ]
+    },
+    {
+      "offering_provider": "kuae-cloud-coding-plan",
+      "parser": "kuae-coding-plan",
+      "product": "kuae-coding-plan",
+      "routes": [
+        "kuae-coding-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "official-ca7d636032e0",
+          "url": "https://docs.mthreads.com/kuaecloud/kuaecloud-doc-online/coding_plan/plan_overview/"
+        },
+        {
+          "id": "official-298dc780c3c5",
+          "url": "https://docs.mthreads.com/kuaecloud/kuaecloud-doc-online/coding_plan/tools_config/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "llmgateway",
+      "parser": "llmgateway-devpass",
+      "product": "llmgateway-devpass",
+      "routes": [
+        "devpass-api-key",
+        "devpass-code-cli"
+      ],
+      "sources": [
+        {
+          "id": "source-050a7921bc347bd4",
+          "url": "https://devpass.llmgateway.io/models"
+        },
+        {
+          "id": "source-f5827be1535164fa",
+          "url": "https://devpass.llmgateway.io/models?page=2"
+        },
+        {
+          "id": "source-8e4f7b89e1572543",
+          "url": "https://devpass.llmgateway.io/models?page=3"
+        },
+        {
+          "id": "source-380f4243fae6c362",
+          "url": "https://devpass.llmgateway.io/models?page=4"
+        },
+        {
+          "id": "source-45e6223ce13363ce",
+          "url": "https://devpass.llmgateway.io/models?page=5"
+        },
+        {
+          "id": "source-9e305cf9c5923bea",
+          "url": "https://devpass.llmgateway.io/models?page=6"
+        },
+        {
+          "id": "source-ec7678f3b34c81de",
+          "url": "https://devpass.llmgateway.io/models?page=7"
+        },
+        {
+          "id": "source-f24b66f2b41e914e",
+          "url": "https://devpass.llmgateway.io/models?page=8"
+        },
+        {
+          "id": "source-061a6f43a7b048b2",
+          "url": "https://devpass.llmgateway.io/models?page=9"
+        },
+        {
+          "id": "source-bab9a6d56b5bd9b9",
+          "url": "https://devpass.llmgateway.io/models?page=10"
+        },
+        {
+          "id": "source-456fa3695edcd240",
+          "url": "https://devpass.llmgateway.io/models?page=11"
+        },
+        {
+          "id": "source-78430bf5b209db63",
+          "url": "https://devpass.llmgateway.io/models?page=12"
+        },
+        {
+          "id": "source-8f9525e4942b95ee",
+          "url": "https://devpass.llmgateway.io/models?page=13"
+        },
+        {
+          "id": "source-fe5bb0e3c16f1f14",
+          "url": "https://llmgateway.io/products/devpass"
+        },
+        {
+          "id": "source-2233c5a2e1f66ce0",
+          "url": "https://docs.llmgateway.io/learn/model-categories"
+        }
+      ]
+    },
+    {
+      "offering_provider": "minimax-coding-plan",
+      "parser": "minimax-m-plan",
+      "product": "minimax-m-plan",
+      "routes": [
+        "minimax-m-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "source-67fd3292ab5b",
+          "url": "https://platform.minimax.io/docs/m-plan/intro.md"
+        },
+        {
+          "id": "source-dda70b9138e3",
+          "url": "https://platform.minimax.io/docs/m-plan/other-tools.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "minimax-cn-coding-plan",
+      "parser": "minimax-m-plan-cn",
+      "product": "minimax-m-plan-cn",
+      "routes": [
+        "minimax-m-plan-api-cn"
+      ],
+      "sources": [
+        {
+          "id": "source-3172abaa2318",
+          "url": "https://platform.minimax.cn/docs/m-plan/intro.md"
+        },
+        {
+          "id": "source-2f586da08972",
+          "url": "https://platform.minimax.cn/docs/m-plan/other-tools.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "modelis",
+      "parser": "modelis",
+      "product": "modelis",
+      "routes": [
+        "rapidapi-subscription"
+      ],
+      "sources": [
+        {
+          "id": "official-9ca6dfee39ea",
+          "url": "https://modelishub.com/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "moneo",
+      "parser": "moneo-subscription",
+      "product": "moneo-subscription",
+      "routes": [
+        "moneo-api-key"
+      ],
+      "sources": [
+        {
+          "id": "source-68ed9b26fbe9",
+          "url": "https://api.moneo.one/v1/models"
+        },
+        {
+          "id": "source-9fe44a1d480d",
+          "url": "https://moneo.one/price.html"
+        },
+        {
+          "id": "source-f9100fd35f4a",
+          "url": "https://supabase.moneo.one/functions/v1/public-tariffs"
+        }
+      ]
+    },
+    {
+      "offering_provider": "morph",
+      "parser": "morph-plans",
+      "product": "morph-plans",
+      "routes": [
+        "morph-api"
+      ],
+      "sources": [
+        {
+          "id": "source-10f744eb71e85617",
+          "url": "https://www.morphllm.com/api/models/json?prices=list"
+        },
+        {
+          "id": "source-8b1ffe92fd82c93a",
+          "url": "https://docs.morphllm.com/ultra-plan.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "nan",
+      "parser": "nan",
+      "product": "nan",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-b8989932d268",
+          "url": "https://nan.builders/docs/choose-a-model"
+        },
+        {
+          "id": "source-9d02544f74f3",
+          "url": "https://nan.builders/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "nano-gpt",
+      "parser": "nano-gpt-pro",
+      "product": "nano-gpt-pro",
+      "routes": [
+        "nano-gpt-subscription-api"
+      ],
+      "sources": [
+        {
+          "id": "official-b53cea3366be",
+          "url": "https://api.nano-gpt.com/api/subscription/v1/models?detailed=true"
+        },
+        {
+          "id": "official-ce2b06fd1969",
+          "url": "https://docs.nano-gpt.com/api-reference/endpoint/models"
+        },
+        {
+          "id": "official-167858b6cb41",
+          "url": "https://nano-gpt.com/pricing"
+        },
+        {
+          "id": "official-eced6b727f45",
+          "url": "https://api.nano-gpt.com/api/paid/v1/models?detailed=true"
+        }
+      ]
+    },
+    {
+      "offering_provider": "neuralwatt",
+      "parser": "neuralwatt",
+      "product": "neuralwatt",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-34659631cde4",
+          "url": "https://api.neuralwatt.com/v1/models"
+        },
+        {
+          "id": "source-c99ca1f466b0",
+          "url": "https://portal.neuralwatt.com/pricing"
+        },
+        {
+          "id": "source-fa51e5502612",
+          "url": "https://docs.neuralwatt.com/api-reference/inference/list-available-models.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "oathbreaker",
+      "parser": "oathbreaker",
+      "product": "oathbreaker",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-dfe71dc0099e2404",
+          "url": "https://oathbreaker.ai/docs"
+        },
+        {
+          "id": "source-94cd3fdc9c35c393",
+          "url": "https://oathbreaker.ai/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "ollama-cloud",
+      "parser": "ollama-cloud-subscription",
+      "product": "ollama-cloud-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "official-229a1e29fffc",
+          "url": "https://ollama.com/api/tags"
+        },
+        {
+          "id": "official-df15d1f61a57",
+          "url": "https://ollama.com/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "opencode-go",
+      "parser": "opencode-go",
+      "product": "opencode-go",
+      "routes": [
+        "compatible-api"
+      ],
+      "sources": [
+        {
+          "id": "models",
+          "url": "https://opencode.ai/inference/go/v1/models"
+        },
+        {
+          "id": "scope",
+          "url": "https://opencode.ai/docs/console/api/models/"
+        },
+        {
+          "id": "plans",
+          "url": "https://opencode.ai/docs/console/go/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "poe",
+      "parser": "poe-subscription",
+      "product": "poe-subscription",
+      "routes": [
+        "poe-api"
+      ],
+      "sources": [
+        {
+          "id": "official-9a13d6fe272b",
+          "url": "https://api.poe.com/v1/models"
+        },
+        {
+          "id": "official-c2135f5de48d",
+          "url": "https://creator.poe.com/docs/external-applications/openai-compatible-api"
+        }
+      ]
+    },
+    {
+      "offering_provider": "qiniu-ai",
+      "parser": "qiniu-ai-subscription",
+      "product": "qiniu-ai-subscription",
+      "routes": [],
+      "sources": [
+        {
+          "id": "source-bdd7f23d5ba4f6cb",
+          "url": "https://developer.qiniu.com/aitokenapi/13330/subscription-introduction"
+        }
+      ]
+    },
+    {
+      "offering_provider": "rayline",
+      "parser": "rayline",
+      "product": "rayline",
+      "routes": [
+        "linked-api"
+      ],
+      "sources": [
+        {
+          "id": "source-435b01043c52",
+          "url": "https://docs.rayline.ai/arc/models.md"
+        },
+        {
+          "id": "source-5efbb401d9e6",
+          "url": "https://docs.rayline.ai/arc/pricing.md"
+        },
+        {
+          "id": "source-b1d8e66987d6",
+          "url": "https://docs.rayline.ai/platform/billing.md"
+        },
+        {
+          "id": "source-9d4b69d0cf4b",
+          "url": "https://docs.rayline.ai/platform/data-privacy.md"
+        },
+        {
+          "id": "source-98dbcf3f5f81",
+          "url": "https://docs.rayline.ai/workshop/pricing/plans.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "regolo-ai",
+      "parser": "regolo-subscription",
+      "product": "regolo-subscription",
+      "routes": [
+        "regolo-api"
+      ],
+      "sources": [
+        {
+          "id": "official-3aa5da89d634",
+          "url": "https://regolo.ai/pricing/"
+        },
+        {
+          "id": "official-04f4d1610605",
+          "url": "https://api.regolo.ai/models"
+        }
+      ]
+    },
+    {
+      "offering_provider": "sakana",
+      "parser": "sakana-subscription",
+      "product": "sakana-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-ed8f18e99f34",
+          "url": "https://console.sakana.ai/models"
+        },
+        {
+          "id": "source-575c70cdffed",
+          "url": "https://console.sakana.ai/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "sambanova",
+      "parser": "sambanova",
+      "product": "sambanova",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-78510f12c9662955",
+          "url": "https://docs.sambanova.ai/docs/en/models/sambacloud-models.md"
+        },
+        {
+          "id": "source-c55bdc982241ed64",
+          "url": "https://cloud.sambanova.ai/plans"
+        },
+        {
+          "id": "source-1ea4da396b337c0a",
+          "url": "https://docs.sambanova.ai/docs/en/get-started/api-keys-urls.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "sarvam",
+      "parser": "sarvam-credit-plans",
+      "product": "sarvam-credit-plans",
+      "routes": [
+        "sarvam-native-api",
+        "token-factory-credit-api",
+        "token-factory-decisions"
+      ],
+      "sources": [
+        {
+          "id": "source-b118c99bc81f",
+          "url": "https://docs.sarvam.ai/api/getting-started/models.md"
+        },
+        {
+          "id": "source-99fec2f3fd4e",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/bulbul.md"
+        },
+        {
+          "id": "source-4bec7e3e6b89",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/mayura.md"
+        },
+        {
+          "id": "source-79877dd86cb3",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/saaras.md"
+        },
+        {
+          "id": "source-05111f4d8e42",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/sarvam-translate.md"
+        },
+        {
+          "id": "source-c04d3fd26d31",
+          "url": "https://docs.sarvam.ai/api/api-guides-tutorials/models/sarvam-vision.md"
+        },
+        {
+          "id": "source-850ff1652297",
+          "url": "https://docs.sarvam.ai/api/token-factory/models.md"
+        },
+        {
+          "id": "source-b714cbf82233",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/deepseek-v4.1-flash-1017.md"
+        },
+        {
+          "id": "source-0e97790ce825",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/gemma-4-31b.md"
+        },
+        {
+          "id": "source-191dcb52a6b3",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/glm-5-3-flash.md"
+        },
+        {
+          "id": "source-bb2c990c6d95",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/glm-5-3.md"
+        },
+        {
+          "id": "source-cacf2228a4c8",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/sarvam-105b.md"
+        },
+        {
+          "id": "source-1c8ea3f10146",
+          "url": "https://docs.sarvam.ai/api/token-factory/models/sarvam-prism.md"
+        },
+        {
+          "id": "source-48bf248d0adb",
+          "url": "https://www.sarvam.ai/api-pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "scnet-token-plan",
+      "parser": "scnet-token-plan",
+      "product": "scnet-token-plan",
+      "routes": [
+        "scnet-token-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "source-34ab7e03b2e1",
+          "url": "https://www.scnet.cn/ac/openapi/doc/2.0/moduleapi/plans/token-plan.html"
+        }
+      ]
+    },
+    {
+      "offering_provider": "sparrowcodes",
+      "parser": "sparrowcodes",
+      "product": "sparrowcodes",
+      "routes": [
+        "native-coding-cli"
+      ],
+      "sources": [
+        {
+          "id": "official-9ec51bd916cf",
+          "url": "https://api.sparrowcodes.com/v1/models"
+        },
+        {
+          "id": "official-f9a8bb0eea6d",
+          "url": "https://sparrowcodes.com/pricing"
+        },
+        {
+          "id": "official-987fdd86d75b",
+          "url": "https://sparrowcodes.com/cli"
+        }
+      ]
+    },
+    {
+      "offering_provider": "standardcompute",
+      "parser": "standardcompute-plans",
+      "product": "standardcompute-plans",
+      "routes": [
+        "standardcompute-api"
+      ],
+      "sources": [
+        {
+          "id": "source-76ae6c4d3b10",
+          "url": "https://api.stdcmpt.com/v1/models"
+        },
+        {
+          "id": "source-90c9b3bcca7d",
+          "url": "https://docs.standardcompute.com/models"
+        },
+        {
+          "id": "source-0c6b024a23df",
+          "url": "https://docs.standardcompute.com/budgets-and-limits"
+        },
+        {
+          "id": "source-4e99058285b3",
+          "url": "https://docs.standardcompute.com/api/models"
+        }
+      ]
+    },
+    {
+      "offering_provider": "stepfun-ai",
+      "parser": "stepfun-ai-subscription",
+      "product": "stepfun-ai-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-30f30fd6a944909e",
+          "url": "https://platform.stepfun.ai/docs/en/step-plan/overview.md"
+        },
+        {
+          "id": "source-6c7288aa0df258e7",
+          "url": "https://platform.stepfun.ai/docs/en/step-plan/integrations/reasoning-api.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "stepfun",
+      "parser": "stepfun-step-plan",
+      "product": "stepfun-step-plan",
+      "routes": [
+        "step-plan-endpoint"
+      ],
+      "sources": [
+        {
+          "id": "source-b086759cdfbe3c1b",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/overview.md"
+        },
+        {
+          "id": "source-c8becd20193685e1",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/integrations/reasoning-api.md"
+        },
+        {
+          "id": "source-34593b790822fa2d",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/pricing.md"
+        },
+        {
+          "id": "source-fc01fc44afde2223",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/integrations/audio-api.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "stepfun-step-plan",
+      "parser": "stepfun-step-plan-cn",
+      "product": "stepfun-step-plan-cn",
+      "routes": [
+        "stepfun-step-plan-api-cn"
+      ],
+      "sources": [
+        {
+          "id": "source-b086759cdfbe3c1b",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/overview.md"
+        },
+        {
+          "id": "source-c8becd20193685e1",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/integrations/reasoning-api.md"
+        },
+        {
+          "id": "source-34593b790822fa2d",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/pricing.md"
+        },
+        {
+          "id": "source-fc01fc44afde2223",
+          "url": "https://platform.stepfun.com/docs/zh/step-plan/integrations/audio-api.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "stepfun-ai-step-plan",
+      "parser": "stepfun-step-plan-global",
+      "product": "stepfun-step-plan-global",
+      "routes": [
+        "stepfun-step-plan-api-global"
+      ],
+      "sources": [
+        {
+          "id": "source-30f30fd6a944909e",
+          "url": "https://platform.stepfun.ai/docs/en/step-plan/overview.md"
+        },
+        {
+          "id": "source-6c7288aa0df258e7",
+          "url": "https://platform.stepfun.ai/docs/en/step-plan/integrations/reasoning-api.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "subconscious",
+      "parser": "subconscious",
+      "product": "subconscious",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-2775137022a3b9bf",
+          "url": "https://www.subconscious.dev/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "synthetic",
+      "parser": "synthetic-subscription",
+      "product": "synthetic-subscription",
+      "routes": [
+        "synthetic-api"
+      ],
+      "sources": [
+        {
+          "id": "source-b183702e0914",
+          "url": "https://api.synthetic.new/openai/v1/models"
+        },
+        {
+          "id": "source-ce21e8dbcc06",
+          "url": "https://dev.synthetic.new/docs/api/models"
+        },
+        {
+          "id": "source-d7d952b5432e",
+          "url": "https://synthetic.new/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "tencent-coding-plan",
+      "parser": "tencent-coding-plan",
+      "product": "tencent-coding-plan",
+      "routes": [
+        "tencent-coding-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "official-7252e2a3ff07",
+          "url": "https://cloud.tencent.com/document/product/1823/130092"
+        }
+      ]
+    },
+    {
+      "offering_provider": "tencent-token-plan",
+      "parser": "tencent-token-plan",
+      "product": "tencent-token-plan",
+      "routes": [
+        "tencent-token-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "official-459442c4906f",
+          "url": "https://cloud.tencent.com/document/product/1823/130060"
+        }
+      ]
+    },
+    {
+      "offering_provider": "tencent-tokenhub",
+      "parser": "tencent-tokenhub-plans",
+      "product": "tencent-tokenhub-plans",
+      "routes": [
+        "tencent-coding-plan",
+        "tokenhub-token-plan"
+      ],
+      "sources": [
+        {
+          "id": "official-459442c4906f",
+          "url": "https://cloud.tencent.com/document/product/1823/130060"
+        },
+        {
+          "id": "official-7252e2a3ff07",
+          "url": "https://cloud.tencent.com/document/product/1823/130092"
+        }
+      ]
+    },
+    {
+      "offering_provider": "trustedtokens",
+      "parser": "trustedtokens-subscription",
+      "product": "trustedtokens-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "official-e215e3347a54",
+          "url": "https://trustedtokens.eu/api/public/models"
+        },
+        {
+          "id": "official-8bb0c0428095",
+          "url": "https://trustedtokens.eu/pricing/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "unbiased",
+      "parser": "unbiased",
+      "product": "unbiased",
+      "routes": [
+        "api"
+      ],
+      "sources": [
+        {
+          "id": "source-4362b9d9ad9a",
+          "url": "https://unbiased.ai/openapi.json"
+        },
+        {
+          "id": "source-8e690de1fb79",
+          "url": "https://unbiased.ai/pricing/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "uplinkswitch",
+      "parser": "uplinkswitch-subscription",
+      "product": "uplinkswitch-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "source-f303520d5878",
+          "url": "https://api.uplinkswitch.com/v1/catalog"
+        },
+        {
+          "id": "source-66e93714abd1",
+          "url": "https://uplinkswitch.ai/"
+        }
+      ]
+    },
+    {
+      "offering_provider": "venice",
+      "parser": "venice-paid-plans",
+      "product": "venice-paid-plans",
+      "routes": [
+        "venice-api"
+      ],
+      "sources": [
+        {
+          "id": "official-a19daba4669a",
+          "url": "https://api.venice.ai/api/v1/models?type=all"
+        },
+        {
+          "id": "official-4e37767ec141",
+          "url": "https://docs.venice.ai/pricing.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "vercel",
+      "parser": "vercel-token-pass",
+      "product": "vercel-token-pass",
+      "routes": [
+        "token-pass-gateway-api",
+        "token-pass-fx-login"
+      ],
+      "sources": [
+        {
+          "id": "models",
+          "url": "https://vercel.com/docs/ai-gateway/token-pass"
+        }
+      ]
+    },
+    {
+      "offering_provider": "volcengine",
+      "parser": "volcengine",
+      "product": "volcengine",
+      "routes": [
+        "agent-plan-tools"
+      ],
+      "sources": [
+        {
+          "id": "source-77221e980173",
+          "url": "https://docs.volcengine.com/docs/ark/agent-plan-personal-plan-overview?lang=zh"
+        }
+      ]
+    },
+    {
+      "offering_provider": "volcengine-coding-plan",
+      "parser": "volcengine-ark-coding-plan",
+      "product": "volcengine-ark-coding-plan",
+      "routes": [],
+      "sources": [
+        {
+          "id": "source-a605fc6d3e04",
+          "url": "https://docs.volcengine.com/docs/ark/coding-plan-personal-plan-overview?lang=zh"
+        },
+        {
+          "id": "source-4372c90b44bc",
+          "url": "https://docs.volcengine.com/docs/ark/coding-plan-personal-get-started?lang=zh"
+        }
+      ]
+    },
+    {
+      "offering_provider": "xiaomi-token-plan-ams",
+      "parser": "xiaomi-mimo-token-plan",
+      "product": "xiaomi-mimo-token-plan",
+      "routes": [
+        "xiaomi-token-plan-api-ams"
+      ],
+      "sources": [
+        {
+          "id": "source-2e92b7e9e494",
+          "url": "https://mimo.mi.com/docs/en-US/tokenplan/Token%20Plan/subscription"
+        }
+      ]
+    },
+    {
+      "offering_provider": "xiaomi",
+      "parser": "xiaomi-token-plan",
+      "product": "xiaomi-token-plan",
+      "routes": [
+        "token-plan-coding-tools"
+      ],
+      "sources": [
+        {
+          "id": "source-2e92b7e9e494",
+          "url": "https://mimo.mi.com/docs/en-US/tokenplan/Token%20Plan/subscription"
+        }
+      ]
+    },
+    {
+      "offering_provider": "xpersona",
+      "parser": "xpersona-subscription",
+      "product": "xpersona-subscription",
+      "routes": [
+        "direct-model-subscription"
+      ],
+      "sources": [
+        {
+          "id": "official-71644dcaf7f0",
+          "url": "https://www.xpersona.co/v1/models"
+        },
+        {
+          "id": "official-4a50e289f72a",
+          "url": "https://www.xpersona.co/inference/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "zai-coding-plan",
+      "parser": "zai-coding-plan",
+      "product": "zai-glm-coding-plan",
+      "routes": [
+        "zai-coding-plan-api"
+      ],
+      "sources": [
+        {
+          "id": "source-6e8a610bfcad",
+          "url": "https://docs.z.ai/devpack/overview"
+        },
+        {
+          "id": "source-b0508e2316fc",
+          "url": "https://docs.z.ai/guides/llm/glm-5.3.md"
+        },
+        {
+          "id": "source-003a52a6b285",
+          "url": "https://docs.z.ai/guides/vlm/glm-5.3-flash.md"
+        }
+      ]
+    },
+    {
+      "offering_provider": "zeldoc",
+      "parser": "zeldoc",
+      "product": "zeldoc",
+      "routes": [
+        "zcore-api",
+        "zdev-api"
+      ],
+      "sources": [
+        {
+          "id": "source-3b55727a69a9",
+          "url": "https://docs.zeldoc.ai/what-is-zeldoc/"
+        },
+        {
+          "id": "source-2b680bc25297",
+          "url": "https://zeldoc.ai/en/pricing"
+        }
+      ]
+    },
+    {
+      "offering_provider": "zenifra",
+      "parser": "zenifra-ai-plans",
+      "product": "zenifra-ai-plans",
+      "routes": [
+        "zenifra-ai-api"
+      ],
+      "sources": [
+        {
+          "id": "source-4c612d9d77236f4c",
+          "url": "https://ai.zenifra.com/v1/models"
+        },
+        {
+          "id": "source-4a838b813c52b823",
+          "url": "https://docs.zenifra.com/pt/docs/ai/plans"
+        },
+        {
+          "id": "source-82d23e16674910bf",
+          "url": "https://docs.zenifra.com/pt/docs/ai"
+        }
+      ]
+    }
+  ],
+  "schema_version": 1
+}

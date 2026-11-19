@@ -2,6 +2,7 @@
 
 - [Architecture and synchronization](architecture.md)
 - [Data contract and consumption](catalog.md)
-- [Subscription integration profiles](integrations.md)
+- [Connections and model discovery](integrations.md)
 - [Sources, coverage, and provider extension](sources.md)
 - [Development and GitHub setup](../DEVELOPMENT.md)
+- [Client model discovery](client-model-discovery.md): authenticated discovery, pagination and context invalidation.

@@ -53,7 +53,12 @@ test("GitHub retrieval pins the path commit and records the exact bytes", async 
       ? Response.json([{ sha: revision, commit: { committer: { date: "2026-11-12T00:00:00Z" } } }])
       : new Response("source bytes\n");
   });
-  const result = await loader("official/repo", "data/models.json", "source");
+  const result = await loader({
+    kind: "github",
+    repo: "official/repo",
+    path: "data/models.json",
+    id: "source",
+  });
   expect(urls[0]).toContain("path=data%2Fmodels.json&per_page=1");
   expect(urls[1]).toBe(
     `https://raw.githubusercontent.com/official/repo/${revision}/data/models.json`,
@@ -82,8 +87,37 @@ test("GitHub metadata uses the supplied token without authenticating raw sources
     expect(headers.has("Authorization")).toBe(false);
     return new Response("public source bytes");
   }, "test-github-token");
-  const result = await loader("official/repo", "data/models.json", "source");
+  const result = await loader({
+    kind: "github",
+    repo: "official/repo",
+    path: "data/models.json",
+    id: "source",
+  });
   expect(result.body).toBe("public source bytes");
   expect(metadataRequests).toBe(1);
   expect(rawRequests).toBe(1);
+});
+
+test("public catalogs reuse exact anonymous source bytes without fabricating source dates", async () => {
+  const { publicLoader } = await import("../src/fetch.ts");
+  let calls = 0;
+  const loader = publicLoader(async (_url, init) => {
+    calls++;
+    expect(new Headers(init?.headers).has("Authorization")).toBe(false);
+    return new Response("public bytes");
+  }, "github-token-must-not-reach-provider");
+  const [first, second] = await Promise.all(
+    ["one", "two"].map((id) =>
+      loader({ kind: "http", url: "https://example.org/public/models", id }),
+    ),
+  );
+  expect(calls).toBe(1);
+  expect(first?.source.id).toBe("one");
+  expect(second?.source.id).toBe("two");
+  expect(first?.source.revision).toBeNull();
+  expect(first?.source.modified_at).toBeNull();
+  expect(first?.source.sha256).toBe(hash("public bytes"));
+  await expect(
+    loader({ kind: "http", id: "bad", url: "https://user:password@example.org/" }),
+  ).rejects.toThrow("HTTPS");
 });

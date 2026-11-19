@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { codex } from "../src/adapters/codex.ts";
 import { composeProvider } from "../src/compose.ts";
 import { composeConnections } from "../src/connections.ts";
-import { classifyConnection, integrationRouteSchema } from "../src/integration-schema.ts";
+import { integrationRouteSchema } from "../src/integration-schema.ts";
 import {
   composeProviderResearch,
   providerReview,
@@ -11,18 +11,15 @@ import {
 import { subscriptionManifest } from "../src/subscriptions.ts";
 import { initial, upstream } from "./helpers.ts";
 
-test("connection categories separate execution and billing from authentication and SDK transport", () => {
-  expect(classifyConnection("direct-model", "subscription")).toBe("subscription");
-  expect(classifyConnection("direct-model", "usage-based")).toBe("api-key");
-  expect(classifyConnection("coding-agent", "subscription")).toBe("coding-agent");
-  expect(classifyConnection("coding-agent", "usage-based")).toBe("coding-agent");
-  expect(classifyConnection("unknown", "subscription")).toBe("unknown");
+test("SDK transport does not determine execution or billing", () => {
   const route = structuredClone(subscriptionManifest.subscriptions[0]?.integration.routes[0]);
   if (!route) throw new Error("Missing integration fixture");
   route.kind = "sdk";
   route.execution = "coding-agent";
   route.billing = "subscription";
-  route.connection_kind = "subscription";
+  route.required_clients = ["approved-sdk"];
+  expect(integrationRouteSchema.safeParse(route).success).toBe(true);
+  route.required_clients = [];
   expect(integrationRouteSchema.safeParse(route).success).toBe(false);
 });
 
@@ -65,21 +62,41 @@ test("limited source access cannot establish direct credentials or subscription 
   ).toBe(false);
 });
 
-test("subscription discovery excludes coding runtimes while agent routes retain both billing modes", async () => {
-  const connections = composeConnections(await upstream(), "b".repeat(64));
-  const direct = connections.routes.filter((route) => route.connection_kind === "subscription");
+test("connection discovery keeps execution, billing and authentication independent", async () => {
+  const { registry } = await initial([codex]);
+  const catalog = composeConnections(await upstream(), "b".repeat(64), registry);
+  const direct = catalog.connections.filter(
+    (connection) =>
+      connection.execution === "direct-model" && connection.billing.kind === "subscription",
+  );
   expect(direct.length).toBeGreaterThan(0);
-  expect(
-    direct.every((route) => route.execution === "direct-model" && route.billing === "subscription"),
-  ).toBe(true);
-  expect(direct.some((route) => route.auth_methods.includes("api-key"))).toBe(true);
-  const agents = connections.routes.filter((route) => route.connection_kind === "coding-agent");
-  expect(agents.some((route) => route.billing === "subscription")).toBe(true);
+  expect(direct.some((connection) => connection.authentication.methods.includes("api-key"))).toBe(
+    true,
+  );
+  const agents = catalog.connections.filter(
+    (connection) => connection.execution === "coding-agent",
+  );
+  expect(agents.some((connection) => connection.billing.kind === "subscription")).toBe(true);
   expect(
     agents.some(
-      (route) => route.billing === "usage-based" && route.auth_methods.includes("api-key"),
+      (connection) =>
+        connection.billing.kind === "usage-based" &&
+        connection.authentication.methods.includes("api-key"),
     ),
   ).toBe(true);
-  expect(agents.some((route) => route.kind === "sdk")).toBe(true);
-  expect(connections.routes.every((route) => route.support === "documented")).toBe(true);
+  expect(agents.some((connection) => connection.transport.kind === "sdk")).toBe(true);
+  expect(catalog.connections.every((connection) => connection.support === "documented")).toBe(true);
+  expect(
+    catalog.connections.some((connection) => connection.reference_catalog.status === "documented"),
+  ).toBe(true);
+  expect(direct.every((connection) => connection.reference_catalog.status === "unavailable")).toBe(
+    true,
+  );
+  expect(
+    catalog.connections.every(
+      (connection) =>
+        connection.model_discovery.requirement === "required" &&
+        !connection.model_discovery.static_fallback,
+    ),
+  ).toBe(true);
 });

@@ -1,4 +1,37 @@
 {
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          },
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      ]
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
@@ -43,15 +76,6 @@
                   "subscription",
                   "usage-based",
                   "byok",
-                  "unknown"
-                ],
-                "type": "string"
-              },
-              "connection_kind": {
-                "enum": [
-                  "subscription",
-                  "api-key",
-                  "coding-agent",
                   "unknown"
                 ],
                 "type": "string"
@@ -170,7 +194,6 @@
               "kind",
               "execution",
               "billing",
-              "connection_kind",
               "products",
               "support",
               "auth_methods",
@@ -237,9 +260,19 @@
           "items": {
             "additionalProperties": false,
             "properties": {
+              "available_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
               "id": {
                 "minLength": 1,
                 "type": "string"
+              },
+              "native_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
               },
               "state": {
                 "anyOf": [
@@ -258,15 +291,23 @@
               "status": {
                 "enum": [
                   "partial",
-                  "unknown"
+                  "unavailable"
                 ],
                 "type": "string"
+              },
+              "unresolved_models": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
               }
             },
             "required": [
               "id",
               "status",
-              "state"
+              "state",
+              "native_models",
+              "available_models",
+              "unresolved_models"
             ],
             "type": "object"
           },
@@ -276,7 +317,7 @@
         "status": {
           "enum": [
             "partial",
-            "unknown"
+            "unavailable"
           ],
           "type": "string"
         }
@@ -313,6 +354,16 @@
                     "api"
                   ],
                   "type": "string"
+                },
+                "conditions": {
+                  "additionalProperties": {
+                    "$ref": "#/$defs/__schema0"
+                  },
+                  "propertyNames": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "object"
                 },
                 "error": {
                   "anyOf": [
@@ -369,6 +420,17 @@
                     }
                   ]
                 },
+                "offering_provider": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
                 "plans": {
                   "items": {
                     "anyOf": [
@@ -396,14 +458,50 @@
                   "minLength": 1,
                   "type": "string"
                 },
+                "request_api": {
+                  "additionalProperties": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "propertyNames": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "request_model_id": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "route_ids": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
                 "source_model": {
                   "minLength": 1,
                   "type": "string"
                 },
                 "source_updated_at": {
-                  "format": "date-time",
-                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "state": {
                   "enum": [
@@ -451,6 +549,11 @@
                 "product",
                 "provider",
                 "source_model",
+                "request_model_id",
+                "offering_provider",
+                "route_ids",
+                "request_api",
+                "conditions",
                 "model_id",
                 "channel",
                 "surface",
@@ -498,8 +601,20 @@
     "subscription_catalog": {
       "additionalProperties": false,
       "properties": {
+        "connections": {
+          "const": "connections.json",
+          "type": "string"
+        },
+        "model_selection": {
+          "const": "connection-discovery-required",
+          "type": "string"
+        },
+        "role": {
+          "const": "reference-only",
+          "type": "string"
+        },
         "schema_version": {
-          "const": 2,
+          "const": 4,
           "type": "number"
         },
         "sources": {
@@ -511,13 +626,27 @@
                 "type": "string"
               },
               "modified_at": {
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "revision": {
-                "pattern": "^[a-f0-9]{40}$",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "pattern": "^[a-f0-9]{40}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               },
               "sha256": {
                 "pattern": "^[a-f0-9]{64}$",
@@ -560,6 +689,9 @@
       },
       "required": [
         "schema_version",
+        "role",
+        "model_selection",
+        "connections",
         "upstream",
         "sources"
       ],

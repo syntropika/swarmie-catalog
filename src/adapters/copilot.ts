@@ -56,8 +56,18 @@ export const copilot: Adapter = {
   id: "github-copilot",
   async load(loader) {
     return Promise.all([
-      loader("github/docs", "data/tables/copilot/model-supported-plans.yml", "copilot-plans"),
-      loader("github/docs", "data/tables/copilot/model-supported-clients.yml", "copilot-clients"),
+      loader({
+        kind: "github",
+        repo: "github/docs",
+        path: "data/tables/copilot/model-supported-plans.yml",
+        id: "copilot-plans",
+      }),
+      loader({
+        kind: "github",
+        repo: "github/docs",
+        path: "data/tables/copilot/model-supported-clients.yml",
+        id: "copilot-clients",
+      }),
     ]);
   },
   parse(sources) {
@@ -82,6 +92,11 @@ export const copilot: Adapter = {
             product: "github-copilot",
             provider: "github",
             source_model: model.name,
+            request_model_id: null,
+            offering_provider: "github-copilot",
+            route_ids: surface === "cli" ? ["copilot-cli"] : [],
+            request_api: {},
+            conditions: {},
             channel: "subscription",
             plan,
             surface,

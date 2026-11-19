@@ -1,7 +1,8 @@
 # Architecture and synchronization
 
-models.dev owns general model metadata. Swarmie Catalog owns only subscription
-and access declarations. The catalog has no runtime dependency on Swarmie.
+models.dev owns general model metadata. Swarmie Catalog owns connection definitions,
+client discovery procedures and public subscription declarations. Clients own
+authenticated model discovery. The catalog has no runtime dependency on Swarmie.
 
 ## Upstream integration
 
@@ -11,7 +12,7 @@ An offering can identify its canonical model with `canonical_model_id`.
 The engine validates these identity fields and preserves other metadata at the boundary.
 It does not copy the full catalog into version control. The static build retrieves
 one upstream snapshot and joins declarations onto each provider offering. See
-[provider routes](catalog.md#provider-routes) for the response contract.
+[provider and subscription views](catalog.md#provider-and-subscription-views) for the response contract.
 
 Upstream publishes the provider map separately at `/api.json` and the canonical map
 at `/models.json`. The combined endpoint avoids mixing separately retrieved versions.
@@ -28,7 +29,9 @@ and does not copy that deployment or its agent workflows.
 
 Reviewed integration facts are stored separately in `data/subscriptions.json`. They
 describe authentication and client requirements without producing model availability.
-See [integration profiles](integrations.md) for their evidence and review lifecycle.
+`data/connection-discovery.json` stores reviewed discovery procedures without model
+lists. The build composes these facts and provider research into unified connections.
+See the [connection contract](integrations.md) for evidence and review rules.
 
 ## Synchronization stages
 

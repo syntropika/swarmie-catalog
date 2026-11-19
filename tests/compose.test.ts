@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { codex } from "../src/adapters/codex.ts";
 import { copilot } from "../src/adapters/copilot.ts";
-import { composeProvider, composeSubscription } from "../src/compose.ts";
+import { composeProvider, composeSubscription, createCatalogComposer } from "../src/compose.ts";
 import { stable } from "../src/stable.ts";
 import { initial, upstream } from "./helpers.ts";
 
@@ -171,6 +171,9 @@ test("subscription routes isolate ChatGPT and Copilot while preserving canonical
   const { registry } = await initial([copilot, codex]);
   const chatgpt = composeSubscription(u, registry, "chatgpt", digest);
   const github = composeSubscription(u, registry, "github-copilot", digest);
+  const composer = createCatalogComposer(u, registry, digest);
+  expect(composer.subscription("chatgpt")).toEqual(chatgpt);
+  expect(composer.provider("openai")).toEqual(composeProvider(u, registry, "openai", digest));
   expect(chatgpt.products).toContain("openai-codex");
   expect(
     chatgpt.models["openai/gpt-6-sol"]?.subscription_access.some(
@@ -187,8 +190,11 @@ test("subscription routes isolate ChatGPT and Copilot while preserving canonical
     expect(subscription.subscription_catalog.upstream.sha256).toBe(digest);
     for (const [id, { subscription_access, ...metadata }] of Object.entries(subscription.models)) {
       const originalModel = u.models[id];
-      if (!originalModel) throw new Error("Missing canonical fixture");
-      expect(metadata).toEqual(originalModel);
+      if (originalModel) expect(metadata).toEqual(originalModel);
+      else {
+        expect(subscription_access.every((entry) => entry.model_id === null)).toBe(true);
+        expect(metadata.id).toBe(id);
+      }
       expect(subscription_access.length).toBeGreaterThan(0);
       expect(
         subscription_access.every(
@@ -220,10 +226,20 @@ test("subscription views retain historical and unknown evidence without guessing
   expect(entries.every((entry) => entry.state === "stale" && entry.error === "source-http")).toBe(
     true,
   );
+  const missingNative = owner.claims.find(
+    (claim) => claim.model_id === "openai/gpt-6-sol",
+  )?.source_model;
   delete u.models["openai/gpt-6-sol"];
   expect(
     composeSubscription(u, registry, "github-copilot", digest).models["openai/gpt-6-sol"],
   ).toBeUndefined();
+  expect(
+    Object.values(composeSubscription(u, registry, "github-copilot", digest).models).some((model) =>
+      model.subscription_access.some(
+        (entry) => entry.source_model === missingNative && entry.model_id === null,
+      ),
+    ),
+  ).toBe(true);
   u.models["openai/gpt-6-sol"] = {
     id: "openai/gpt-6-sol",
     name: "Collision",
