@@ -46,17 +46,31 @@ test("integration metadata distinguishes native clients, token reuse, and subscr
   const claude = composeSubscription(u, registry, "claude", digest);
   expect(
     claude.integration.routes.find((route) => route.kind === "cli")?.required_clients,
-  ).toContain("Claude Code");
+  ).toContain("claude-code");
   expect(claude.integration.routes.find((route) => route.kind === "direct-api")?.support).toBe(
     "not-supported",
   );
-  expect(claude.integration.routes.find((route) => route.kind === "sdk")?.support).toBe(
-    "not-supported",
-  );
+  expect(
+    claude.integration.routes.find(
+      (route) => route.kind === "sdk" && route.billing === "subscription",
+    )?.support,
+  ).toBe("not-supported");
+  expect(
+    claude.integration.routes.find(
+      (route) => route.kind === "sdk" && route.billing === "usage-based",
+    )?.support,
+  ).toBe("documented");
   const google = composeSubscription(u, registry, "google-ai", digest);
-  expect(google.integration.routes.find((route) => route.kind === "cli")?.protocols).toContain(
-    "acp-json-rpc-stdio",
-  );
+  expect(
+    google.integration.routes.find((route) => route.id === "gemini-cli-subscription")?.protocols,
+  ).toContain("acp-json-rpc-stdio");
+  expect(
+    google.integration.routes.find((route) => route.id === "gemini-cli-subscription")?.support,
+  ).toBe("not-supported");
+  expect(
+    google.integration.routes.find((route) => route.id === "antigravity-cli-subscription")
+      ?.execution,
+  ).toBe("coding-agent");
   expect(google.integration.routes.find((route) => route.kind === "direct-api")?.support).toBe(
     "not-supported",
   );

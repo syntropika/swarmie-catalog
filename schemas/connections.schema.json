@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "provider_api_keys": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "billing_models": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "provider_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "provider_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "review_status": {
+            "enum": [
+              "reviewed",
+              "limited"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider_id",
+          "provider_path",
+          "billing_models",
+          "review_status"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "research_coverage": {
+      "additionalProperties": false,
+      "properties": {
+        "limited": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reviewed": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "total": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unreviewed": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total",
+        "reviewed",
+        "limited",
+        "unreviewed"
+      ],
+      "type": "object"
+    },
+    "routes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "auth_methods": {
+            "items": {
+              "enum": [
+                "oauth",
+                "account-login",
+                "api-key",
+                "github-token"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "automation": {
+            "enum": [
+              "supported",
+              "restricted",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "billing": {
+            "enum": [
+              "subscription",
+              "usage-based",
+              "byok",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "connection_kind": {
+            "enum": [
+              "subscription",
+              "api-key",
+              "coding-agent",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "constraints": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "endpoints": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "protocols": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "region": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url",
+                "protocols"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "execution": {
+            "enum": [
+              "direct-model",
+              "coding-agent",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "direct-api",
+              "cli",
+              "sdk"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "products": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "protocols": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "required_clients": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subscription_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "subscription_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "support": {
+            "enum": [
+              "documented",
+              "not-supported",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "third_party_use": {
+            "enum": [
+              "supported",
+              "restricted",
+              "unknown"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "execution",
+          "billing",
+          "connection_kind",
+          "products",
+          "support",
+          "auth_methods",
+          "required_clients",
+          "protocols",
+          "endpoints",
+          "third_party_use",
+          "automation",
+          "constraints",
+          "evidence",
+          "subscription_id",
+          "subscription_path"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema_version",
+    "routes",
+    "provider_api_keys",
+    "research_coverage"
+  ],
+  "type": "object"
+}

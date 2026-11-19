@@ -7,11 +7,24 @@ const httpsUrl = z.url().refine((value) => {
   return url.protocol === "https:" && !url.username && !url.password;
 }, "Expected an HTTPS URL without credentials");
 const documentedUse = z.enum(["supported", "restricted", "unknown"]);
+export function classifyConnection(
+  execution: "direct-model" | "coding-agent" | "unknown",
+  billing: "subscription" | "usage-based" | "byok" | "unknown",
+): "subscription" | "api-key" | "coding-agent" | "unknown" {
+  if (execution === "coding-agent") return "coding-agent";
+  if (execution !== "direct-model") return "unknown";
+  if (billing === "subscription") return "subscription";
+  return billing === "usage-based" || billing === "byok" ? "api-key" : "unknown";
+}
+
 export const integrationRouteSchema = z
   .object({
     id: text,
     name: text,
     kind: z.enum(["direct-api", "cli", "sdk"]),
+    execution: z.enum(["direct-model", "coding-agent", "unknown"]),
+    billing: z.enum(["subscription", "usage-based", "byok", "unknown"]),
+    connection_kind: z.enum(["subscription", "api-key", "coding-agent", "unknown"]),
     products: z.array(text).min(1),
     support: z.enum(["documented", "not-supported", "unknown"]),
     auth_methods: z.array(z.enum(["oauth", "account-login", "api-key", "github-token"])),
@@ -33,6 +46,8 @@ export const integrationRouteSchema = z
   })
   .strict()
   .superRefine((route, ctx) => {
+    if (route.connection_kind !== classifyConnection(route.execution, route.billing))
+      ctx.addIssue({ code: "custom", message: `Incorrect connection category: ${route.id}` });
     if (route.support !== "documented" && route.third_party_use === "supported")
       ctx.addIssue({
         code: "custom",
@@ -59,6 +74,7 @@ export const integrationSchema = z
             id: text,
             url: httpsUrl,
             sha256: z.string().regex(/^[a-f0-9]{64}$/),
+            capture_kind: z.enum(["http-body", "web-extract"]),
           })
           .strict(),
       )

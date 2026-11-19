@@ -51,10 +51,12 @@ bun run check
 | `src/compose.ts` | Provider and subscription composition, with plan grouping |
 | `src/subscriptions.ts` | Validated subscription definitions and model coverage |
 | `src/integration-schema.ts` | Integration profile and manifest validation |
+| `src/provider-research.ts` | Reviewed provider inventory and explicit coverage gaps |
+| `src/connections.ts` | Connection discovery by execution and billing |
 | `src/index.ts` | Public consumer exports |
 | `src/cli.ts` | Files and static distribution |
 | `src/publish.ts` | Automation branch and PR updates |
-| `data/` | Availability output, identity aliases, and reviewed subscription profiles |
+| `data/` | Availability output, identity aliases, subscription profiles, and provider research |
 | `schemas/` | Generated JSON schema |
 | `tests/fixtures/` | Reproducible provider captures and identity fixtures |
 | `.github/workflows/` | Validation, synchronization, and Pages deployment |

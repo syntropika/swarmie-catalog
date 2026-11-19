@@ -46,6 +46,24 @@
                       ],
                       "type": "string"
                     },
+                    "billing": {
+                      "enum": [
+                        "subscription",
+                        "usage-based",
+                        "byok",
+                        "unknown"
+                      ],
+                      "type": "string"
+                    },
+                    "connection_kind": {
+                      "enum": [
+                        "subscription",
+                        "api-key",
+                        "coding-agent",
+                        "unknown"
+                      ],
+                      "type": "string"
+                    },
                     "constraints": {
                       "items": {
                         "minLength": 1,
@@ -90,6 +108,14 @@
                       },
                       "minItems": 1,
                       "type": "array"
+                    },
+                    "execution": {
+                      "enum": [
+                        "direct-model",
+                        "coding-agent",
+                        "unknown"
+                      ],
+                      "type": "string"
                     },
                     "id": {
                       "minLength": 1,
@@ -150,6 +176,9 @@
                     "id",
                     "name",
                     "kind",
+                    "execution",
+                    "billing",
+                    "connection_kind",
                     "products",
                     "support",
                     "auth_methods",
@@ -170,6 +199,13 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
+                    "capture_kind": {
+                      "enum": [
+                        "http-body",
+                        "web-extract"
+                      ],
+                      "type": "string"
+                    },
                     "id": {
                       "minLength": 1,
                       "type": "string"
@@ -186,7 +222,8 @@
                   "required": [
                     "id",
                     "url",
-                    "sha256"
+                    "sha256",
+                    "capture_kind"
                   ],
                   "type": "object"
                 },

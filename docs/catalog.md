@@ -55,6 +55,8 @@ The public API consists of static JSON files. It uses the provider IDs and offer
 from models.dev. A provider response preserves its original fields, including the
 `models` map. Each model receives a `subscription_access` array. The provider receives
 `subscription_catalog` metadata with source definitions and the upstream content digest.
+It also receives `subscription_research`, with the reviewed provider billing and
+integration evidence described in the [source guide](sources.md#integration-evidence).
 The provider response uses `subscription_catalog.schema_version: 2`. The declaration
 registry keeps its independent `schema_version: 1` contract.
 The complete response schema is [`provider.schema.json`](../schemas/provider.schema.json).
@@ -94,15 +96,10 @@ The response contains `id`, `name`, `products`, `integration`, `model_catalog`, 
 and `subscription_catalog`.
 Its schema is [`subscription.schema.json`](../schemas/subscription.schema.json).
 
-| Subscription ID | Products | Model-plan coverage |
-| --- | --- | --- |
-| `chatgpt` | `openai-codex`, `openai-chatgpt-plan-api` | Partial for the Codex CLI source; unknown for the direct plan API |
-| `github-copilot` | `github-copilot` | Partial for the qualified plan and client sources |
-| `claude` | `anthropic-claude-code` | Unknown |
-| `google-ai` | `google-gemini-cli` | Unknown |
-| `kimi` | `kimi-code` | Unknown |
-| `zai-coding-plan` | `zai-glm-coding-plan` | Unknown |
-| `minimax-m-plan` | `minimax-m-plan` | Unknown |
+Use `index.json` or `subscriptions.json` for the complete service list. ChatGPT has
+partial Codex CLI model-plan coverage and unknown direct plan API coverage. GitHub
+Copilot has partial coverage from its qualified plan and client sources. Other
+products report unknown model-plan coverage until an adapter is qualified.
 
 Codex is included in ChatGPT plans. See the official
 [ChatGPT and Codex pricing guide](https://learn.chatgpt.com/docs/pricing).
@@ -143,6 +140,10 @@ store the full upstream model database in version control.
 | `providers/<provider>.json` | Original provider models with subscription metadata |
 | `subscriptions/<subscription>.json` | Canonical models and entries for one subscription |
 | `subscriptions.json` | Reviewed subscription definitions and integration profiles |
+| `connections.json` | Documented connection categories and direct API-key provider references |
+| `connections.schema.json` | Connection discovery schema |
+| `provider-research.json` | Complete current provider review coverage and source evidence |
+| `provider-research.schema.json` | Provider review response schema |
 | `subscriptions.schema.json` | Definition manifest schema |
 | `subscription.schema.json` | Subscription response schema |
 | `provider.schema.json` | Composed provider response schema |

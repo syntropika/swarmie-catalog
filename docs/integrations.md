@@ -12,6 +12,9 @@ under `integration`. The manifest schema is
 | --- | --- |
 | `id`, `name` | Route identity and display name |
 | `kind` | `direct-api`, `cli`, or `sdk` |
+| `execution` | `direct-model`, `coding-agent`, or `unknown` |
+| `billing` | `subscription`, `usage-based`, `byok`, or `unknown` |
+| `connection_kind` | Derived discovery category: `subscription`, `api-key`, `coding-agent`, or `unknown` |
 | `products` | Product namespaces within this subscription |
 | `support` | `documented`, `not-supported`, or `unknown` for the stated scope |
 | `auth_methods` | Documented `oauth`, `account-login`, `api-key`, or `github-token` methods |
@@ -39,10 +42,38 @@ and endpoint. A separately billed API key does not inherit subscription benefits
 The catalog contains no keys, session tokens, token exchange logic, or inference code.
 A subscription login does not authorize collection or reuse of native client tokens.
 
+## Connection selection
+
+`connections.json` contains documented routes and reviewed direct API-key providers.
+Use its `routes` array for service integration methods. Use `provider_api_keys` for
+direct provider credentials with usage billing or BYOK. Each provider entry links to
+its provider catalog and research. These entries do not grant account access.
+The response schema is [`connections.schema.json`](../schemas/connections.schema.json).
+
+Select `connection_kind` for these application categories:
+
+| Category | Rule |
+| --- | --- |
+| `subscription` | Direct model execution funded by a subscription, without a required coding-agent runtime |
+| `api-key` | Direct model execution with separate usage billing or BYOK |
+| `coding-agent` | A coding-agent runtime or a route limited to approved agent tools, with subscription or API-key funding |
+| `unknown` | Evidence does not establish the required execution or billing scope |
+
+Authentication does not select the category. A subscription can use an API key.
+A coding agent can use either subscription login or a separately billed API key.
+An SDK can run a complete agent or provide direct model transport. A local encryption
+proxy does not become a coding agent. A plan restricted to approved agent tools does
+not become a direct subscription because its transport is HTTP.
+
+`support: "documented"` is required for connection discovery. `third_party_use`,
+`automation`, `required_clients`, and `constraints` still apply to each result.
+Unknown or unsupported routes remain in the full subscription profiles for inspection.
+
 ## Evidence and freshness
 
 Each profile has `reviewed_on` and `sources`. A source contains its public URL and the
-SHA-256 digest of the HTTP body inspected during review. Route evidence refers to
+SHA-256 digest of a retained capture. `capture_kind` is `http-body` for an HTTP body
+or `web-extract` for a retained public web extract. Route evidence refers to
 these source IDs. Documentation URLs can change. A digest identifies reviewed content;
 it does not make the URL immutable or assert that current content still matches.
 
@@ -69,13 +100,11 @@ Use `index.json` to discover subscription paths. For example, download
 `subscriptions/kimi.json` to inspect the dedicated API and its usage limits.
 
 ```ts
-const response = await fetch(`${baseUrl}/subscriptions.json`);
+const response = await fetch(`${baseUrl}/connections.json`);
 if (!response.ok) throw new Error("Subscription definitions are unavailable");
-const manifest = await response.json();
-const candidates = manifest.subscriptions.flatMap((subscription) =>
-  subscription.integration.routes
-    .filter((route) => route.kind === "direct-api" && route.support === "documented")
-    .map((route) => ({ subscription: subscription.id, route }))
+const connections = await response.json();
+const candidates = connections.routes.filter((route) =>
+  route.connection_kind === "subscription"
 );
 ```
 

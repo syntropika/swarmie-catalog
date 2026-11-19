@@ -5,16 +5,17 @@ It publishes the models.dev provider catalogs with subscription metadata for eac
 Each model contains an array of subscription entries with product-specific plan vectors.
 Consumers select a subscription, such as ChatGPT or GitHub Copilot, or a models.dev provider.
 The ChatGPT model view currently covers access through Codex. Consumers filter plan vectors locally.
-Reviewed integration profiles also describe authentication, client requirements, and usage limits
-for Claude, Google AI, Kimi, Z.ai, and MiniMax subscriptions.
+Reviewed provider research covers the captured models.dev provider inventory. Integration
+profiles distinguish direct subscriptions, separately billed API keys, and coding agents.
+Execution, billing, authentication, client requirements, and usage limits remain explicit.
 It records public declarations about models, products, plans, access channels, and clients.
 Each declaration has source evidence. The catalog does not grant account access.
 
 The project uses public sources, TypeScript, Bun, and static JSON. Synchronization uses
 no AI extraction, accounts, subscription credentials, database, or server.
 
-Current integrations cover GitHub Copilot and the bundled OpenAI Codex catalog.
-Claude, Gemini, and ChatGPT Chat coverage remains unknown where no qualified adapter exists.
+Model-plan adapters cover GitHub Copilot and the bundled OpenAI Codex catalog.
+Other model-plan coverage remains unknown where no qualified adapter exists.
 See [coverage and sources](docs/sources.md) for the exact scope.
 
 Use [DEVELOPMENT.md](DEVELOPMENT.md) to install, test, synchronize, and configure GitHub.

@@ -51,7 +51,14 @@ test("offline CLI replay is idempotent and a failed upstream retains stale recor
 test("provider routes embed plan vectors without product or plan files and rebuild deterministically", async () => {
   const directory = path.resolve(root, crypto.randomUUID());
   await mkdir(path.join(directory, "schemas"), { recursive: true });
-  for (const name of ["catalog", "provider", "subscription", "subscriptions"]) {
+  for (const name of [
+    "catalog",
+    "provider",
+    "subscription",
+    "subscriptions",
+    "provider-research",
+    "connections",
+  ]) {
     await Bun.write(
       path.join(directory, "schemas", `${name}.schema.json`),
       await Bun.file(`schemas/${name}.schema.json`).text(),
@@ -119,6 +126,15 @@ test("provider routes embed plan vectors without product or plan files and rebui
       expect(subscription.model_catalog.status).toBe("unknown");
     }
   }
+  const connections = await Bun.file(path.join(directory, "dist/connections.json")).json();
+  expect(
+    connections.routes.some(
+      (route: { connection_kind: string }) => route.connection_kind === "coding-agent",
+    ),
+  ).toBe(true);
+  const research = await Bun.file(path.join(directory, "dist/provider-research.json")).json();
+  expect(research.counts.total).toBe(Object.keys(JSON.parse(input).providers).length);
+  expect(provider.subscription_research.provider_id).toBe(provider.id);
   const first = hash(await Bun.file(providerFile).text());
   expect((await cli(args, directory)).code).toBe(0);
   expect(hash(await Bun.file(providerFile).text())).toBe(first);
