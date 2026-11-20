@@ -2281,7 +2281,7 @@
     {
       "id": "google-ai",
       "integration": {
-        "reviewed_on": "2026-11-19",
+        "reviewed_on": "2026-11-20",
         "routes": [
           {
             "auth_methods": [
@@ -2326,17 +2326,22 @@
               "oauth",
               "account-login"
             ],
-            "automation": "unknown",
+            "automation": "restricted",
             "billing": "subscription",
             "constraints": [
-              "Personal OAuth for Free, Pro or Ultra plans; credentials are shared across local Antigravity surfaces.",
-              "Terms prohibit third-party software accessing the service; orchestrating the official CLI is not explicitly addressed.",
+              "Personal OAuth uses the official Antigravity client. Consumer terms prohibit third-party software, tools or services from accessing Antigravity through that login.",
+              "The current FAQ expressly states that wrapping agy inside third-party coding agents or applications is unsupported under consumer plans.",
+              "Automated account rotation is unsupported under consumer plans.",
+              "Direct Antigravity CLI headless mode (agy -p) is intended for the users own scripting and CI workflows. This does not permit third-party agent or application wrapping.",
+              "The FAQ recommends Gemini Enterprise or Google AI Studio API keys for third-party coding agents. Those credentials have separate billing and terms.",
               "Google Workspace plans do not include Antigravity plans."
             ],
             "endpoints": [],
             "evidence": [
               "official-d16e06771a5234d2",
-              "official-f0a7954756178be3"
+              "official-f0a7954756178be3",
+              "policy-caee9d2256b1a97d",
+              "policy-08466d0b735b8804"
             ],
             "execution": "coding-agent",
             "id": "antigravity-cli-subscription",
@@ -2352,7 +2357,7 @@
               "antigravity-cli"
             ],
             "support": "documented",
-            "third_party_use": "unknown"
+            "third_party_use": "restricted"
           },
           {
             "auth_methods": [
@@ -2509,6 +2514,18 @@
             "id": "official-f0a7954756178be3",
             "sha256": "706bf2934559ca5503dc893eede321f21beba11806aa740b56746988f87b9a05",
             "url": "https://antigravity.google/terms"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "policy-caee9d2256b1a97d",
+            "sha256": "cf44a2d278fe3fb0776e9ea86a058835f4e1e82cfbcef5f20fd5039b5099b320",
+            "url": "https://antigravity.google/terms"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "policy-08466d0b735b8804",
+            "sha256": "a649e2f28cd548f63174ca55c7f186b4a6de95503c5469a48c1a4605881c3e5f",
+            "url": "https://antigravity.google/docs/faq"
           }
         ]
       },
@@ -3582,19 +3599,21 @@
     {
       "id": "llmgateway-devpass",
       "integration": {
-        "reviewed_on": "2026-11-19",
+        "reviewed_on": "2026-11-20",
         "routes": [
           {
             "auth_methods": [
               "api-key"
             ],
-            "automation": "unknown",
+            "automation": "restricted",
             "billing": "subscription",
             "constraints": [
-              "Marketed for coding agents; docs say the key works with any OpenAI- or Anthropic-compatible coding tool.",
-              "Daily pacing (8/9/10% of credits) and weekly premium-model caps (10/12/15%).",
-              "Provider pinning not available on DevPass.",
-              "Usage past allowance requires optional pay-as-you-go credits."
+              "DevPass supplemental terms prohibit using subscription keys in custom applications, products, backends, scripts, batch jobs or other direct API integrations.",
+              "Subscription usage is restricted to approved coding tools. Named clients are examples; compatibility does not establish approval of a custom client.",
+              "Billing periods beginning on or after October 15, 2026 require interactive software development. Automation and noncoding uses remain excluded even through an approved coding agent.",
+              "Private individual use only. Team, company, multi-seat, key sharing and usage resale are excluded.",
+              "Monthly allowance has daily and premium-weekly pacing. Separately billed overflow requires opt-in and available credits.",
+              "Use separately funded standard LLM Gateway credits for custom application API access."
             ],
             "endpoints": [
               {
@@ -3612,7 +3631,9 @@
             ],
             "evidence": [
               "official-a7731ef91704180a",
-              "official-e5380d4042f157fe"
+              "official-e5380d4042f157fe",
+              "policy-3810c57a2eab02d8",
+              "policy-f1d0af2fb4576b32"
             ],
             "execution": "direct-model",
             "id": "devpass-api-key",
@@ -3626,21 +3647,25 @@
               "openai-chat-completions"
             ],
             "required_clients": [],
-            "support": "documented",
-            "third_party_use": "supported"
+            "support": "not-supported",
+            "third_party_use": "restricted"
           },
           {
             "auth_methods": [
               "account-login"
             ],
-            "automation": "unknown",
+            "automation": "restricted",
             "billing": "subscription",
             "constraints": [
-              "Browser login via 'devpass-code auth login' is documented for the first-party agent; reusing its login tokens in other applications is not documented."
+              "Browser login via 'devpass-code auth login' is documented for the first-party agent; reusing its login tokens in other applications is not documented.",
+              "DevPass subscription use is restricted to approved coding tools for interactive software development. Automated integrations and noncoding work are excluded for billing periods beginning on or after October 15, 2026.",
+              "Private individual use only. Team or company use, shared keys and resale are excluded.",
+              "Approved-tool status does not permit third-party collection or reuse of first-party browser-login tokens; that scope remains undocumented."
             ],
             "endpoints": [],
             "evidence": [
-              "official-e5380d4042f157fe"
+              "official-e5380d4042f157fe",
+              "policy-3810c57a2eab02d8"
             ],
             "execution": "coding-agent",
             "id": "devpass-code-cli",
@@ -3660,18 +3685,21 @@
             "auth_methods": [
               "api-key"
             ],
-            "automation": "unknown",
+            "automation": "restricted",
             "billing": "subscription",
             "constraints": [
-              "Daily pacing of 8-10% of credits per day and a weekly premium-model cap of 10-15%.",
-              "Premium models ($5+/M input or $15+/M output) draw on the weekly fair-use allowance.",
-              "Provider pinning is not available on DevPass.",
-              "Pay-as-you-go overflow is opt-in.",
-              "No API base URL is stated on the DevPass page."
+              "DevPass supplemental terms prohibit using subscription keys in custom applications, products, backends, scripts, batch jobs or other direct API integrations.",
+              "Subscription usage is restricted to approved coding tools. Named clients are examples; compatibility does not establish approval of a custom client.",
+              "Billing periods beginning on or after October 15, 2026 require interactive software development. Automation and noncoding uses remain excluded even through an approved coding agent.",
+              "Private individual use only. Team, company, multi-seat, key sharing and usage resale are excluded.",
+              "Monthly allowance has daily and premium-weekly pacing. Separately billed overflow requires opt-in and available credits.",
+              "Use separately funded standard LLM Gateway credits for custom application API access."
             ],
             "endpoints": [],
             "evidence": [
-              "official-e5380d4042f157fe"
+              "official-e5380d4042f157fe",
+              "policy-3810c57a2eab02d8",
+              "policy-f1d0af2fb4576b32"
             ],
             "execution": "direct-model",
             "id": "devpass-key",
@@ -3685,8 +3713,8 @@
               "anthropic-messages"
             ],
             "required_clients": [],
-            "support": "documented",
-            "third_party_use": "supported"
+            "support": "not-supported",
+            "third_party_use": "restricted"
           },
           {
             "auth_methods": [
@@ -3718,15 +3746,19 @@
             "auth_methods": [
               "account-login"
             ],
-            "automation": "unknown",
+            "automation": "restricted",
             "billing": "subscription",
             "constraints": [
               "First-party terminal agent using browser login ('no keys to copy').",
-              "Same DevPass pacing and caps apply."
+              "Same DevPass pacing and caps apply.",
+              "DevPass subscription use is restricted to approved coding tools for interactive software development. Automated integrations and noncoding work are excluded for billing periods beginning on or after October 15, 2026.",
+              "Private individual use only. Team or company use, shared keys and resale are excluded.",
+              "Approved-tool status does not permit third-party collection or reuse of first-party browser-login tokens; that scope remains undocumented."
             ],
             "endpoints": [],
             "evidence": [
-              "official-e5380d4042f157fe"
+              "official-e5380d4042f157fe",
+              "policy-3810c57a2eab02d8"
             ],
             "execution": "coding-agent",
             "id": "llmgateway-providers-devpass-code-cli",
@@ -3761,6 +3793,18 @@
             "id": "official-e5380d4042f157fe",
             "sha256": "bea0a39c078f4e539a70ae4f8379abe1db8cb22974fb42cd4693cedf7481387e",
             "url": "https://devpass.llmgateway.io/"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "policy-3810c57a2eab02d8",
+            "sha256": "1b4ae8298efc72fa5b52e002a5034db32abf30ed2824918084d17cc4e71804d4",
+            "url": "https://devpass.llmgateway.io/legal/terms"
+          },
+          {
+            "capture_kind": "http-body",
+            "id": "policy-f1d0af2fb4576b32",
+            "sha256": "4825a0eac8e941a0412e6fd0ea1264ff934d6e88460a7dd3168c479e3ea906bf",
+            "url": "https://llmgateway.io/legal/terms"
           }
         ]
       },

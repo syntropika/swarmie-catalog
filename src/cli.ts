@@ -19,6 +19,12 @@ import { subscriptionManifestSchema } from "./integration-schema.ts";
 import { composeModelResearch, modelResearch, modelResearchSchema } from "./model-research.ts";
 import { modelSources, modelSourcesSchema } from "./model-sources.ts";
 import {
+  composedProviderAccessSchema,
+  composeProviderAccess,
+  filterProviderAccess,
+  providerAccess,
+} from "./provider-access.ts";
+import {
   composedProviderResearchSchema,
   composeProviderResearch,
   providerResearch,
@@ -155,6 +161,7 @@ async function validate(): Promise<Registry> {
     ["subscription", composedSubscriptionSchema],
     ["subscriptions", subscriptionManifestSchema],
     ["provider-research", composedProviderResearchSchema],
+    ["provider-access", composedProviderAccessSchema],
     ["connections", connectionsSchema],
     ["connection", connectionSchema],
     ["connection-discovery", discoveryProfilesSchema],
@@ -178,6 +185,7 @@ async function validate(): Promise<Registry> {
     ["model-sources", modelSources],
     ["connection-discovery", discoveryProfiles],
     ["model-research", modelResearch],
+    ["provider-access", providerAccess],
   ] as const) {
     if ((await Bun.file(new URL(`../data/${name}.json`, import.meta.url)).text()) !== stable(value))
       throw new Error(`${name} is not canonically formatted`);
@@ -330,6 +338,29 @@ async function build(): Promise<void> {
     await write(`dist/${name}.json`, stable(value));
     await write(`dist/${name}.schema.json`, await Bun.file(`schemas/${name}.schema.json`).text());
   }
+  const accessResearch = composeProviderAccess(upstream, upstreamDigest);
+  await write("dist/provider-access.json", stable(accessResearch));
+  await write(
+    "dist/provider-access.schema.json",
+    await Bun.file("schemas/provider-access.schema.json").text(),
+  );
+  for (const category of ["both", "subscription", "api-key", "unconfirmed"] as const) {
+    await write(
+      `dist/provider-access/categories/${category}.json`,
+      stable(filterProviderAccess(accessResearch, (provider) => provider.category === category)),
+    );
+  }
+  for (const review of accessResearch.providers) {
+    await write(
+      `dist/provider-access/providers/${segment(review.provider_id)}.json`,
+      stable(
+        filterProviderAccess(
+          accessResearch,
+          (provider) => provider.provider_id === review.provider_id,
+        ),
+      ),
+    );
+  }
   const providers: { id: string; path: string }[] = [];
   for (const providerId of Object.keys(upstream.providers).sort(compare)) {
     const provider = composer.provider(providerId);
@@ -387,6 +418,8 @@ async function build(): Promise<void> {
       subscription_manifest_schema: "subscriptions.schema.json",
       provider_research: "provider-research.json",
       provider_research_schema: "provider-research.schema.json",
+      provider_access: "provider-access.json",
+      provider_access_schema: "provider-access.schema.json",
       connections: "connections.json",
       connections_schema: "connections.schema.json",
       connection_schema: "connection.schema.json",
@@ -442,6 +475,10 @@ try {
     await write(
       "schemas/provider-research.schema.json",
       stable(z.toJSONSchema(composedProviderResearchSchema)),
+    );
+    await write(
+      "schemas/provider-access.schema.json",
+      stable(z.toJSONSchema(composedProviderAccessSchema)),
     );
     await write("schemas/connections.schema.json", stable(z.toJSONSchema(connectionsSchema)));
     await write("schemas/connection.schema.json", stable(z.toJSONSchema(connectionSchema)));

@@ -57,6 +57,7 @@ bun run check
 | `src/model-research.ts` | Native model discovery evidence and parser research |
 | `src/model-sources.ts` | Public source definitions and ownership validation |
 | `src/provider-research.ts` | Reviewed provider inventory and explicit coverage gaps |
+| `src/provider-access.ts` | Provider access classification and scoped subscription policy research |
 | `src/connections.ts` | Unified connections, reference coverage and static grouping |
 | `src/discovery.ts` | Required discovery policy, response parsing and context validation |
 | `src/index.ts` | Public consumer exports |
