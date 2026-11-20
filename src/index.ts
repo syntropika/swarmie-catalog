@@ -20,6 +20,14 @@ export {
   subscriptionManifestSchema,
 } from "./integration-schema.ts";
 export { composeModelResearch, modelResearch, modelResearchSchema } from "./model-research.ts";
+export {
+  classifyProviderAccess,
+  composedProviderAccessSchema,
+  composeProviderAccess,
+  filterProviderAccess,
+  providerAccess,
+  providerAccessReviewSchema,
+} from "./provider-access.ts";
 export type { ProviderReview } from "./provider-research.ts";
 export {
   composeProviderResearch,

@@ -576,7 +576,6 @@
       "parser": "llmgateway-devpass",
       "product": "llmgateway-devpass",
       "routes": [
-        "devpass-api-key",
         "devpass-code-cli"
       ],
       "sources": [

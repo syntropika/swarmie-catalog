@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "api-key": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "both": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "subscription": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "total": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "unconfirmed": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total",
+        "both",
+        "subscription",
+        "api-key",
+        "unconfirmed"
+      ],
+      "type": "object"
+    },
+    "current_upstream_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "providers": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "api_key_funding": {
+            "items": {
+              "enum": [
+                "subscription",
+                "usage-based",
+                "byok",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "api_key_status": {
+            "enum": [
+              "documented",
+              "not-found",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "both",
+              "subscription",
+              "api-key",
+              "unconfirmed"
+            ],
+            "type": "string"
+          },
+          "evidence_mode": {
+            "enum": [
+              "rechecked",
+              "retained-evidence",
+              "mixed",
+              "unreviewed"
+            ],
+            "type": "string"
+          },
+          "limitations": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "plans": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "authentication": {
+                  "items": {
+                    "enum": [
+                      "api-key",
+                      "oauth",
+                      "account-login",
+                      "oidc",
+                      "unknown"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "constraints": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "name": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "required_clients": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "scope": {
+                  "enum": [
+                    "direct-model",
+                    "coding-agent",
+                    "chat-app",
+                    "platform",
+                    "compute",
+                    "unknown"
+                  ],
+                  "type": "string"
+                },
+                "source_urls": {
+                  "items": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "third_party_use": {
+                  "enum": [
+                    "supported",
+                    "restricted",
+                    "prohibited",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "scope",
+                "authentication",
+                "third_party_use",
+                "required_clients",
+                "constraints",
+                "source_urls"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "policies": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "scope": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "source_urls": {
+                  "items": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "enum": [
+                    "permitted",
+                    "restricted",
+                    "prohibited",
+                    "documented",
+                    "unknown"
+                  ],
+                  "type": "string"
+                },
+                "summary": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "topic": {
+                  "enum": [
+                    "third-party-use",
+                    "automation",
+                    "credential-use",
+                    "model-access",
+                    "billing",
+                    "privacy",
+                    "region",
+                    "quotas",
+                    "client-requirement",
+                    "other"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "scope",
+                "topic",
+                "status",
+                "summary",
+                "source_urls"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "provider_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "capture_kind": {
+                  "enum": [
+                    "http-body",
+                    "web-extract",
+                    "retained-reference"
+                  ],
+                  "type": "string"
+                },
+                "reviewed_on": {
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+                  "type": "string"
+                },
+                "sha256": {
+                  "anyOf": [
+                    {
+                      "pattern": "^[a-f0-9]{64}$",
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url",
+                "sha256",
+                "capture_kind",
+                "reviewed_on"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "subscription_status": {
+            "enum": [
+              "documented",
+              "not-found",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider_id",
+          "subscription_status",
+          "api_key_status",
+          "api_key_funding",
+          "plans",
+          "policies",
+          "summary",
+          "limitations",
+          "sources",
+          "evidence_mode",
+          "category"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "reviewed_on": {
+      "format": "date",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$",
+      "type": "string"
+    },
+    "role": {
+      "const": "research-only",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "number"
+    },
+    "upstream_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "reviewed_on",
+    "upstream_sha256",
+    "current_upstream_sha256",
+    "role",
+    "providers",
+    "counts"
+  ],
+  "type": "object"
+}

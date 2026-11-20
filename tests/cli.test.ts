@@ -58,6 +58,7 @@ test("provider routes embed plan vectors without product or plan files and rebui
     "subscription",
     "subscriptions",
     "provider-research",
+    "provider-access",
     "connections",
     "connection",
     "connection-discovery",
@@ -180,6 +181,14 @@ test("provider routes embed plan vectors without product or plan files and rebui
   const research = await Bun.file(path.join(directory, "dist/provider-research.json")).json();
   expect(research.counts.total).toBe(Object.keys(JSON.parse(input).providers).length);
   expect(provider.subscription_research.provider_id).toBe(provider.id);
+  const accessReview = await Bun.file(path.join(directory, "dist/provider-access.json")).json();
+  expect(accessReview.role).toBe("research-only");
+  expect(accessReview.counts.total).toBe(Object.keys(JSON.parse(input).providers).length);
+  expect(
+    accessReview.providers.some(
+      (review: { provider_id: string }) => review.provider_id === "openai",
+    ),
+  ).toBe(true);
   const first = hash(await Bun.file(providerFile).text());
   expect((await cli(args, directory)).code).toBe(0);
   expect(hash(await Bun.file(providerFile).text())).toBe(first);

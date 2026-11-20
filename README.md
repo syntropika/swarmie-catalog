@@ -21,6 +21,8 @@ The project uses public sources, TypeScript, Bun and static JSON. Synchronizatio
 no AI extraction, accounts, subscription credentials, database or server.
 Static paths group connections by service, provider, execution and funding method.
 See [coverage and sources](docs/sources.md) for the research scope.
+The [provider access review](docs/provider-access.md) classifies subscriptions and API keys,
+with plan-specific third-party use, automation, billing and privacy conditions.
 
 Use [DEVELOPMENT.md](DEVELOPMENT.md) to install, test, synchronize and configure GitHub.
 See the [documentation index](docs/index.md) for the schema and consumer API.
